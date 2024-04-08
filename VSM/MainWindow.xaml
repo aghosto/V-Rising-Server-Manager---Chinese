@@ -288,7 +288,7 @@
                                 <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="False">
                                     <Setter Property="IsEnabled" Value="False"/>
                                     <Setter Property="Foreground" Value="Gray"/>
-                                    <Setter Property="ToolTip" Value="Enable mod support in settings."/>
+                                    <Setter Property="ToolTip" Value="在设置中启用MOD支持。"/>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
