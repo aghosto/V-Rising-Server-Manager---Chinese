@@ -1,0 +1,805 @@
+﻿<Window x:Class="VRisingServerManager.GameSettingsEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VRisingServerManager" xmlns:controls="clr-namespace:VRisingServerManager.Controls"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Title="游戏设置编辑器" Height="800" Width="1227" MaxWidth="1500" Icon="Resources\EditDocument.png">
+
+    <Window.Resources>
+        <controls:NumberBoxFormatter x:Key="DecimalFormatter"/>
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu>
+            <MenuItem Header="文件 - 导入或保存">
+                <MenuItem x:Name="FileMenuLoad" Header="导入" Click="FileMenuLoad_Click">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="OpenFile"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="FileMenuSave" Header="保存" Click="FileMenuSave_Click">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Save"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem x:Name="FileMenuExit" Header="退出" Click="FileMenuExit_Click">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Cancel"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="预设">
+                <MenuItem Header="PvE">
+                    <MenuItem Header="标准PvE"          Click="LoadPresetButton" Tag="StandardPvE.json"/>
+                    <MenuItem Header="标准PvE - 容易"   Click="LoadPresetButton" Tag="StandardPvE_Easy.json"/>
+                    <MenuItem Header="标准PvE - 困难"   Click="LoadPresetButton" Tag="StandardPvE_Hard.json"/>
+                    <MenuItem Header="标准PvE - 混乱"   Click="LoadPresetButton" Tag="StandardPvE_Shuffle.json"/>
+                    <MenuItem Header="PvE 30级装备起步"     Click="LoadPresetButton" Tag="Level30PvE.json"/>
+                    <MenuItem Header="PvE 40级装备起步"     Click="LoadPresetButton" Tag="Level40PvE.json"/>
+                    <MenuItem Header="PvE 50级装备起步"     Click="LoadPresetButton" Tag="Level50PvE.json"/>
+                    <MenuItem Header="PvE 60级装备起步"     Click="LoadPresetButton" Tag="Level60PvE.json"/>
+                    <MenuItem Header="PvE 70级装备起步"     Click="LoadPresetButton" Tag="Level70PvE.json"/>
+                    <MenuItem Header="PvE 80级装备起步"     Click="LoadPresetButton" Tag="Level80PvE.json"/>
+                </MenuItem>
+                <MenuItem Header="PvP">
+                    <MenuItem Header="标准PvP"                    Click="LoadPresetButton" Tag="StandardPvP.json"/>
+                    <MenuItem Header="标准PvP - 容易"             Click="LoadPresetButton" Tag="StandardPvP_Easy.json"/>
+                    <MenuItem Header="标准PvP - 困难"             Click="LoadPresetButton" Tag="StandardPvP_Hard.json"/>
+                    <MenuItem Header="标准PvP - 混乱"             Click="LoadPresetButton" Tag="StandardPvP_Shuffle.json"/>
+                    <MenuItem Header="标准PvP - 每日限时攻城"     Click="LoadPresetButton" Tag="StandardPvP_DailySiege.json"/>
+                    <MenuItem Header="标准PvP - 每周限时攻城"     Click="LoadPresetButton" Tag="StandardPvP_WeekendSiege.json"/>
+                    <MenuItem Header="标准PvP - 不可攻城"         Click="LoadPresetButton" Tag="StandardPvP_NoSiege.json"/>
+                    <MenuItem Header="PvP 30级装备起步"             Click="LoadPresetButton" Tag="Level30PvP.json"/>
+                    <MenuItem Header="PvP 40级装备起步"             Click="LoadPresetButton" Tag="Level40PvP.json"/>
+                    <MenuItem Header="PvP 50级装备起步"             Click="LoadPresetButton" Tag="Level50PvP.json"/>
+                    <MenuItem Header="PvP 60级装备起步"             Click="LoadPresetButton" Tag="Level60PvP.json"/>
+                    <MenuItem Header="PvP 70级装备起步"             Click="LoadPresetButton" Tag="Level70PvP.json"/>
+                    <MenuItem Header="PvP 80级装备起步"             Click="LoadPresetButton" Tag="Level80PvP.json"/>
+                    <MenuItem Header="双人PvP"                    Click="LoadPresetButton" Tag="Duo_PvP.json"/>
+                    <MenuItem Header="双人PvP - 每日限时攻城"     Click="LoadPresetButton" Tag="DuoPvP_DailySiege.json"/>
+                    <MenuItem Header="双人PvP - 每周限时攻城"     Click="LoadPresetButton" Tag="DuoPvP_WeekendSiege.json"/>
+                    <MenuItem Header="双人PvP - 不可攻城"         Click="LoadPresetButton" Tag="DuoPvP_NoSiege.json"/>
+                    <MenuItem Header="双人PvP - 硬核"             Click="LoadPresetButton" Tag="HardcoreDuoPvP.json"/>
+                    <MenuItem Header="硬核PvP"                    Click="LoadPresetButton" Tag="HardcorePvP.json"/>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="1" Padding="5">
+            <StackPanel>
+                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="通用设置" Margin="10,5,10,5" Grid.Row="1" Padding="5,5,5,5" HorizontalAlignment="Left">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Margin="10,0,10,0">
+                                <TextBlock Text="游戏模式"/>
+                                <ComboBox SelectedIndex="{Binding GameModeType, Mode=TwoWay}">
+                                    <ComboBoxItem Content="PvE" ToolTip="玩家对战环境，无玩家之间伤害。"/>
+                                    <ComboBoxItem Content="PvP" ToolTip="玩家对战玩家，有玩家之间伤害且视设定可/不可攻城。"/>
+                                </ComboBox>
+                                <TextBlock Text="城堡突袭"/>
+                                <ComboBox SelectedIndex="{Binding CastleDamageMode, Mode=TwoWay}">
+                                    <ComboBoxItem Content="从不" ToolTip="玩家永远不能对敌人的城堡建筑造成伤害。"/>
+                                    <ComboBoxItem Content="一直" ToolTip="玩家可能总是会对敌人的城堡建筑造成伤害。"/>
+                                    <ComboBoxItem Content="限时" ToolTip="玩家只能在特定时间内破坏敌人的城堡结构。"/>
+                                </ComboBox>
+                                <TextBlock Text="攻城石魔生命值"/>
+                                <ComboBox SelectedIndex="{Binding SiegeWeaponHealth, Mode=TwoWay}" ToolTip="设定攻城石魔的生命值">
+                                    <ComboBoxItem Content="500 血"/>
+                                    <ComboBoxItem Content="1000血"/>
+                                    <ComboBoxItem Content="1500血"/>
+                                    <ComboBoxItem Content="2000血"/>
+                                    <ComboBoxItem Content="2500血"/>
+                                </ComboBox>
+                                <TextBlock Text="玩家PVP"/>
+                                <ComboBox SelectedIndex="{Binding PlayerDamageMode, Mode=TwoWay}" ToolTip="设定玩家何时可以伤害其他玩家(在PvE中禁用)。">
+                                    <ComboBoxItem Content="一直" ToolTip="玩家总是可以对其他玩家造成伤害。"/>
+                                    <ComboBoxItem Content="限时" ToolTip="玩家只能在特定的时间内伤害其他玩家"/>
+                                </ComboBox>
+                                <TextBlock Text="暴露城堡之心"/>
+                                <ComboBox SelectedIndex="{Binding CastleHeartDamageMode, Mode=TwoWay}" ToolTip="定义与敌人城堡之心的互动。">
+                                    <ComboBoxItem Content="只能在衰败时被摧毁" ToolTip="玩家只能在城堡之心处于衰败状态时摧毁敌人的城堡之心。"/>
+                                    <ComboBoxItem Content="可被敌方玩家摧毁" ToolTip="玩家可以使用游戏中的道具“钥匙”摧毁敌人的城堡之心。"/>
+                                    <ComboBoxItem Content="可被敌方玩家摧毁或占领" ToolTip="玩家可以使用游戏中的道具“钥匙”摧毁或占领敌人的城堡之心。"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1" Margin="10,0,10,0">
+                                <TextBlock Text="新玩家PvP保护时长"/>
+                                <ComboBox SelectedIndex="{Binding PvPProtectionMode, Mode=TwoWay}" ToolTip="进入PVP服务器后，玩家在设定时间内不能被其他玩家伤害的时长。">
+                                    <ComboBoxItem Content="无保护"/>
+                                    <ComboBoxItem Content="很短(15分钟)"/>
+                                    <ComboBoxItem Content="短(30分钟)"/>
+                                    <ComboBoxItem Content="中(1小时)"/>
+                                    <ComboBoxItem Content="长(2小时)"/>
+                                </ComboBox>
+                                <TextBlock Text="允许搜刮死亡玩家"/>
+                                <ComboBox SelectedIndex="{Binding DeathContainerPermission, Mode=TwoWay}" ToolTip="设定当玩家死亡时谁可以掠夺遗体。">
+                                    <ComboBoxItem Content="任何人" ToolTip="Everyone can loot the body"/>
+                                    <ComboBoxItem Content="血族成员" ToolTip="Only self and Clan members may loot the body"/>
+                                    <ComboBoxItem Content="仅自己" ToolTip="Only self may loot the body"/>
+                                </ComboBox>
+                                <TextBlock Text="灵魂碎片数量"/>
+                                <ComboBox SelectedIndex="{Binding RelicSpawnType, Mode=TwoWay}" ToolTip="设定游戏的灵魂碎片物品应该是独一无二的还是丰富的。">
+                                    <ComboBoxItem Content="唯一" ToolTip="灵魂碎片是唯一的 - 服务器上一次只能存在每种类型中的一个。"/>
+                                    <ComboBoxItem Content="数量充足" ToolTip="灵魂碎片很多 - 每当灵魂碎片首领被杀时，就会掉一个新的。"/>
+                                </ComboBox>
+                                <CheckBox Content="宣告召唤攻城石魔" IsChecked="{Binding AnnounceSiegeWeaponSpawn, Mode=TwoWay}" ToolTip="当攻城石魔被召唤时，在聊天中显示系统信息。"/>
+                                <CheckBox Content="在地图上显示攻城石魔" IsChecked="{Binding ShowSiegeWeaponMapIcon, Mode=TwoWay}" ToolTip="在大地图上显示攻城石魔。"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="2" Margin="10,0,10,0">
+                                <CheckBox Content="允许玩家搜刮敌方储物箱" IsChecked="{Binding CanLootEnemyContainers, Mode=TwoWay}" ToolTip="允许玩家可以掠夺敌人的储物箱、容器和制作台。"/>
+                                <CheckBox Content="血契装备" IsChecked="{Binding BloodBoundEquipment, Mode=TwoWay}" ToolTip="启用后，死亡时带有“血契”词条的装备不会掉落。"/>
+                                <CheckBox Content="传送受限物品" IsChecked="{Binding TeleportBoundItems, Mode=TwoWay}" ToolTip="启用后，某些物品（宝石等）将阻止您使用传送门。"/>
+                                <CheckBox Content="开启世界聊天频道" IsChecked="{Binding AllowGlobalChat, Mode=TwoWay}" ToolTip="允许玩家发全图消息，服务器上的所有玩家都可以看到。"/>
+                                <CheckBox Content="解锁全部路点" IsChecked="{Binding AllWaypointsUnlocked, Mode=TwoWay}" IsEnabled="False" ToolTip="计划是解锁全部地图，但未开发完成。"/>
+                                <CheckBox Content="无消耗城堡突袭" IsChecked="{Binding FreeCastleRaid, Mode=TwoWay}" ToolTip="突袭敌方玩家的城堡时不需要消耗任何材料。"/>
+                                <CheckBox Content="无消耗夺取城堡之心" IsChecked="{Binding FreeCastleClaim, Mode=TwoWay}" ToolTip="夺取敌方玩家的城堡时不需要消耗任何材料。"/>
+                                <CheckBox Content="无消耗摧毁城堡之心" IsChecked="{Binding FreeCastleDestroy, Mode=TwoWay}" ToolTip="摧毁敌方玩家的城堡时不需要消耗任何材料。"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="3" Margin="10,0,10,0">
+                                <GroupBox Header="挂机玩家裁决" Margin="10,0,10,0">
+                                    <StackPanel>
+                                        <CheckBox Content="Enabled" IsChecked="{Binding InactivityKillEnabled, Mode=TwoWay}" ToolTip="非活跃(挂机)玩家将在设定时间后被裁决。"/>
+                                        <TextBlock Text="最短时间"/>
+                                        <ui:NumberBox Value="{Binding InactivityKillTimeMin, Mode=TwoWay}" ToolTip="基于装备等级，非活跃玩家被裁决的最短计时时间，单位为分钟。" Minimum="1" Maximum="10081" SmallChange="10" SpinButtonPlacementMode="Compact"/>
+                                        <TextBlock Text="最大时间"/>
+                                        <ui:NumberBox Value="{Binding InactivityKillTimeMax, Mode=TwoWay}" IsEnabled="False" ToolTip="基于装备等级，非活跃玩家被裁决前的最长计时时间，单位为秒。" ToolTipService.ShowOnDisabled="True"/>
+                                        <TextBlock Text="额外安全时间"/>
+                                        <ui:NumberBox Value="{Binding InactivityKillSafeTimeAddition, Mode=TwoWay}" IsEnabled="False" ToolTip="在城堡区域的非活动玩家被裁决前的额外时间。" ToolTipService.ShowOnDisabled="True"/>
+                                        <TextBlock Text="最高装备等级"/>
+                                        <ui:NumberBox Value="{Binding InactivityKillTimerMaxItemLevel, Mode=TwoWay}" IsEnabled="False" ToolTip="挂机裁决所作用的最大装等玩家，从1到该值。" ToolTipService.ShowOnDisabled="True"/>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox Header="断线裁决豁免" Margin="10,0,10,0">
+                                    <StackPanel>
+                                        <CheckBox Content="开启" IsChecked="{Binding DisableDisconnectedDeadEnabled, Mode=TwoWay}" ToolTip="启用后断开连接的玩家将有一段裁决豁免的时间。"/>
+                                        <TextBlock Text="时间"/>
+                                        <ui:NumberBox Value="{Binding DisableDisconnectedDeadTimer, Mode=TwoWay}" SmallChange="10" ToolTip="断开连接的玩家裁决豁免的时间" Minimum="1" Maximum="10081" SpinButtonPlacementMode="Compact"/>
+                                        <TextBlock Text="掉线玩家免疫太阳时间" Visibility="Hidden"/>
+                                        <ui:NumberBox Value="{Binding DisconnectedSunImmunityTime, Mode=TwoWay}" SmallChange="0.15" Maximum="3600" Minimum="0.15" NumberFormatter="{StaticResource DecimalFormatter}" ToolTip="未测试，后果自负。" SpinButtonPlacementMode="Compact" Visibility="Hidden"/>
+                                    </StackPanel>
+                                </GroupBox>
+                            </StackPanel>
+                            <StackPanel Grid.Column="4" Margin="10,0,10,0">
+                                <GroupBox Header="商人设置" Margin="10,0,10,0">
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="库存调整" Height="20" Margin="5,0,5,0" Width="150"/>
+                                            <ui:NumberBox Value="{Binding TraderModifiers.StockModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="将商人的库存数量与此值相乘。" Maximum="10" Minimum="0.05" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="价格调整" Height="20" Margin="5,0,5,0" Width="150"/>
+                                            <ui:NumberBox Value="{Binding TraderModifiers.PriceModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="将商人的物品价格与此值相乘。" Maximum="10" Minimum="0.05" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="补货时间调整" Height="20" Margin="5,0,5,0" Width="150"/>
+                                            <ui:NumberBox Value="{Binding TraderModifiers.RestockTimerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="将商人的补货时间与此值相乘。" Maximum="10" Minimum="0.05" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </GroupBox>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                </Border>
+                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="整体设置" Grid.Row="2" Margin="10,5,10,5" Padding="5,5,5,5" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0,0,5,0">
+                                <DockPanel>
+                                    <TextBlock Text="物品堆叠倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding InventoryStacksModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="将原本的每组物品最大数量与此值相乘。" Maximum="10" Minimum="0.15" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="击杀掉落倍率 - 怪物与宝箱" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding DropTableModifier_General, Mode=TwoWay}" SmallChange="0.15" ToolTip="将原本的击杀和宝箱数量与此值相乘。" Maximum="10" Minimum="0.15" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="击杀掉落倍率 - 仆从猎杀" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding DropTableModifier_Missions, Mode=TwoWay}" SmallChange="0.15" ToolTip="将原本的猎杀获取数量与此值相乘。" Maximum="10" Minimum="0.15" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="玩家采集倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding MaterialYieldModifier_Global, Mode=TwoWay}" SmallChange="0.15" ToolTip="将原本的玩家采集资源数量与此值相乘。" Maximum="10" Minimum="0.15" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="血液精华倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding BloodEssenceYieldModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="将原本的玩家获取血液精华数量与此值相乘。" Maximum="10" Minimum="0.15" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="V型血追踪最远距离" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding JournalVBloodSourceUnitMaxDistance, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没得用，已经所有距离都能追踪了。" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="PvP重生时间设定" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding PvPVampireRespawnModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="增加玩家在PvP中被杀的额外复活时间。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡最小间距" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding CastleMinimumDistanceInFloors, Mode=TwoWay}" SmallChange="1" ToolTip="在敌方玩家的城堡旁边放置地板时允许的最小距离。" Maximum="10" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="血族规模" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding ClanSize, Mode=TwoWay}" SmallChange="1" ToolTip="可以加入同一血族的玩家人数。同一血族的玩家可以一起复苏，共享进度协力建造城堡。" Maximum="50" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="血液消耗速率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding BloodDrainModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家消耗血液的速率。倍率越高，血液消耗越高。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="耐久度损失倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding DurabilityDrainModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整造成或受到伤害时损失的耐久度。倍率越高，耐久消耗越快。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,5,0">
+                                <DockPanel>
+                                    <TextBlock Text="大蒜强度倍率" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding GarlicAreaStrengthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整大蒜负面效果的堆叠速度。倍率越高，堆叠速度越快。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="神圣强度倍率" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding HolyAreaStrengthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整神圣负面效果的伤害倍率。倍率越高，伤害越高。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="银器强度倍率" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding SilverStrengthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整携带银器负面效果的伤害倍率。倍率越高，伤害越高。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="阳光强度倍率" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding SunDamageModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整阳光照射负面效果的伤害倍率。倍率越高，伤害越高。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡衰败速率" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleDecayRateModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="城堡之心的血液精华耗尽时，城堡衰败的速率。倍率越高，衰败越快。" Maximum="5" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡血液精华消耗速率" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleBloodEssenceDrainModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="城堡之心的血液精华消耗速率，城堡衰败的速率。倍率越高，消耗越快。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡攻陷时间" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleSiegeTimer, Mode=TwoWay}" SmallChange="1" ToolTip="敌方玩家突破外部防御后，城堡被判定为处于攻陷状态的时间。城堡被攻陷后，玩家不能建造新的城堡构件或墙壁，且所有城堡构件都可能遭到破坏，单位为秒。" Maximum="1800" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡受袭时间" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleUnderAttackTimer, Mode=TwoWay}" SmallChange="1" ToolTip="玩家在受到攻击时被阻止建造建筑物或墙壁的时间。当敌方玩家使用炸药或攻城石魔对任何墙壁或门造成伤害时，城堡就被视为受到攻击，单位为分。" Maximum="180" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡突袭计时器" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleRaidTimer, Mode=TwoWay}" SmallChange="1" ToolTip="城堡突袭的持续时间，单位为秒。" Maximum="3600" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡突袭冷却时间" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleRaidProtectionTime, Mode=TwoWay}" SmallChange="1" ToolTip="城堡突袭的冷却时间，单位为秒。" Maximum="86400" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="城堡之心暴露自由占领时间" VerticalAlignment="Center" Width="250"/>
+                                    <ui:NumberBox Value="{Binding CastleExposedFreeClaimTimer, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，后果自负。" Maximum="3600" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                            </StackPanel>
+                            <StackPanel Margin="0,0,5,0">
+                                <DockPanel>
+                                    <TextBlock Text="建造成本倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding BuildCostModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在建造时所消耗的材料的倍率。" Maximum="10" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="制造成本倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding RecipeCostModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在制造时所消耗的材料的倍率。" Maximum="10" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="制造速率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding CraftRateModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在制造时的速度倍率。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="研究成本倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding ResearchCostModifier, Mode=TwoWay}" SmallChange="0.15" IsEnabled="False" ToolTip="没用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="精炼成本倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding RefinementCostModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在精炼时的成本倍率。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="精炼速率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding RefinementRateModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在精炼时的速度倍率。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="研究时间倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding ResearchTimeModifier, Mode=TwoWay}" SmallChange="0.15" IsEnabled="False" ToolTip="没用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="拆除返还资源倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding DismantleResourceModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在拆除时返还的资源倍率。" Maximum="1" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="仆从转化速率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding ServantConvertRateModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在转化仆从时的速度倍率。" Maximum="20" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="维修成本倍率" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding RepairCostModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在维修时的成本倍率。" Maximum="10" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="死亡时的耐久度损失" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding Death_DurabilityFactorLoss, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在死亡时的装备耐久的掉落倍率（仅限PvP）。最小0，最大1，步进值为0.15，每个值都会以百分比计算。" Maximum="1" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="死亡时的物品丢失/损失" VerticalAlignment="Center" Width="275"/>
+                                    <ui:NumberBox Value="{Binding Death_DurabilityLossFactorAsResources, Mode=TwoWay}" SmallChange="0.15" ToolTip="在死亡时材料的损失。值为0将导致所有材料损失，而值为1将导致所有材料掉落" Maximum="1" Minimum="0" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                </DockPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander>
+                </Border>
+                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="属性设置" Margin="10,5,10,5" Grid.Row="3" Padding="5,5,5,5" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <GroupBox Header="吸血鬼属性" Margin="10,0,10,0">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="生命值倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家的最大生命值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="最大能量倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.MaxEnergyModifier, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没有用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="物理攻击力倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.PhysicalPowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家的物理攻击力，此数值会影响玩家使用武器攻击和武器技能时造成的伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="法术攻击力倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.SpellPowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家的法术攻击力，此数值会影响玩家使用法术时造成的伤害值和回复值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="对资源物体的攻击力倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.ResourcePowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家对资源物体造成的伤害。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="对敌方城堡的攻击力倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.SiegePowerModifier, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没有用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="所受伤害倍率" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.DamageReceivedModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整受到的各类伤害。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="放弃治疗延迟" Width="175" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.ReviveCancelDelay, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没有用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                    </DockPanel>
+                                    <GroupBox Header="敌方单位属性">
+                                        <StackPanel>
+                                            <DockPanel>
+                                                <TextBlock Text="生命值倍率 - 全局" Width="200" VerticalAlignment="Center"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整敌方标准单位的最大生命值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <TextBlock Text="伤害倍率 - 全局" Width="200" VerticalAlignment="Center"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.PowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整敌方标准单位的攻击伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <TextBlock Text="生命值倍率 - V型血" Width="200" VerticalAlignment="Center"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整V型血单位的最大生命值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                            </DockPanel>
+                                            <DockPanel>
+                                                <TextBlock Text="伤害倍率 - V型血" Width="200" VerticalAlignment="Center"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.PowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整V型血单位的攻击伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                            </DockPanel>
+                                            <StackPanel/>
+                                            <StackPanel Grid.Column="1"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="装备属性 - 全局" Margin="10,0,10,0">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="生命值倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整装备的最大生命值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="最大能量倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.MaxEnergyModifier, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没有用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="资源产量倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.ResourceYieldModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整采集资源时获得的材料数量。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="物理攻击力倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.PhysicalPowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家从装备获取的物理攻击力，此数值会影响玩家使用武器攻击和武器技能时造成的伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="法术攻击力倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.SpellPowerModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家从装备获取的法术攻击力，此数值会影响玩家使用法术时造成的伤害值和回复值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="攻城攻击力倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.SiegePowerModifier, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没有用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="移动速度倍率" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding EquipmentStatModifiers_Global.MovementSpeedModifier, Mode=TwoWay}" SmallChange="0.15" ToolTip="调整玩家从影响移动速度的装备中获得的移动速度" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <StackPanel>
+                                    </StackPanel>
+                                    <StackPanel Grid.Column="1">
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                            <GroupBox Header="城堡设置 - 全局" Margin="10,0,10,0">
+                                <StackPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="衰败周期" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.TickPeriod, Mode=TwoWay}" SmallChange="0.15" ToolTip="城堡衰败伤害的频率。" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="伤害抗性" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.DamageResistance, Mode=TwoWay}" IsEnabled="False" SmallChange="0.15" ToolTip="没有用滴" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact" ToolTipService.ShowOnDisabled="True"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="保险箱上限" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.SafetyBoxLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的吸血鬼保险箱的数量。" Maximum="20" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="坟墓上限" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.TombLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的坟墓的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="虫穴上限" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.VerminNestLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的虫穴的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="牢笼上限" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.PrisonCellLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的牢笼的数量。" Maximum="50" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <DockPanel>
+                                        <TextBlock Text="城堡之心上限" Width="250" VerticalAlignment="Center"/>
+                                        <ui:NumberBox Value="{Binding CastleStatModifiers_Global.CastleLimit, Mode=TwoWay}" SmallChange="1" ToolTip="每位玩家可以建造的城堡数量。" Maximum="5" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                    </DockPanel>
+                                    <StackPanel>
+                                    </StackPanel>
+                                    <StackPanel>
+                                    </StackPanel>
+                                    <StackPanel>
+                                        <GroupBox Header="城堡之心设置" Margin="10,0,10,0">
+                                            <TabControl>
+                                                <TabItem Header="1 级">
+                                                    <StackPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="领地地块上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level1.FloorLimit, Mode=TwoWay}" SmallChange="1" ToolTip="设定玩家可在每个城堡中建造的地板数量。" Maximum="600" Minimum="9" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="仆从上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level1.ServantLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的仆从棺材的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="城堡建筑上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level1.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="城堡高度上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level1.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </TabItem>
+                                                <TabItem Header="2 级">
+                                                    <StackPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="领地地块上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level2.FloorLimit, Mode=TwoWay}" SmallChange="1" ToolTip="设定玩家可在每个城堡中建造的地板数量。" Maximum="600" Minimum="9" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="仆从上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level2.ServantLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的仆从棺材的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="城堡建筑上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level2.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level2.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <StackPanel>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="1">
+                                                        </StackPanel>
+                                                    </StackPanel>
+                                                </TabItem>
+                                                <TabItem Header="3 级">
+                                                    <StackPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="领地地块上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level3.FloorLimit, Mode=TwoWay}" SmallChange="1" ToolTip="设定玩家可在每个城堡中建造的地板数量。" Maximum="600" Minimum="9" SpinButtonPlacementMode="Compact"/>
+
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="仆从上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level3.ServantLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的仆从棺材的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="城堡建筑上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level3.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
+
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level3.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
+
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </TabItem>
+                                                <TabItem Header="4 级">
+                                                    <StackPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="领地地块上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level4.FloorLimit, Mode=TwoWay}" SmallChange="1" ToolTip="设定玩家可在每个城堡中建造的地板数量。" Maximum="600" Minimum="9" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="仆从上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level4.ServantLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的仆从棺材的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="城堡建筑上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level4.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level4.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </TabItem>
+                                                <TabItem Header="5 级">
+                                                    <StackPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="领地地块上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level5.FloorLimit, Mode=TwoWay}" SmallChange="1" ToolTip="设定玩家可在每个城堡中建造的地板数量。" Maximum="600" Minimum="9" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="仆从上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level5.ServantLimit, Mode=TwoWay}" SmallChange="1" ToolTip="玩家可以在每座城堡里建造的仆从棺材的数量。" Maximum="20" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="城堡建筑上限" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level5.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                        <DockPanel>
+                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level5.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                                        </DockPanel>
+                                                    </StackPanel>
+                                                </TabItem>
+                                            </TabControl>
+                                        </GroupBox>
+                                    </StackPanel>
+                                </StackPanel>
+                            </GroupBox>
+                        </StackPanel>
+                    </Expander>
+                </Border>
+                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="游戏时间设置和玩家交互设置" Margin="10,5,10,5" Grid.Row="4" Padding="5,5,5,5" HorizontalAlignment="Left">
+                        <Grid>
+                            <StackPanel Orientation="Horizontal">
+                                <GroupBox Header="游戏时间设置" Margin="10,0,10,0">
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="单日长度" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.DayDurationInSeconds, Mode=TwoWay}" SmallChange="0.15" ToolTip="游戏里的单日总时长，单位为秒。" Maximum="86400" Minimum="60" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="白天开始于 - 时" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.DayStartHour, Mode=TwoWay}" SmallChange="1" ToolTip="游戏里白天开始的小时。" Maximum="25" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="白天开始于 - 分" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.DayStartMinute, Mode=TwoWay}" SmallChange="1" ToolTip="游戏里白天开始的分钟。" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="白天结束于 - 时" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.DayEndHour, Mode=TwoWay}" SmallChange="1" ToolTip="游戏里白天结束的小时。" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="白天结束于 - 分" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.DayEndMinute, Mode=TwoWay}" SmallChange="1" ToolTip="游戏里白天结束的分钟。" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="血月概率 - 最小" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.BloodMoonFrequency_Min, Mode=TwoWay}" SmallChange="1" ToolTip="血月事件可能出现的最低概率。" Maximum="255" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="血月概率 - 最大" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.BloodMoonFrequency_Max, Mode=TwoWay}" SmallChange="1" ToolTip="血月事件可能出现的最高概率。" Maximum="255" Minimum="1" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="血月增益" Width="210" VerticalAlignment="Center"/>
+                                            <ui:NumberBox Value="{Binding GameTimeModifiers.BloodMoonBuff, Mode=TwoWay}" SmallChange="0.15" ToolTip="玩家在血月期间获得的额外移动速度，以百分比为单位。" Maximum="1" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        </DockPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="时区" Width="210" VerticalAlignment="Center"/>
+                                            <ComboBox x:Name="TimeZoneCombo" SelectedIndex="{Binding PlayerInteractionSettings.TimeZone, Mode=TwoWay}" VerticalAlignment="Top" ToolTip="用于各种其他设置的时区。">
+                                                <ComboBoxItem Content="Local" ToolTip="Local System Time"/>
+                                                <ComboBoxItem Content="UTC" ToolTip="UTC"/>
+                                                <ComboBoxItem Content="PST" ToolTip="PST (Pacific Standard Time, UTC -8)"/>
+                                                <ComboBoxItem Content="EST" ToolTip="EST (Eastern Standard Time, UTC -5)"/>
+                                                <ComboBoxItem Content="CET" ToolTip="CET (Central European Time, UTC +1)"/>
+                                                <ComboBoxItem Content="CST" ToolTip="CST (China Standard Time, UTC +8)"/>
+                                            </ComboBox>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </GroupBox>
+                                <GroupBox Header="玩家互动设置" Margin="10,0,10,0">
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal">
+                                            <GroupBox Header="工作日PvP时间" Margin="10,0,10,0">
+                                                <StackPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="开始时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekdayTime.StartHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日激活玩家PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="开始时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekdayTime.StartMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日激活玩家PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="结束时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekdayTime.EndHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日结束玩家PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="结束时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekdayTime.EndMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日结束玩家PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <GroupBox Header="工作日城堡PvP时间">
+                                                        <StackPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="开始时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekdayTime.StartHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日激活城堡PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="开始时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekdayTime.StartMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日激活城堡PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="结束时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekdayTime.EndHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日结束城堡PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="结束时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekdayTime.EndMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准工作日结束城堡PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                        </StackPanel>
+                                                    </GroupBox>
+                                                </StackPanel>
+                                            </GroupBox>
+                                            <GroupBox Header="周末PvP时间" Margin="10,0,10,0">
+                                                <StackPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="开始时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekendTime.StartHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末激活玩家PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="开始时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekendTime.StartMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末激活玩家PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="结束时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekendTime.EndHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末结束玩家PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <DockPanel>
+                                                        <TextBlock Text="结束时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                        <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSPlayerWeekendTime.EndMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末结束玩家PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                    </DockPanel>
+                                                    <GroupBox Header="周末城堡PvP时间">
+                                                        <StackPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="开始时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekendTime.StartHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末激活城堡PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="开始时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekendTime.StartMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末激活城堡PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="结束时间 - 时" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekendTime.EndHour, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末结束城堡PvP的开始时间 - 小时" Maximum="24" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                            <DockPanel>
+                                                                <TextBlock Text="结束时间 - 分" Width="150" VerticalAlignment="Center"/>
+                                                                <ui:NumberBox Value="{Binding PlayerInteractionSettings.VSCastleWeekendTime.EndMinute, Mode=TwoWay}" SmallChange="1" ToolTip="标准周末结束城堡PvP的开始时间 - 分钟" Maximum="60" Minimum="0" SpinButtonPlacementMode="Compact"/>
+                                                            </DockPanel>
+                                                        </StackPanel>
+                                                    </GroupBox>
+                                                </StackPanel>
+                                            </GroupBox>
+                                        </StackPanel>
+                                    </Grid>
+                                </GroupBox>
+                            </StackPanel>
+                        </Grid>
+                    </Expander>
+                </Border>
+                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="初始设置" Grid.Row="5" Margin="10,5,10,5" Padding="5,5,5,5" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel>
+                                <TextBlock Text="初始装备" Margin="5,0,0,0"/>
+                                <ComboBox x:Name="StarterEquipmentCombo" VerticalAlignment="Top" Width="300" Margin="5,0,5,0" ToolTip="设置一套初始装备。">
+                                    <ComboBoxItem Content="无"/>
+                                    <ComboBoxItem Content="30级装备 - 铜制装备"/>
+                                    <ComboBoxItem Content="40级装备 - 无情铜制装备"/>
+                                    <ComboBoxItem Content="50级装备 - 铁制装备"/>
+                                    <ComboBoxItem Content="60级装备 - 无情铁制装备"/>
+                                    <ComboBoxItem Content="70级装备 - 暗银装备"/>
+                                    <ComboBoxItem Content="80级装备 - 血劫装备"/>
+                                </ComboBox>
+                                <TextBlock Text="开局资源" Margin="5,0,0,0"/>
+                                <ComboBox x:Name="StarterResourcesCombo" VerticalAlignment="Top" Width="300" Margin="5,0,5,0" ToolTip="设置一些初始物资。">
+                                    <ComboBoxItem Content="无"/>
+                                    <ComboBoxItem Content="装备等级30的物资"/>
+                                    <ComboBoxItem Content="装备等级40的物资"/>
+                                    <ComboBoxItem Content="装备等级50的物资"/>
+                                    <ComboBoxItem Content="装备等级60的物资"/>
+                                    <ComboBoxItem Content="装备等级70的物资"/>
+                                    <ComboBoxItem Content="装备等级80的物资"/>
+                                </ComboBox>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="解锁日志"/>
+                                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                                    <DataGrid x:Name="AchievementsData" AutoGenerateColumns="False" CanUserAddRows="False" Height="200" CanUserDeleteRows="False" Margin="5,5,5,5">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
+                                            <DataGridTextColumn Header="名称" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="225"/>
+                                            <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="V型血单位设置"/>
+                                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                                    <DataGrid x:Name="VBloodData" AutoGenerateColumns="False" CanUserAddRows="False" Height="200" CanUserDeleteRows="False" Margin="5,5,5,5">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="序号" Binding="{Binding UnitId, Mode=TwoWay}" Visibility="Hidden"/>
+                                            <DataGridTextColumn Header="名称" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="225"/>
+                                            <DataGridTextColumn Header="等级" Binding="{Binding UnitLevel, Mode=TwoWay}"/>
+                                            <DataGridCheckBoxColumn Header="解锁" Binding="{Binding DefaultUnlocked, Mode=TwoWay}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Margin="5,0,0,0">
+                                <TextBlock Text="解锁科技"/>
+                                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                                    <DataGrid x:Name="ResearchData" AutoGenerateColumns="False" CanUserAddRows="False" Height="Auto" CanUserDeleteRows="False" Margin="5,5,5,5">
+                                        <DataGrid.Columns>
+                                            <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
+                                            <DataGridTextColumn Header="等级" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="100"/>
+                                            <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
+                                        </DataGrid.Columns>
+                                    </DataGrid>
+                                </Border>
+                            </StackPanel>
+                        </StackPanel>
+                    </Expander>
+                </Border>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Window>

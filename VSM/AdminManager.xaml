@@ -1,0 +1,47 @@
+﻿<Window x:Class="VRisingServerManager.AdminManager"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VRisingServerManager"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        Title="管理账号管理器" Height="320" Width="320" Icon="Resources\User.png" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <ListView x:Name="AdminList" Grid.ColumnSpan="2" SelectionMode="Single" Margin="5"/>
+        <StackPanel Grid.Row="1">
+            <TextBox x:Name="AdminToAdd" Grid.Row="2" Margin="5,5,5,0"/>
+        </StackPanel>
+        <StackPanel Grid.Row="1" Grid.RowSpan="2" Grid.Column="2">
+            <Button x:Name="AddAdminButton" Content="添加" Margin="5" Click="AddAdminButton_Click" Padding="2,1,2,1" ToolTip="从SteamID添加新的管理员。"/>
+            <Button x:Name="RemoveAdminButton" Content="移除" Margin="5" Click="RemoveAdminButton_Click" Padding="2,1,2,1" ToolTip="删除选定的StreamID。" IsEnabled="False"/>
+        </StackPanel>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock x:Name="TextLink" VerticalAlignment="Center" Margin="5,0,0,0" ToolTip="打开steamID.io找到您的64位SteamID。">
+                <TextBlock.Foreground>
+                    <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                </TextBlock.Foreground>
+                <Hyperlink NavigateUri="https://steamid.io/lookup" RequestNavigate="Hyperlink_RequestNavigate">
+                    SteamID查询网站
+                </Hyperlink>
+            </TextBlock>
+            <StackPanel Orientation="Horizontal" Grid.Column="1">
+                <Button x:Name="SaveButton" Content="保存" Margin="5,5,0,5" Grid.Column="1" Padding="5,1,5,1" Click="SaveButton_Click" ToolTip="保存管理员列表。"/>
+                <Button x:Name="ReloadButton" Content="重载" Margin="5" Grid.Column="1" Padding="5,1,5,1" Click="ReloadButton_Click" ToolTip="重新加载管理员列表。"/>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</Window>

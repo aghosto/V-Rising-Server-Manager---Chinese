@@ -1,0 +1,25 @@
+﻿<Window x:Class="VRisingServerManager.CreateServer"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VRisingServerManager"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Title="创建新的服务器" Height="160" Width="825" Icon="Resources\Add.png" ResizeMode="NoResize">
+    <Grid>
+        <StackPanel Margin="5">
+            <DockPanel>
+                <TextBlock Text="服务器名称：" Width="90" VerticalAlignment="Center"/>
+                <TextBox Text="{Binding Name, Mode=TwoWay}" Margin="5" Width="625" MaxLength="30" ToolTip="服务器管理器中使用的服务器的名称，该名称只会应用于VSM以分辨不同的服务器" HorizontalAlignment="Left"/>
+            </DockPanel>
+            <DockPanel>
+                <TextBlock Text="服务器存档路径：" Width="90" VerticalAlignment="Center"/>
+                <TextBox x:Name="ServerPathText" Text="{Binding Path, Mode=TwoWay}" Margin="5" IsReadOnly="True" Width="625" ToolTip="安装服务器及其文件的路径。"/>
+                <Button x:Name="ServerPathButton" DockPanel.Dock="Right" Content="选择路径" Margin="5" Click="ServerPathButton_Click" ToolTip="Choose a directory path."/>
+            </DockPanel>
+            <Button Content="创建" HorizontalAlignment="Center" Width="80" Click="CreateButton_Click"/>
+        </StackPanel>
+    </Grid>
+</Window>
