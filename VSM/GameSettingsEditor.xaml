@@ -75,8 +75,8 @@
         </Menu>
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" Grid.Row="1" Padding="5">
             <StackPanel>
-                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
-                    <Expander Header="通用设置" Margin="10,5,10,5" Grid.Row="1" Padding="5,5,5,5" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="通用设置" Margin="10,5,10,5" Grid.Row="1" Padding="5,5,5,5">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -153,7 +153,7 @@
                             <StackPanel Grid.Column="3" Margin="10,0,10,0">
                                 <GroupBox Header="挂机玩家裁决" Margin="10,0,10,0">
                                     <StackPanel>
-                                        <CheckBox Content="Enabled" IsChecked="{Binding InactivityKillEnabled, Mode=TwoWay}" ToolTip="非活跃(挂机)玩家将在设定时间后被裁决。"/>
+                                        <CheckBox Content="开启" IsChecked="{Binding InactivityKillEnabled, Mode=TwoWay}" ToolTip="非活跃(挂机)玩家将在设定时间后被裁决。"/>
                                         <TextBlock Text="最短时间"/>
                                         <ui:NumberBox Value="{Binding InactivityKillTimeMin, Mode=TwoWay}" ToolTip="基于装备等级，非活跃玩家被裁决的最短计时时间，单位为分钟。" Minimum="1" Maximum="10081" SmallChange="10" SpinButtonPlacementMode="Compact"/>
                                         <TextBlock Text="最大时间"/>
@@ -195,8 +195,8 @@
                         </Grid>
                     </Expander>
                 </Border>
-                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
-                    <Expander Header="整体设置" Grid.Row="2" Margin="10,5,10,5" Padding="5,5,5,5" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="整体设置" Grid.Row="2" Margin="10,5,10,5" Padding="5,5,5,5">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel Margin="0,0,5,0">
                                 <DockPanel>
@@ -343,8 +343,8 @@
                         </StackPanel>
                     </Expander>
                 </Border>
-                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
-                    <Expander Header="属性设置" Margin="10,5,10,5" Grid.Row="3" Padding="5,5,5,5" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="属性设置" Margin="10,5,10,5" Grid.Row="3" Padding="5,5,5,5">
                         <StackPanel Orientation="Horizontal">
                             <GroupBox Header="吸血鬼属性" Margin="10,0,10,0">
                                 <StackPanel>
@@ -512,7 +512,7 @@
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level2.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
                                                         </DockPanel>
                                                         <DockPanel>
-                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="城堡高度上限" Width="200" VerticalAlignment="Center"/>
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level2.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
                                                         </DockPanel>
                                                         <StackPanel>
@@ -539,7 +539,7 @@
 
                                                         </DockPanel>
                                                         <DockPanel>
-                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="城堡高度上限" Width="200" VerticalAlignment="Center"/>
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level3.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
 
                                                         </DockPanel>
@@ -560,7 +560,7 @@
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level4.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
                                                         </DockPanel>
                                                         <DockPanel>
-                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="城堡高度上限" Width="200" VerticalAlignment="Center"/>
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level4.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
                                                         </DockPanel>
                                                     </StackPanel>
@@ -580,7 +580,7 @@
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level5.BuildLimits, Mode=TwoWay}" SmallChange="1" ToolTip="未测试，应该是没用的，后果自负" Maximum="2" Minimum="0" SpinButtonPlacementMode="Compact"/>
                                                         </DockPanel>
                                                         <DockPanel>
-                                                            <TextBlock Text="Height Limit" Width="200" VerticalAlignment="Center"/>
+                                                            <TextBlock Text="城堡高度上限" Width="200" VerticalAlignment="Center"/>
                                                             <ui:NumberBox Value="{Binding CastleStatModifiers_Global.HeartLimits.Level5.HeightLimit, Mode=TwoWay}" SmallChange="1" ToolTip="限制可以建造的楼层数量(地面层也算作一层)，调高此数值可能会影响性能。" Maximum="6" Minimum="1" SpinButtonPlacementMode="Compact"/>
                                                         </DockPanel>
                                                     </StackPanel>
@@ -593,8 +593,8 @@
                         </StackPanel>
                     </Expander>
                 </Border>
-                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
-                    <Expander Header="游戏时间设置和玩家交互设置" Margin="10,5,10,5" Grid.Row="4" Padding="5,5,5,5" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="游戏时间设置和玩家交互设置" Margin="10,5,10,5" Grid.Row="4" Padding="5,5,5,5">
                         <Grid>
                             <StackPanel Orientation="Horizontal">
                                 <GroupBox Header="游戏时间设置" Margin="10,0,10,0">
@@ -734,8 +734,8 @@
                         </Grid>
                     </Expander>
                 </Border>
-                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
-                    <Expander Header="初始设置" Grid.Row="5" Margin="10,5,10,5" Padding="5,5,5,5" HorizontalAlignment="Left">
+                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                    <Expander Header="初始设置" Grid.Row="5" Margin="10,5,10,5" Padding="5,5,5,5">
                         <StackPanel Orientation="Horizontal">
                             <StackPanel>
                                 <TextBlock Text="初始装备" Margin="5,0,0,0"/>
@@ -758,10 +758,18 @@
                                     <ComboBoxItem Content="装备等级70的物资"/>
                                     <ComboBoxItem Content="装备等级80的物资"/>
                                 </ComboBox>
+                                <TextBlock Text="解锁科技"/>
+                                <DataGrid x:Name="ResearchData" AutoGenerateColumns="False" CanUserAddRows="False" Height="Auto" CanUserDeleteRows="False">
+                                    <DataGrid.Columns>
+                                        <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
+                                        <DataGridTextColumn Header="等级" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="261"/>
+                                        <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
+                                    </DataGrid.Columns>
+                                </DataGrid>
                             </StackPanel>
                             <StackPanel Margin="5,0,0,0">
                                 <TextBlock Text="解锁日志"/>
-                                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
                                     <DataGrid x:Name="AchievementsData" AutoGenerateColumns="False" CanUserAddRows="False" Height="200" CanUserDeleteRows="False" Margin="5,5,5,5">
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
@@ -773,7 +781,7 @@
                             </StackPanel>
                             <StackPanel Margin="5,0,0,0">
                                 <TextBlock Text="V型血单位设置"/>
-                                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
+                                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
                                     <DataGrid x:Name="VBloodData" AutoGenerateColumns="False" CanUserAddRows="False" Height="200" CanUserDeleteRows="False" Margin="5,5,5,5">
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="序号" Binding="{Binding UnitId, Mode=TwoWay}" Visibility="Hidden"/>
@@ -785,16 +793,7 @@
                                 </Border>
                             </StackPanel>
                             <StackPanel Margin="5,0,0,0">
-                                <TextBlock Text="解锁科技"/>
-                                <Border BorderBrush="LightSlateGray" BorderThickness="1" CornerRadius="6">
-                                    <DataGrid x:Name="ResearchData" AutoGenerateColumns="False" CanUserAddRows="False" Height="Auto" CanUserDeleteRows="False" Margin="5,5,5,5">
-                                        <DataGrid.Columns>
-                                            <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
-                                            <DataGridTextColumn Header="等级" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="100"/>
-                                            <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
-                                        </DataGrid.Columns>
-                                    </DataGrid>
-                                </Border>
+                                <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6"/>
                             </StackPanel>
                         </StackPanel>
                     </Expander>

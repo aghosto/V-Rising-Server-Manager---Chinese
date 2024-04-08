@@ -1,15 +1,15 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
 
-Console.WriteLine("Ready to download latest version.");
-Console.WriteLine("Press any key to start...");
+Console.WriteLine("准备下载最新版本。");
+Console.WriteLine("按任意键开始...");
 Console.ReadLine();
 
 Process[] vsmProcesses = Process.GetProcessesByName("VRisingServerManager");
 if (vsmProcesses.Length != 0)
 {
-    Console.WriteLine("An instance of 'VRisingServerManager' was found. Please exit VSM before updating.");
-    Console.WriteLine("Press any key to exit...");
+    Console.WriteLine("VRisingServerManager正在运行中，请在更新之前退出VSM。");
+    Console.WriteLine("按任意键退出...");
     Console.ReadKey();
     Environment.Exit(2);
 }
@@ -19,16 +19,16 @@ HttpClient httpClient = new();
 
 if (!File.Exists(workingDir + @"\VRisingServerManager.exe"))
 {
-    Console.WriteLine("Unable to find 'VRisingServermanager.exe' in root directory. Make sure the app is installed correctly.");
+    Console.WriteLine("在根目录中找不到‘VRisingServerManager.exe’。请确保应用程序已正确安装。");
     Console.ReadKey();
     Environment.Exit(2);
 }
 
-Console.WriteLine("Starting update of VSM.");
-Console.WriteLine("Downloading files...");
+Console.WriteLine("正在开始更新VSM。");
+Console.WriteLine("正在下载文件...");
 
 byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://github.com/Lacyway/V-Rising-Server-Manager/releases/latest/download/VSM.zip");
-Console.WriteLine("Done.");
+Console.WriteLine("下载成功。");
 
 if (Directory.Exists(workingDir + @"\temp"))
     Directory.Delete(workingDir + @"\temp", true);
@@ -39,7 +39,7 @@ await File.WriteAllBytesAsync(workingDir + @"\temp\VSM.zip", fileBytes);
 
 Console.WriteLine();
 
-Console.WriteLine("Creating backup of settings.");
+Console.WriteLine("正在创建设置的备份。");
 if (!Directory.Exists(workingDir + @"\Backups"))
     Directory.CreateDirectory(workingDir + @"\Backups");
 
@@ -50,7 +50,7 @@ Console.WriteLine();
 
 ZipFile.ExtractToDirectory(workingDir + @"\temp\VSM.zip", workingDir + @"\temp", true);
 
-Console.WriteLine("Copying new files...");
+Console.WriteLine("正在复制新文件...");
 string[] files = Directory.GetFiles(workingDir + @"\temp");
 
 foreach (string file in files)
@@ -67,8 +67,8 @@ if (Directory.Exists(workingDir + @"\temp"))
     Directory.Delete(workingDir + @"\temp", true);
 
 Console.WriteLine();
-Console.WriteLine(@"Update done. Backup of the VSMSettings can be found in the \Backups folder.");
-Console.WriteLine("Press any key to finish...");
+Console.WriteLine(@"更新完成。VMS设置的备份可以在\Backups文件夹中找到。");
+Console.WriteLine("按任意键即可完成...");
 Console.ReadKey();
 
 Process.Start("VRisingServerManager.exe");
