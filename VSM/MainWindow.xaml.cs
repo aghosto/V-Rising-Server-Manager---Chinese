@@ -180,8 +180,8 @@ namespace VRisingServerManager
             }
 
             string workingDir = Directory.GetCurrentDirectory();
-            LogToConsole("正在更新游戏服务器：" + server.Name + "在完成前请勿关闭窗口或对软件进行其他操作。");
-            LogToConsole("若显示更新成功但点击启动失败请到软件设置中把“显示SteamCMD窗口”选项打开");
+            LogToConsole("正在更新游戏服务器：" + server.Name + "，在完成前请勿关闭窗口或对软件进行其他操作。");
+            LogToConsole("若显示更新成功但点击启动失败请到软件设置中把 “显示SteamCMD窗口” 选项打开");
             string[] installScript = { "force_install_dir \"" + server.Path + "\"", "login anonymous", (VsmSettings.AppSettings.VerifyUpdates) ? "app_update 1829350 validate" : "app_update 1829350", "quit" };
             if (File.Exists(server.Path + @"\steamcmd.txt"))
                 File.Delete(server.Path + @"\steamcmd.txt");
