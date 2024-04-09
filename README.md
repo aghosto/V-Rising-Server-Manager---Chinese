@@ -49,18 +49,18 @@
 
 更新完成后点击上方[启动服务器]进行启动，等待30秒后点击停止服务器，此时游戏服务器的各种默认配置文件都已经有了。
 
-点击[服务器文件夹]，即可打开选定服务器的文件夹，其他东西都不用管，我们只需要看[SaveData]和[VRisingSever_Data]这两个文件夹。
+点击[服务器文件夹]，即可打开选定服务器的文件夹，其他东西都不用管，我们只需要看`SaveData`和`VRisingSever_Data`这两个文件夹。
 
-打开文件夹[VRisingServer_Data\StreamingAssets\Settings]，这里的两个文件就是默认的服务器连接配置文件和游戏配置文件，不要更改，复制两个文件到[SaveData\Settings]里。
+打开文件夹`VRisingServer_Data\StreamingAssets\Settings`，这里的两个文件就是默认的服务器连接配置文件和游戏配置文件，不要更改，复制两个文件到`SaveData\Settings`里。
 
-此时[SaveData\Settings]里有四个文件：[adminlist.txt]、[banlist.txt]、[SeverGameSettings.json]、[SeverHostSettings.json]，要是前面两个文本文件没有可以自己创建一下，内容留空。
+此时[SaveData\Settings]里有四个文件：`adminlist.txt`、`banlist.txt`、`SeverGameSettings.json`、`SeverHostSettings.json`，要是前面两个文本文件没有可以自己创建一下，内容留空。
 
 返回软件，为了方便，我们打开设置，在主要设置中把[自动加载设置文件]的选项勾选上，保存，此时我们点击[游戏属性配置编辑器]和[服务器连接配置编辑器]就会自动加载刚刚保存到[SeverData]的文件。
 
 如果没有进行复制粘那一步则会出现加载错误提示。
 
 ## 服务器连接配置编辑
-点开[服务器连接配置编辑器]，此处服务器名称和存档名称不能改，服务器名称需要到'SaveData\SeverHostSettings.json'里面改，把引号里的[夜族崛起服务器]改为你想要的名字，存档名称最好不要改除非你知道你在干什么。
+点开[服务器连接配置编辑器]，此处服务器名称和存档名称不能改，服务器名称需要到`SaveData\SeverHostSettings.json`里面改，把引号里的`V Rising Server`改为你想要的名字，存档名称最好不要改除非你知道你在干什么。
 
 回到软件，在这里可以设置你对服务器连接的所有配置，可以把光标悬停在每个框里查看每个设置的功能。
 
@@ -102,7 +102,7 @@ Tips：最好用VS，不要VS Code，我被.NET 8.202搞崩溃了要
 - ModernWPF
 
 ## 图片
-这是原作者使用软件的一些截图
+### 这是原作者使用软件的一些截图
 <img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/mainwindow.png" width="400">
 <img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/adminmanager.png" width="200">
 <img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/rconconsole.png" width="400">
