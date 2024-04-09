@@ -60,7 +60,7 @@
 如果没有进行复制粘那一步则会出现加载错误提示。
 
 ## 服务器连接配置编辑
-点开[服务器连接配置编辑器]，此处服务器名称和存档名称不能改，服务器名称需要到[SaveData]下的[SeverHostSettings.json]里面改，把引号里的[夜族崛起服务器]改为你想要的名字，存档名称最好不要改除非你知道你在干什么。
+点开[服务器连接配置编辑器]，此处服务器名称和存档名称不能改，服务器名称需要到'SaveData\SeverHostSettings.json'里面改，把引号里的[夜族崛起服务器]改为你想要的名字，存档名称最好不要改除非你知道你在干什么。
 
 回到软件，在这里可以设置你对服务器连接的所有配置，可以把光标悬停在每个框里查看每个设置的功能。
 
@@ -86,14 +86,14 @@
 
 如果有多个云服务器，且对方设置完成，可以把RCON终端中的IP地址和端口还有密码都改为另外的服务器配置。
 
-也可以使用别的RCON软件进行远程控制，这里有个国内@zkhssb在Github的开源项目可以使用：https://github.com/zkhssb/NectarRCON
+也可以使用别的RCON软件进行远程控制，这里有个国内@zkhssb在Github的开源项目可以使用：[NectarRCON](https://github.com/zkhssb/NectarRCON)
 
 # 致开发者
 如果你想自己进行开发（自定义等操作），可以下载源码后在自己的电脑上配置并运行
 所需要的工具有：
 
-[.NET 6.0 SDK]：https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.28-windows-x64-installer
-[Visual Studio 22]：https://visualstudio.microsoft.com/zh-hans/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&cid=2030&passive=false
+[.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.28-windows-x64-installer)
+[Visual Studio 22](https://visualstudio.microsoft.com/zh-hans/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&cid=2030&passive=false)
 
 Tips：最好用VS，不要VS Code，我被.NET 8.202搞崩溃了要
 
