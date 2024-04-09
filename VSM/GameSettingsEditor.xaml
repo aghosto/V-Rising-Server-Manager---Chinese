@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="游戏设置编辑器" Height="800" Width="1227" MaxWidth="1500" Icon="Resources\EditDocument.png">
+        Title="游戏设置编辑器" Height="800" Width="1125" MaxWidth="1500" Icon="Resources\EditDocument.png">
 
     <Window.Resources>
         <controls:NumberBoxFormatter x:Key="DecimalFormatter"/>
@@ -19,7 +19,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Menu>
-            <MenuItem Header="文件 - 导入或保存">
+            <MenuItem Header="文件">
                 <MenuItem x:Name="FileMenuLoad" Header="导入" Click="FileMenuLoad_Click">
                     <MenuItem.Icon>
                         <ui:SymbolIcon Symbol="OpenFile"/>
@@ -153,7 +153,7 @@
                             <StackPanel Grid.Column="3" Margin="10,0,10,0">
                                 <GroupBox Header="挂机玩家裁决" Margin="10,0,10,0">
                                     <StackPanel>
-                                        <CheckBox Content="开启" IsChecked="{Binding InactivityKillEnabled, Mode=TwoWay}" ToolTip="非活跃(挂机)玩家将在设定时间后被裁决。"/>
+                                        <CheckBox Content="开启" IsChecked="{Binding InactivityKillEnabled, Mode=TwoWay}" ToolTip="非活跃(挂机)玩家将在设定时间后被裁决，注意，该裁决对断线玩家也有效，所以最好不要设定得太短。"/>
                                         <TextBlock Text="最短时间"/>
                                         <ui:NumberBox Value="{Binding InactivityKillTimeMin, Mode=TwoWay}" ToolTip="基于装备等级，非活跃玩家被裁决的最短计时时间，单位为分钟。" Minimum="1" Maximum="10081" SmallChange="10" SpinButtonPlacementMode="Compact"/>
                                         <TextBlock Text="最大时间"/>
@@ -164,7 +164,7 @@
                                         <ui:NumberBox Value="{Binding InactivityKillTimerMaxItemLevel, Mode=TwoWay}" IsEnabled="False" ToolTip="挂机裁决所作用的最大装等玩家，从1到该值。" ToolTipService.ShowOnDisabled="True"/>
                                     </StackPanel>
                                 </GroupBox>
-                                <GroupBox Header="断线裁决豁免" Margin="10,0,10,0">
+                                <GroupBox Header="断线裁决豁免" Margin="10,0,10,0" Height="155">
                                     <StackPanel>
                                         <CheckBox Content="开启" IsChecked="{Binding DisableDisconnectedDeadEnabled, Mode=TwoWay}" ToolTip="启用后断开连接的玩家将有一段裁决豁免的时间。"/>
                                         <TextBlock Text="时间"/>
@@ -758,21 +758,26 @@
                                     <ComboBoxItem Content="装备等级70的物资"/>
                                     <ComboBoxItem Content="装备等级80的物资"/>
                                 </ComboBox>
-                                <TextBlock Text="解锁科技"/>
-                                <DataGrid x:Name="ResearchData" AutoGenerateColumns="False" CanUserAddRows="False" Height="Auto" CanUserDeleteRows="False">
-                                    <DataGrid.Columns>
-                                        <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
-                                        <DataGridTextColumn Header="等级" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="261"/>
-                                        <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
-                                    </DataGrid.Columns>
-                                </DataGrid>
+                                <StackPanel>
+                                    <TextBlock Text="解锁科技"/>
+                                    <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
+                                        <DataGrid x:Name="ResearchData" AutoGenerateColumns="False" CanUserAddRows="False" Height="135" CanUserDeleteRows="False" Width="300" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                                            <DataGrid.Columns>
+                                                <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
+                                                <DataGridTextColumn Header="等级" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="200"/>
+                                                <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
+                                            </DataGrid.Columns>
+                                        </DataGrid>
+                                    </Border>
+                                </StackPanel>
                             </StackPanel>
                             <StackPanel Margin="5,0,0,0">
                                 <TextBlock Text="解锁日志"/>
                                 <Border BorderBrush="Black" BorderThickness="1" CornerRadius="6">
                                     <DataGrid x:Name="AchievementsData" AutoGenerateColumns="False" CanUserAddRows="False" Height="200" CanUserDeleteRows="False" Margin="5,5,5,5">
                                         <DataGrid.Columns>
-                                            <DataGridTextColumn Header="序号" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
+                                            <DataGridTextColumn Header="ID" Binding="{Binding ID, Mode=TwoWay}" Visibility="Hidden"/>
+                                            <DataGridTextColumn Header="序号" Binding="{Binding Count, Mode=TwoWay}" IsReadOnly="True"/>
                                             <DataGridTextColumn Header="名称" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="225"/>
                                             <DataGridCheckBoxColumn Header="解锁" Binding="{Binding Unlocked, Mode=TwoWay}"/>
                                         </DataGrid.Columns>
@@ -785,7 +790,7 @@
                                     <DataGrid x:Name="VBloodData" AutoGenerateColumns="False" CanUserAddRows="False" Height="200" CanUserDeleteRows="False" Margin="5,5,5,5">
                                         <DataGrid.Columns>
                                             <DataGridTextColumn Header="序号" Binding="{Binding UnitId, Mode=TwoWay}" Visibility="Hidden"/>
-                                            <DataGridTextColumn Header="名称" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="225"/>
+                                            <DataGridTextColumn Header="名称" Binding="{Binding Name, Mode=TwoWay}" IsReadOnly="True" Width="210"/>
                                             <DataGridTextColumn Header="等级" Binding="{Binding UnitLevel, Mode=TwoWay}"/>
                                             <DataGridCheckBoxColumn Header="解锁" Binding="{Binding DefaultUnlocked, Mode=TwoWay}"/>
                                         </DataGrid.Columns>

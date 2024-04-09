@@ -142,7 +142,7 @@
                                 </DockPanel>
                                 <StackPanel Grid.Column="0" Grid.Row="1">
 
-                                    <Button Margin="2" Click="StartServerButton_Click" ToolTip="Starts the game server." HorizontalAlignment="Stretch">
+                                    <Button Margin="2" Click="StartServerButton_Click" ToolTip="启动游戏服务器。" HorizontalAlignment="Stretch">
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
                                                 <Style.Triggers>
@@ -238,7 +238,7 @@
                                         <Button.Content>
                                             <DockPanel>
                                                 <Image Source="Resources\User.png" Stretch="None"/>
-                                                <TextBlock Text="GM管理"/>
+                                                <TextBlock Text="GM管理" ClipToBounds="False"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
@@ -256,13 +256,13 @@
                 <Button Margin="5,0,5,0" Padding="5" Click="GameSettingsEditor_Click" ToolTip="打开游戏设置编辑器。">
                     <DockPanel>
                         <Image Source="Resources\EditDocument.png" Margin="0,0,5,0"/>
-                        <TextBlock Text="游戏设置编辑器"/>
+                        <TextBlock Text="游戏属性配置编辑器"/>
                     </DockPanel>
                 </Button>
                 <Button Margin="5,0,5,0" Padding="5" Click="ServerSettingsEditorButton_Click" ToolTip="打开服务器设置编辑器。">
                     <DockPanel>
                         <Image Source="Resources\EditDocument.png" Margin="0,0,5,0"/>
-                        <TextBlock Text="服务器配置编辑器"/>
+                        <TextBlock Text="服务器连接配置编辑器"/>
                     </DockPanel>
                 </Button>
                 <Button Margin="5,0,5,0" Click="ManagerSettingsButton_Click" Padding="5" ToolTip="打开VSM软件设置。">

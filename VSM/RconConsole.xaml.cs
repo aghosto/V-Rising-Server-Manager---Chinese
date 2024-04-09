@@ -134,7 +134,7 @@ namespace VRisingServerManager
             {
                 case 0:
                     {
-                        CommandInfoTextbox.Text = "向连接到服务器的所有玩家发送消息。\n\n例如：大家好。";
+                        CommandInfoTextbox.Text = "向连接到服务器的所有玩家发送消息。\n\n例如：hello。（注意：只能发英文）";
                     }
                     break;
                 case 1:

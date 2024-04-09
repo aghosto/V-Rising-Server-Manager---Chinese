@@ -113,7 +113,7 @@
 
                             <GroupBox Header="RCON">
                                 <StackPanel>
-                                    <CheckBox Name="RCONCheck" Content="自动消息" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding RconServerSettings.Enabled}" ToolTip="是否启用自动RCON功能，例如在关闭服务器进行更新之前发送消息，要求使用正确的设置填写下面的字段。"/>
+                                    <CheckBox Name="RCONCheck" Content="自动消息" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding RconServerSettings.Enabled}" ToolTip="是否启用自动RCON功能，例如在关闭服务器进行更新之前发送消息，要求使用正确的设置填写下面的字段。（似乎未完善）"/>
 
                                     <DockPanel Margin="0,5,0,0">
                                         <TextBlock Text="IP地址：" Width="150" VerticalAlignment="Center"/>

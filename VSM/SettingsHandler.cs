@@ -357,6 +357,7 @@ namespace VRisingServerManager
     {
         [JsonIgnore]
         public string? Name { get; set; }
+        public int Count { get; set; }
         public int ID { get; set; }
         [JsonIgnore]
         public bool Unlocked { get; set; }

@@ -33,8 +33,8 @@
             <GroupBox Header="指令">
                 <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
                     <ListBox x:Name="CommandList" SelectionChanged="CommandList_SelectionChanged">
-                        <ListBoxItem Content="公告"/>
-                        <ListBoxItem Content="重启公告"/>
+                        <ListBoxItem Content="announce" ToolTip="发送公告，只能发英文。"/>
+                        <ListBoxItem Content="announcerestart" ToolTip="发送重启公告，只能发数字。"/>
                     </ListBox>
                     <Border BorderBrush="LightSlateGray" BorderThickness="1">
                         <TextBlock x:Name="CommandInfoTextbox" TextWrapping="Wrap" Width="400"/>
@@ -46,7 +46,7 @@
             <DockPanel>
                 <TextBlock Text="参数：" Width="80" VerticalAlignment="Center"/>
                 <TextBox x:Name="ParamaterTextbox" Width="625" IsEnabled="False"/>
-                <Button x:Name="SendCommandButton" Content="Send" Margin="5,0,0,0" Click="SendCommandButton_Click" IsEnabled="False"/>
+                <Button x:Name="SendCommandButton" Content="发送" Margin="5,0,0,0" Click="SendCommandButton_Click" IsEnabled="False"/>
             </DockPanel>
         </StackPanel>
         <RichTextBox x:Name="RconConsoleOutput" Foreground="Lime" Background="Black" IsReadOnly="True" Height="210"/>
