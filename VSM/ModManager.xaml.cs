@@ -173,8 +173,8 @@ namespace VRisingServerManager
                             {
                                 Owner = this,
                                 Title = "BepInEx - 安装",
-                                Content = $"BepInEx安装在 {server.Name}.",
-                                CloseButtonText = "Ok",
+                                Content = $"BepInEx 已安装于 {server.Name}.",
+                                CloseButtonText = "好的",
                                 DefaultButton = ContentDialogButton.Close
                             }.ShowAsync();
 
@@ -234,7 +234,7 @@ namespace VRisingServerManager
                     {
                         Owner = this,
                         Title = "BepInEx - 安装",
-                        Content = $"BepInEx安装在 {server.Name}.",
+                        Content = $"BepInEx 已安装于 {server.Name}。",
                         CloseButtonText = "好的",
                         DefaultButton = ContentDialogButton.Close
                     }.ShowAsync();
@@ -328,13 +328,13 @@ namespace VRisingServerManager
         {
             if (DownloadInProgress)
             {
-                MessageBox.Show("Another download is in progress.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show("已有另一个下载程序正在运行", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
             DownloadInProgress = true;
             DownloadProgressBar.Visibility = Visibility.Visible;
-            DownloadProgressText.Text = $"Downloading: {mod.Full_Name}";
+            DownloadProgressText.Text = $"正在下载：{mod.Full_Name}";
 
             int modIndex = Mods.ModList.IndexOf(mod);
             string workingDir = Directory.GetCurrentDirectory();

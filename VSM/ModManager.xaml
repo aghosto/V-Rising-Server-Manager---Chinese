@@ -10,8 +10,8 @@
         Title="Mod管理器" Height="710" Width="1100" ResizeMode="NoResize">
     <StackPanel Orientation="Vertical">
         <ui:CommandBar>
-            <ui:AppBarButton Label="刷新Mod列表" Icon="Refresh" Click="RefreshModlistButton_Click" ToolTip="Refreshes the modlist."/>
-            <ui:AppBarButton Label="安装BepInEx" Icon="Add" Click="InstallBepInExButton_Click" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}" ToolTip="Install BepInEx on the selected server. Required for mods to run.">
+            <ui:AppBarButton Label="刷新Mod列表" Icon="Refresh" Click="RefreshModlistButton_Click" ToolTip="刷新Mods列表。"/>
+            <ui:AppBarButton Label="安装BepInEx" Icon="Add" Click="InstallBepInExButton_Click" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}" ToolTip="在选定的服务器上安装BepInEx，这是Mods运行所必需的。">
                 <ui:AppBarButton.Style>
                     <Style TargetType="ui:AppBarButton">
                         <Style.Triggers>
@@ -23,7 +23,7 @@
                 </ui:AppBarButton.Style>
             </ui:AppBarButton>
 
-            <ui:AppBarButton Label="卸载BepInEx" Icon="Remove" Click="UninstallBepInExButton_Click" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}" ToolTip="Uninstall BepInEx from from the selected server.">
+            <ui:AppBarButton Label="卸载BepInEx" Icon="Remove" Click="UninstallBepInExButton_Click" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}" ToolTip="从选定的服务器中卸载BepInEx。">
                 <ui:AppBarButton.Style>
                     <Style TargetType="ui:AppBarButton">
                         <Style.Triggers>
@@ -38,16 +38,16 @@
             <ui:CommandBar.Content>
                 <DockPanel>
                     <TextBlock Text="服务器：" VerticalAlignment="Center" Padding="10,0,0,0"/>
-                    <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="Name" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="Select a server to manage."/>
+                    <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="Name" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
                     <TextBlock VerticalAlignment="Center" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding BepInExInstalled}" Value="True">
-                                        <Setter Property="Text" Value="BepInEx: Installed, Version: "/>
+                                        <Setter Property="Text" Value="BepInEx：已安装，版本："/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding BepInExInstalled}" Value="False">
-                                        <Setter Property="Text" Value="BepInEx: Not Installed"/>
+                                        <Setter Property="Text" Value="BepInEx：未安装"/>
                                     </DataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -76,8 +76,8 @@
                 <DataGrid.Columns>
                     <DataGridTextColumn Header="Mod名称" Width="*" Binding="{Binding Name}" IsReadOnly="True"/>
                     <DataGridTextColumn Header="最新版本" Binding="{Binding Versions[0].Version_Number}" IsReadOnly="True"/>
-                    <DataGridCheckBoxColumn Header="是否已下载" Binding="{Binding Downloaded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridCheckBoxColumn Header="是否已安装" Binding="{Binding Installed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridCheckBoxColumn Header="已下载" Binding="{Binding Downloaded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    <DataGridCheckBoxColumn Header="已安装" Binding="{Binding Installed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                 </DataGrid.Columns>
             </DataGrid>
 
