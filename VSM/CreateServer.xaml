@@ -17,7 +17,7 @@
             <DockPanel>
                 <TextBlock Text="服务器存档路径：" Width="90" VerticalAlignment="Center"/>
                 <TextBox x:Name="ServerPathText" Text="{Binding Path, Mode=TwoWay}" Margin="5" IsReadOnly="True" Width="625" ToolTip="安装服务器及其文件的路径。"/>
-                <Button x:Name="ServerPathButton" DockPanel.Dock="Right" Content="选择路径" Margin="5" Click="ServerPathButton_Click" ToolTip="Choose a directory path."/>
+                <Button x:Name="ServerPathButton" DockPanel.Dock="Right" Content="选择路径" Margin="5" Click="ServerPathButton_Click" ToolTip="浏览服务器文件存放的路径。"/>
             </DockPanel>
             <Button Content="创建" HorizontalAlignment="Center" Width="80" Click="CreateButton_Click"/>
         </StackPanel>
