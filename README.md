@@ -103,6 +103,8 @@ Tips：最好用VS，不要VS Code，我被.NET 8.202搞崩溃了要
 
 ## 图片
 ### 实机使用情况图片
+![软件主界面](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/assets/43967672/a42a43eb-ce55-4bfd-9d74-f73c8d254c00)
+
 <img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/mainwindow.png" width="400">
 <img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/adminmanager.png" width="200">
 <img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/rconconsole.png" width="400">
