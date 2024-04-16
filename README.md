@@ -104,15 +104,9 @@ Tips：最好用VS，不要VS Code，我被.NET 8.202搞崩溃了要
 ## 图片
 ### 实机使用情况图片
 <img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/软件主界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/创建服务器界面.png" width="200">
+<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/创建服务器界面.png" width="400">
 <img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/GM管理账号界面.png" width="200">
 <img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/服务器连接配置界面.png" width="200">
 <img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/游戏属性配置界面.png" width="400">
 <img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/Mod管理界面.png" width="400">
 <img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/远程控制管理界面.png" width="400">
-
-
-<img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/adminmanager.png" width="200">
-<img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/rconconsole.png" width="400">
-<img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/gamesettingseditor.png" width="400">
-<img src="https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/Resources/serversettingseditor.png" width="200">
