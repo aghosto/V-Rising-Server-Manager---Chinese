@@ -117,7 +117,7 @@ namespace VRisingServerManager.RCON
         /// <param name="port">The port to connect to</param>
         public void Connect(string hostname, int port)
         {
-            Log(string.Format("Connecting to {0}:{1}", hostname, port));
+            Log(string.Format("正在连接 {0}:{1}", hostname, port));
             try
             {
                 IAsyncResult asyncResult = null;
@@ -134,13 +134,13 @@ namespace VRisingServerManager.RCON
                     }
                     catch (Exception)
                     {
-                        Log("Unknown Exception");
+                        Log("未知错误。");
                     }
                 }
 
                 if (asyncResult == null)
                 {
-                    Log("Async connect failed!");
+                    Log("异步连接失败！");
                     return;
                 }
 
@@ -170,7 +170,7 @@ namespace VRisingServerManager.RCON
             _buffer = new byte[MaxAllowedPacketSize];
             _ns.BeginRead(_buffer, 0, MaxAllowedPacketSize, OnPacket, null);
 
-            Log("Connected.");
+            Log("已连接");
             if (OnConnectionStateChange != null)
                 OnConnectionStateChange(ConnectionStateChange.Connected);
         }
@@ -327,12 +327,12 @@ namespace VRisingServerManager.RCON
                     {
                         if (packet.Id == -1)
                         {
-                            Log("Authentication failed.");
+                            Log("验证失败。");
                             Authenticated = false;
                         }
                         else
                         {
-                            Log("Authentication success.");
+                            Log("验证成功。");
                             Authenticated = true;
                         }
 
@@ -347,7 +347,7 @@ namespace VRisingServerManager.RCON
                     packet.Type == RemoteConPacket.PacketType.ResponseValue)
                     _requestedCommands[packet.Id](packet.Payload);
                 else
-                    Log("Got packet with invalid id " + packet.Id);
+                    Log("带有无效ID的数据包 " + packet.Id);
             }
             catch (Exception e)
             {
