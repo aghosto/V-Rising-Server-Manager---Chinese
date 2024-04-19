@@ -95,7 +95,7 @@
 [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.28-windows-x64-installer)
 [Visual Studio 22](https://visualstudio.microsoft.com/zh-hans/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&cid=2030&passive=false)
 
-Tips：最好用VS，不要VS Code，我被.NET 8.202搞崩溃了要
+Tips：最好用VS，不要用VS Code，我被相对来说配置环境更方便，编译调试也更好用。
 
 所用库：
 - source-rcon-server
