@@ -239,7 +239,7 @@ namespace VRisingServerManager
     public class Rcon
     {
         public bool Enabled { get; set; } = false;
-        public string Password { get; set; } = "somepassword";
+        public string Password { get; set; } = "输入密码";
         public int Port { get; set; } = 25575;
     }
 

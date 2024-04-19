@@ -60,7 +60,7 @@ namespace VRisingServerManager
 
         private async void LookForUpdate()
         {
-            string latestVersion = await HttpClient.GetStringAsync("https://raw.githubusercontent.com/Lacyway/V-Rising-Server-Manager/master/VERSION");
+            string latestVersion = await HttpClient.GetStringAsync("https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/VERSION");
             latestVersion = latestVersion.Trim();
 
             if (latestVersion != VsmSettings.AppSettings.Version)

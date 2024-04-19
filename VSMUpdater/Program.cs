@@ -27,7 +27,7 @@ if (!File.Exists(workingDir + @"\VRisingServerManager.exe"))
 Console.WriteLine("正在开始更新VSM。");
 Console.WriteLine("正在下载文件...");
 
-byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://github.com/Lacyway/V-Rising-Server-Manager/releases/latest/download/VSM.zip");
+byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
 Console.WriteLine("下载成功。");
 
 if (Directory.Exists(workingDir + @"\temp"))
