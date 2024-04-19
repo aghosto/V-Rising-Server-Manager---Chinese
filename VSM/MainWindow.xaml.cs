@@ -65,7 +65,7 @@ namespace VRisingServerManager
 
             if (latestVersion != VsmSettings.AppSettings.Version)
             {
-                if (MessageBox.Show($"有新版本可用于下载，需要自动更新吗？\r\r确认：{VsmSettings.AppSettings.Version}\r以后再说：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show($"有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     Process.Start("VSMUpdater.exe");
                     Application.Current.MainWindow.Close();

@@ -2,8 +2,8 @@
 using System.IO.Compression;
 
 Console.WriteLine("准备下载最新版本。");
-Console.WriteLine("按任意键开始...");
-Console.ReadLine();
+// Console.WriteLine("按任意键开始...");
+// Console.ReadLine();
 
 Process[] vsmProcesses = Process.GetProcessesByName("VRisingServerManager");
 if (vsmProcesses.Length != 0)
@@ -68,7 +68,7 @@ if (Directory.Exists(workingDir + @"\temp"))
 
 Console.WriteLine();
 Console.WriteLine(@"更新完成。VMS设置的备份可以在\Backups文件夹中找到。");
-Console.WriteLine("按任意键即可完成...");
+Console.WriteLine("按任意键关闭窗口并启动软件...");
 Console.ReadKey();
 
 Process.Start("VRisingServerManager.exe");
