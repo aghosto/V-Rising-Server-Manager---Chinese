@@ -2,10 +2,10 @@
 夜族崛起服务端管理器(VSM) - 简中汉化版
 ## 作者 aGHOSToZero
 
-* [[软件信息]]
+* [软件信息](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF)
 * [[使用说明]]
-* [[下载与安装]]
-  * [[使用]]
+* [下载与安装](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85)
+  * [[说明]]
     * [[首次使用]]
     * [[服务器连接配置编辑]]
     * [[游戏属性设置编辑]]
@@ -22,7 +22,13 @@
 原项目地址：https://github.com/Lacyway/V-Rising-Server-Manager
 
 
-# 特别说明
+# 说明
+
+## 使用说明
+运行软件所需要的工具：
+[.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
+
+## 特别说明
 本软件为原项目的个人汉化，原意旨在方便自己开服和管理，感觉软件界面和管理实在不错，所以也发布上来。
 
 已经把用户界面能看到的几乎所有叙述文本都翻译为较为容易理解的简中文本，个人精力有限，或许会有遗漏。
@@ -33,12 +39,7 @@
 
 所以有C#开发经验的不妨下载源码尝试下自定义自己的服务端管理器。
 
-
-## 使用说明
-运行软件所需要的工具：
-[.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
-
-## 下载与安装
+# 下载与安装
 下载项目最近一次更新的文件
 
 中文版：https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases
