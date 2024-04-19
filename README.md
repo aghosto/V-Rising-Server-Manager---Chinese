@@ -105,7 +105,7 @@
 
 如果有多个云服务器，且对方设置完成，可以把RCON终端中的IP地址和端口还有密码都改为另外的服务器配置。
 
-也可以使用别的RCON软件进行远程控制，这里有个国内@zkhssb在Github的开源项目可以使用：[NectarRCON](https://github.com/zkhssb/NectarRCON)
+也可以使用别的RCON软件进行远程控制，这里有个国内[@zkhssb](https://github.com/zkhssb)在Github的开源项目可以使用：[NectarRCON](https://github.com/zkhssb/NectarRCON)
 
 # 致开发者
 如果你想自己进行开发（自定义等操作），可以下载源码后在自己的电脑上配置并运行
