@@ -74,3 +74,5 @@ Console.ReadKey();
 Process.Start("VRisingServerManager.exe");
 
 Environment.Exit(0);
+
+//测试增加注释
