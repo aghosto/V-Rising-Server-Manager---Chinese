@@ -3,18 +3,19 @@
 ## 作者 aGHOSToZero
 
 * [软件信息](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF)
-* [[使用说明]]
+* [[说明]]
+  * [使用说明]
+  * [特别声明]
 * [下载与安装](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85)
-  * [[说明]]
-    * [[首次使用]]
-    * [[服务器连接配置编辑]]
-    * [[游戏属性设置编辑]]
-    * [[远程控制(RCON)]]
-* [[致开发者]]
-* [[图片]]
-  * [[实机使用情况图片]]
+  * [首次使用]
+  * [服务器连接配置编辑]
+  * [游戏属性设置编辑]
+  * [远程控制(RCON)]
+* [致开发者]
+* [图片]
+  * [实机使用情况图片]
 
-## 软件信息
+# 软件信息
 站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，仅适用于Windows）。
 
 本项目地址：https://github.com/aghosto/V-Rising-Server-Manager---Chinese
@@ -40,16 +41,17 @@
 所以有C#开发经验的不妨下载源码尝试下自定义自己的服务端管理器。
 
 # 下载与安装
+## 下载
 下载项目最近一次更新的文件
 
-中文版：https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases
+中文版：https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest
 
-原版：  https://github.com/Lacyway/V-Rising-Server-Manager/releases
+原版：  https://github.com/Lacyway/V-Rising-Server-Manager/releases/latest
 
 解压缩下载到的文件到你想安装服务器的文件夹，打开解压缩到的文件夹，双击V Rising Server Manager.exe即可启动软件。
 
 
-## 使用
+## 安装
 ### 第一次使用
 此处【第一次使用】说的是：
 1. 没有使用过SteamCMD下载任何服务器。
