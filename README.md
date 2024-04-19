@@ -3,17 +3,20 @@
 ## 作者 aGHOSToZero
 
 * [软件信息](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF)
-* [[说明]]
-  * [使用说明]
-  * [特别声明]
+* [说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%AF%B4%E6%98%8E)
+  * [使用说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
+  * [特别声明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E7%89%B9%E5%88%AB%E8%AF%B4%E6%98%8E)
 * [下载与安装](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85)
-  * [首次使用]
-  * [服务器连接配置编辑]
-  * [游戏属性设置编辑]
-  * [远程控制(RCON)]
-* [致开发者]
-* [图片]
-  * [实机使用情况图片]
+  * [下载](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%B8%8B%E8%BD%BD)
+  * [安装](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%AE%89%E8%A3%85)
+  * [首次使用](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8)
+  * [服务器连接配置编辑](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9E%E6%8E%A5%E9%85%8D%E7%BD%AE%E7%BC%96%E8%BE%91)
+  * [游戏属性设置编辑](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E6%B8%B8%E6%88%8F%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E7%BC%96%E8%BE%91)
+  * [GM账号管理](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%B8%B8%E6%88%8F%E7%AE%A1%E7%90%86%E5%91%98gm%E8%AE%BE%E7%BD%AE)
+  * [远程控制(RCON)](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6rcon)
+* [致开发者](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%87%B4%E5%BC%80%E5%8F%91%E8%80%85)
+* [图片](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%9B%BE%E7%89%87)
+  * [实机使用情况图片](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%AE%9E%E6%9C%BA%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E5%9B%BE%E7%89%87)
 
 # 软件信息
 站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，仅适用于Windows）。
@@ -28,6 +31,7 @@
 ## 使用说明
 运行软件所需要的工具：
 [.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
+本文仅做简单的软件介绍，详细教程请跳转[Wiki](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/wiki/%E9%A6%96%E9%A1%B5)查看。
 
 ## 特别说明
 本软件为原项目的个人汉化，原意旨在方便自己开服和管理，感觉软件界面和管理实在不错，所以也发布上来。
@@ -52,10 +56,10 @@
 
 
 ## 安装
-### 第一次使用
-此处【第一次使用】说的是：
-1. 没有使用过SteamCMD下载任何服务器。
-2. 没有使用过任何方法开过VRising服务器。
+### 首次使用
+此处*首次使用*说的是：
+* 没有使用过SteamCMD下载任何服务器。
+* 没有使用过任何方法开过VRising服务器。
 
 第一次使用会弹出创建服务器的窗口（如未弹出则点击上方`添加服务器`选项），输入你想在管理端显示的服务器名称（该名称仅在管理端显示，服务器默认名字为【V Rising Server】）。
 
