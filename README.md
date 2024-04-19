@@ -32,7 +32,7 @@
 运行软件所需要的工具：
 [.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
 
-本文仅做简单的软件介绍，详细教程请跳转[Wiki](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/wiki/%E9%A6%96%E9%A1%B5)查看。
+**本文仅做简单的软件介绍，详细教程请跳转[Wiki](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/wiki/%E9%A6%96%E9%A1%B5)查看。**
 
 ## 特别说明
 本软件为原项目的个人汉化，原意旨在方便自己开服和管理，感觉软件界面和管理实在不错，所以也发布上来。
