@@ -4,7 +4,7 @@
 
 
 ## 软件信息
-站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，且仅Windows）。
+站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，仅适用于Windows）。
 
 本项目地址：https://github.com/aghosto/V-Rising-Server-Manager---Chinese
 
