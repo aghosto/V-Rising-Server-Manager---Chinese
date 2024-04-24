@@ -32,6 +32,9 @@
 运行软件所需要的工具：
 [.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
 
+本项目仅供Python爱好者学习使用, 若您基于本项目进行商业行为, 您将承担所有的法律责任, 作者与其他贡献者将不承担任何责任。本项目的所有API均来源于公开网络, 本项目无任何破解、盗版等行为。
+This project is for Python enthusiasts to learn and use. If you conduct business behavior based on this project, you will bear all legal responsibilities, and the author and other contributors will not bear any responsibility. All APIs in this project are derived from the open network, and this project has no cracking or pirated behaviors.
+
 **本文仅做简单的软件介绍，详细教程请跳转[Wiki](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/wiki/%E9%A6%96%E9%A1%B5)查看。**
 
 ## 特别说明
