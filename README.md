@@ -130,10 +130,10 @@ Tips：最好用VS，不要用VS Code，相对来说配置环境更方便，编�
 
 # 图片
 ## 实机使用情况图片
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/软件主界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/创建服务器界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/GM管理账号界面.png" width="200">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/服务器连接配置界面.png" width="200">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/游戏属性配置界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/Mod管理界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/远程控制管理界面.png" width="400">
+<img src=Resources/软件主界面.png width="400">
+<img src=Resources/创建服务器界面.png width="400">
+<img src=Resources/GM管理账号界面.png width="200">
+<img src=Resources/服务器连接配置界面.png width="200">
+<img src=Resources/游戏属性配置界面.png width="400">
+<img src=Resources/Mod管理界面.png width="400">
+<img src=Resources/远程控制管理界面.png width="400">
