@@ -56,7 +56,7 @@ All APIs in this project are derived from the open network, and this project has
 
 已经把用户界面能看到的几乎所有叙述文本都翻译为较为容易理解的简中文本，个人精力有限，或许会有遗漏。
 
-如在使用中有出现问题（翻译遗漏、错误、软件bug等）可以提issue给我，“有幸”的话我看到会去解决一下（很少上），也可直接QQ联系我1812301343。
+如在使用中有出现问题（翻译遗漏、错误、软件bug等）可以提issue给我，“有幸”的话我看到会去解决一下（很少上），也可直接QQ联系我`1812301343`。
 
 本项目翻译纯是自己闲的，原意就是方便自己，所以相关的比如C#也是在翻译途中稍微学了下，实际上并不熟练，只能处理一些比较小的问题。
 
@@ -131,7 +131,7 @@ All APIs in this project are derived from the open network, and this project has
 [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.28-windows-x64-installer)
 [Visual Studio 22](https://visualstudio.microsoft.com/zh-hans/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&cid=2030&passive=false)
 
-Tips：最好用VS，不要用VS Code，相对来说配置环境更方便，编译调试也更好用。
+*Tips：最好用VS，不要用VS Code，相对来说配置环境更方便，编译调试也更好用。*
 
 所用库：
 - source-rcon-server
