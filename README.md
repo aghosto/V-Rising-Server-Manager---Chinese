@@ -1,5 +1,14 @@
-# V-Rising-Server-Manager---Chinese
-夜族崛起服务端管理器(VSM) - 简中汉化版
+<div align="center">
+ 
+# 夜族崛起服务端管理器(VSM) - 简中汉化版
+
+![GitHub last commit](https://img.shields.io/github/last-commit/aghosto/V-Rising-Server-Manager---Chinese?logo=github)
+[![Release](https://img.shields.io/github/v/release/aghosto/V-Rising-Server-Manager---Chinese)](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+![github stars](https://img.shields.io/github/stars/aghosto/V-Rising-Server-Manager---Chinese?style=social)
+
+</div>
+
 ## 作者 aGHOSToZero
 
 * [软件信息](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF)
