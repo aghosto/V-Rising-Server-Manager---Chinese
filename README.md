@@ -1,6 +1,13 @@
-# V-Rising-Server-Manager---Chinese
-夜族崛起服务端管理器(VSM) - 简中汉化版
-## 作者 aGHOSToZero
+<div align="center">
+ 
+# <img src = "VSM/Resources/logo.ico" width = "26">夜族崛起服务端管理器(VSM) - 简中汉化版
+
+![GitHub last commit](https://img.shields.io/github/last-commit/aghosto/V-Rising-Server-Manager---Chinese?logo=github)
+[![Release](https://img.shields.io/github/v/release/aghosto/V-Rising-Server-Manager---Chinese)](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases)
+[![MIT license](https://img.shields.io/badge/license-MIT-brightgreen.svg)](https://opensource.org/licenses/MIT)
+![github stars](https://img.shields.io/github/stars/aghosto/V-Rising-Server-Manager---Chinese?style=social)
+
+</div>
 
 * [软件信息](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF)
 * [说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%AF%B4%E6%98%8E)
@@ -32,6 +39,14 @@
 运行软件所需要的工具：
 [.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
 
+本项目仅供Python爱好者学习使用, 若您基于本项目进行商业行为, 您将承担所有的法律责任, 作者与其他贡献者将不承担任何责任。
+
+本项目的所有API均来源于公开网络, 本项目无任何破解、盗版等行为。
+
+This project is for Python enthusiasts to learn and use. If you conduct business behavior based on this project, you will bear all legal responsibilities, and the author and other contributors will not bear any responsibility. 
+
+All APIs in this project are derived from the open network, and this project has no cracking or pirated behaviors.
+
 **本文仅做简单的软件介绍，详细教程请跳转[Wiki](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/wiki/%E9%A6%96%E9%A1%B5)查看。**
 
 ## 特别说明
@@ -39,7 +54,7 @@
 
 已经把用户界面能看到的几乎所有叙述文本都翻译为较为容易理解的简中文本，个人精力有限，或许会有遗漏。
 
-如在使用中有出现问题（翻译遗漏、错误、软件bug等）可以提issue给我，“有幸”的话我看到会去解决一下（很少上），也可直接QQ联系我1812301343。
+如在使用中有出现问题（翻译遗漏、错误、软件bug等）可以提issue给我，“有幸”的话我看到会去解决一下（很少上），也可直接QQ联系我`1812301343`。
 
 本项目翻译纯是自己闲的，原意就是方便自己，所以相关的比如C#也是在翻译途中稍微学了下，实际上并不熟练，只能处理一些比较小的问题。
 
@@ -114,7 +129,7 @@
 [.NET 6.0 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-6.0.28-windows-x64-installer)
 [Visual Studio 22](https://visualstudio.microsoft.com/zh-hans/thank-you-downloading-visual-studio/?sku=Community&channel=Release&version=VS2022&source=VSLandingPage&cid=2030&passive=false)
 
-Tips：最好用VS，不要用VS Code，我被相对来说配置环境更方便，编译调试也更好用。
+*Tips：最好用VS，不要用VS Code，相对来说配置环境更方便，编译调试也更好用。*
 
 所用库：
 - source-rcon-server
@@ -122,10 +137,10 @@ Tips：最好用VS，不要用VS Code，我被相对来说配置环境更方便�
 
 # 图片
 ## 实机使用情况图片
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/软件主界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/创建服务器界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/GM管理账号界面.png" width="200">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/服务器连接配置界面.png" width="200">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/游戏属性配置界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/Mod管理界面.png" width="400">
-<img src="https://raw.githubusercontent.com/aghosto/V-Rising-Server-Manager---Chinese/master/Resources/远程控制管理界面.png" width="400">
+<img src=Resources/软件主界面.png width="400">
+<img src=Resources/创建服务器界面.png width="400">
+<img src=Resources/GM管理账号界面.png width="200">
+<img src=Resources/服务器连接配置界面.png width="200">
+<img src=Resources/游戏属性配置界面.png width="400">
+<img src=Resources/Mod管理界面.png width="400">
+<img src=Resources/远程控制管理界面.png width="400">
