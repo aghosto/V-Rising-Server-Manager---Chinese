@@ -65,7 +65,7 @@ namespace VRisingServerManager
 
             if (latestVersion != VsmSettings.AppSettings.Version)
             {
-                if (MessageBox.Show($"有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 {
                     Process.Start("VSMUpdater.exe");
                     Application.Current.MainWindow.Close();
@@ -439,7 +439,19 @@ namespace VRisingServerManager
             string json = await HttpClient.GetStringAsync("https://api.steamcmd.net/v1/info/1829350");
             JsonNode jsonNode = JsonNode.Parse(json);
 
-            var version = jsonNode!["data"]["1829350"]["depots"]["branches"]["public"]["timeupdated"]!.ToString();
+            var version = jsonNode!["data"]["1829350"]["depots"]["branches"]["beta"]["timeupdated"]!.ToString();
+
+            if (version == VsmSettings.AppSettings.LastUpdateTimeUNIX)
+            {
+                VsmSettings.AppSettings.LastUpdateTimeUNIX = version;
+                foundUpdate = false;
+                if (VsmSettings.AppSettings.LastUpdateTimeUNIX != "")
+                    VsmSettings.AppSettings.LastUpdateTime = "上一次在Steam更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
+
+                MainSettings.Save(VsmSettings);
+                LogToConsole("当前游戏服务器已是最新版本。");
+                return foundUpdate;
+            }
 
             if (version != VsmSettings.AppSettings.LastUpdateTimeUNIX)
             {

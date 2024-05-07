@@ -25,7 +25,7 @@
                                 <CheckBox Content="自动更新服务器" IsChecked="{Binding AppSettings.AutoUpdate, Mode=TwoWay}" ToolTip="VSM是否应自动查找游戏服务器的更新。"/>
                                 <DockPanel Width="140" HorizontalAlignment="Left">
                                     <TextBlock Text="间隔：" VerticalAlignment="Center"/>
-                                    <ui:NumberBox Value="{Binding AppSettings.AutoUpdateInterval}" Maximum="1440" Minimum="10" SpinButtonPlacementMode="Hidden" Margin="10,0,0,0" IsEnabled="{Binding AppSettings.AutoUpdate}" ToolTip="搜索更新的频率，单位为分。"/>
+                                    <ui:NumberBox Value="{Binding AppSettings.AutoUpdateInterval}" Maximum="1440" Minimum="1" SpinButtonPlacementMode="Hidden" Margin="10,0,0,0" IsEnabled="{Binding AppSettings.AutoUpdate}" ToolTip="搜索更新的频率，单位为分。"/>
                                 </DockPanel>
                                 <CheckBox Content="显示SteamCMD窗口" IsChecked="{Binding AppSettings.ShowSteamWindow, Mode=TwoWay}" ToolTip="在更新期间是否应显示SteamCMD窗口，在故障排除时很有用。"/>
                                 <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="应用程序是否应在黑暗模式下运行。"/>

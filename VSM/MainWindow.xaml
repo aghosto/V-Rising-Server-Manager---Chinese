@@ -11,9 +11,9 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" MinHeight="5"/>
+            <RowDefinition Height="Auto" MinHeight="96.4"/>
+            <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}">
@@ -28,15 +28,15 @@
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
                                             <Setter Property="Source" Value="Resources\StatusRunning.png"/>
-                                            <Setter Property="ToolTip" Value="Running"/>
+                                            <Setter Property="ToolTip" Value="运行中"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
                                             <Setter Property="Source" Value="Resources\StatusStopped.png"/>
-                                            <Setter Property="ToolTip" Value="Stopped"/>
+                                            <Setter Property="ToolTip" Value="已停止"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
                                             <Setter Property="Source" Value="Resources\DownloadNoColor.png"/>
-                                            <Setter Property="ToolTip" Value="Updating"/>
+                                            <Setter Property="ToolTip" Value="更新中"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
@@ -46,7 +46,7 @@
                         <Button Grid.Column="1" Click="RemoveServerButton_Click">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
-                                    <Path Data="M0,0 L8,8 M8,0 L0,8" StrokeThickness="3" VerticalAlignment="Center" Margin="5,4,0,2" ToolTip="Remove server">
+                                    <Path Data="M0,0 L8,8 M8,0 L0,8" StrokeThickness="3" VerticalAlignment="Center" Margin="5,4,0,2" ToolTip="移除该服务器">
                                         <Path.Style>
                                             <Style TargetType="{x:Type Path}">
                                                 <Style.Triggers>
@@ -108,15 +108,15 @@
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
                                                         <Setter Property="IsOn" Value="True"/>
-                                                        <Setter Property="OffContent" Value="Off"/>
+                                                        <Setter Property="OffContent" Value="关闭"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
                                                         <Setter Property="IsOn" Value="False"/>
-                                                        <Setter Property="OffContent" Value="Off"/>
+                                                        <Setter Property="OffContent" Value="已关闭"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
                                                         <Setter Property="IsOn" Value="False"/>
-                                                        <Setter Property="OffContent" Value="Updating"/>
+                                                        <Setter Property="OffContent" Value="更新中"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -126,13 +126,13 @@
                                         <ui:ProgressRing.Style>
                                             <Style TargetType="{x:Type ui:ProgressRing}">
                                                 <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
+                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
                                                         <Setter Property="IsActive" Value="False"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
+                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
                                                         <Setter Property="IsActive" Value="False"/>
                                                     </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
+                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
                                                         <Setter Property="IsActive" Value="True"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
@@ -222,7 +222,7 @@
                                         <DockPanel>
                                             <Image Source="Resources\Stop.png" Margin="5,0,0,0" Stretch="None"/>
                                             <TextBlock Text="停止服务器" Margin="5,0,5,0"/>
-                                        </DockPanel>                                        
+                                        </DockPanel>
                                     </Button>
 
                                     <Button Margin="2" Click="ServerFolderButton_Click" ToolTip="打开游戏服务器文件夹。" HorizontalAlignment="Stretch">
@@ -250,7 +250,7 @@
                 </DataTemplate>
             </TabControl.ContentTemplate>
         </TabControl>
-        <Separator Grid.Row="1"/>
+        <Separator Grid.Row="1" Margin="0,2,0,2"/>
         <GroupBox Header="编辑器和软件设置" Margin="5,0,5,0" Grid.Row="2">
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <Button Margin="5,0,5,0" Padding="5" Click="GameSettingsEditor_Click" ToolTip="打开游戏设置编辑器。">
@@ -283,7 +283,7 @@
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="True">
                                     <Setter Property="IsEnabled" Value="True"/>
-                                    <Setter Property="ToolTip" Value="Manage game mods."/>
+                                    <Setter Property="ToolTip" Value="管理游戏模组。"/>
                                 </DataTrigger>
                                 <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="False">
                                     <Setter Property="IsEnabled" Value="False"/>
@@ -300,7 +300,7 @@
                 </Button>
             </StackPanel>
         </GroupBox>
-        <Grid Grid.Row="3">
+        <Grid Grid.Row="2" Margin="0,96,0,37" Grid.RowSpan="3">
             <RichTextBox x:Name="MainMenuConsole" Grid.Row="2" Background="Black" Foreground="Lime" Grid.ColumnSpan="2" Margin="5" IsReadOnly="True"/>
         </Grid>
         <DockPanel Grid.Row="4">
@@ -310,8 +310,8 @@
                     <Button ToolTip="单击以搜索新的更新。" Click="VersionButton_Click">
                         <Button.Content>
                             <TextBlock>                                                            
-                                <Run Text="版本："/>
-                                <Run Text="{Binding AppSettings.Version}"/>                                
+                                <Run Text="软件版本："/>
+                                <Run Text="{Binding AppSettings.Version}"/>
                             </TextBlock>
                         </Button.Content>
 
