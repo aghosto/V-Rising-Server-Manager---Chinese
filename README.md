@@ -26,7 +26,7 @@
   * [实机使用情况图片](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%AE%9E%E6%9C%BA%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E5%9B%BE%E7%89%87)
 
 # 软件信息
-站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，仅适用于Windows）。
+站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，仅适用于Windows），并针对个人使用习惯进行了部分的小更改。
 
 本项目地址：https://github.com/aghosto/V-Rising-Server-Manager---Chinese
 
