@@ -224,7 +224,7 @@ namespace VRisingServerManager
     /// </summary>
     public class LaunchSettings
     {
-        public string DisplayName { get; set; } = "夜族崛起服务器";
+        public string DisplayName { get; set; } = "ZeroServer";
         public string WorldName { get; set; } = "world1";
         public bool BindToIP { get; set; } = false;
         public string BindingIP { get; set; } = "127.0.0.1";
