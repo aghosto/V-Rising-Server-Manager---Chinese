@@ -136,7 +136,11 @@ All APIs in this project are derived from the open network, and this project has
 - ModernWPF
 
 # To Do : book :
-官方预设发生较大变动，还未把预设文件修改完成，预设功能暂时不能正常使用。
+预设功能已完成大半，剩下预设等级以及法术需要同步。
+
+# 星星获取
+[![Stargazers over time](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese.svg?variant=adaptive)](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese)
+
 
 
 
