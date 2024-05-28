@@ -9,13 +9,10 @@
   "Death_DurabilityFactorLoss": 0.0,
   "Death_DurabilityLossFactorAsResources": 0.0,
   "AnnounceSiegeWeaponSpawn": false,
-
-  "UnitStatModifiers_Global": {
-    "MaxHealthModifier": 1.25,
-    "PowerModifier": 1.25
-  },
-  "UnitStatModifiers_VBlood": {
-    "MaxHealthModifier": 1.25,
-    "PowerModifier": 2
+  "StarterEquipmentId": -1466803079,
+  "StarterResourcesId": -1394108841,
+  "StartingProgressionLevel": 90,
+  "CastleStatModifiers_Global": {
+    "CastleLimit": 1
   }
 }

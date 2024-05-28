@@ -8,5 +8,8 @@
   "CanLootEnemyContainers": false,
   "Death_DurabilityFactorLoss": 0.0,
   "Death_DurabilityLossFactorAsResources": 0.0,
-  "AnnounceSiegeWeaponSpawn":  false
+  "AnnounceSiegeWeaponSpawn":  false,
+  "CastleStatModifiers_Global": {
+    "CastleLimit": 1
+  }
 }

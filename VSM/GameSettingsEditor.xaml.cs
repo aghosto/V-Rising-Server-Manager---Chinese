@@ -173,22 +173,25 @@ namespace VRisingServerManager
                     gameSettings.StarterEquipmentId = 0;
                     break;
                 case 1:
-                    gameSettings.StarterEquipmentId = -387090868;
+                    gameSettings.StarterEquipmentId = 742198603;
                     break;
                 case 2:
-                    gameSettings.StarterEquipmentId = -376135143;
+                    gameSettings.StarterEquipmentId = -663535879;
                     break;
                 case 3:
-                    gameSettings.StarterEquipmentId = -1613823352;
+                    gameSettings.StarterEquipmentId = 688096336;
                     break;
                 case 4:
-                    gameSettings.StarterEquipmentId = -1714743400;
+                    gameSettings.StarterEquipmentId = -1502721803;
                     break;
                 case 5:
-                    gameSettings.StarterEquipmentId = -258598606;
+                    gameSettings.StarterEquipmentId = 28431735;
                     break;
                 case 6:
-                    gameSettings.StarterEquipmentId = 1177675846;
+                    gameSettings.StarterEquipmentId = -983090495;
+                    break;
+                case 7:
+                    gameSettings.StarterEquipmentId = -1466803079;
                     break;
             }
             switch (StarterResourcesCombo.SelectedIndex)
@@ -197,22 +200,25 @@ namespace VRisingServerManager
                     gameSettings.StarterResourcesId = 0;
                     break;
                 case 1:
-                    gameSettings.StarterResourcesId = -696202180;
+                    gameSettings.StarterResourcesId = 1982471388;
                     break;
                 case 2:
-                    gameSettings.StarterResourcesId = 329280709;
+                    gameSettings.StarterResourcesId = 1504234317;
                     break;
                 case 3:
-                    gameSettings.StarterResourcesId = 481718792;
+                    gameSettings.StarterResourcesId = 548330870;
                     break;
                 case 4:
-                    gameSettings.StarterResourcesId = 470364250;
+                    gameSettings.StarterResourcesId = 815373441;
                     break;
                 case 5:
-                    gameSettings.StarterResourcesId = -766909665;
+                    gameSettings.StarterResourcesId = -1370930855;
                     break;
                 case 6:
-                    gameSettings.StarterResourcesId = -2131982548;
+                    gameSettings.StarterResourcesId = -1394108841;
+                    break;
+                case 7:
+                    gameSettings.StarterResourcesId = -1394108841;
                     break;
             }
 
@@ -481,24 +487,126 @@ namespace VRisingServerManager
                 {
                     LoadedSettings.RelicSpawnType = RelicSpawnTypeValue;
                 }
+                if (!int.TryParse(LoadedSettings.WarEventGameSettings.Interval.ToString(), out int IntervalValue))
+                {
+                    switch (LoadedSettings.WarEventGameSettings.Interval.ToString())
+                    {
+                        case "Shortest":
+                            LoadedSettings.WarEventGameSettings.Interval = 0;
+                            break;
+                        case "VeryShort":
+                            LoadedSettings.WarEventGameSettings.Interval = 1;
+                            break;
+                        case "Short":
+                            LoadedSettings.WarEventGameSettings.Interval = 2;
+                            break;
+                        case "Medium":
+                            LoadedSettings.WarEventGameSettings.Interval = 3;
+                            break;
+                        case "Long":
+                            LoadedSettings.WarEventGameSettings.Interval = 4;
+                            break;
+                        case "VeryLong":
+                            LoadedSettings.WarEventGameSettings.Interval = 5;
+                            break;
+                        case "LongLong":
+                            LoadedSettings.WarEventGameSettings.Interval = 6;
+                            break;
+                        case "Longest":
+                            LoadedSettings.WarEventGameSettings.Interval = 7;
+                            break;
+                    }
+                }
+                else
+                {
+                    LoadedSettings.WarEventGameSettings.Interval = IntervalValue;
+                }
+                if (!int.TryParse(LoadedSettings.WarEventGameSettings.MinorDuration.ToString(), out int MinorDurationValue))
+                {
+                    switch (LoadedSettings.WarEventGameSettings.MinorDuration.ToString())
+                    {
+                        case "Shortest":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 0;
+                            break;
+                        case "VeryShort":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 1;
+                            break;
+                        case "Short":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 2;
+                            break;
+                        case "Medium":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 3;
+                            break;
+                        case "Long":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 4;
+                            break;
+                        case "VeryLong":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 5;
+                            break;
+                        case "LongLong":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 6;
+                            break;
+                        case "Longest":
+                            LoadedSettings.WarEventGameSettings.MinorDuration = 7;
+                            break;
+                    }
+                }
+                else
+                {
+                    LoadedSettings.WarEventGameSettings.MinorDuration = MinorDurationValue;
+                }
+                if (!int.TryParse(LoadedSettings.WarEventGameSettings.MajorDuration.ToString(), out int MajorDurationValue))
+                {
+                    switch (LoadedSettings.WarEventGameSettings.MajorDuration.ToString())
+                    {
+                        case "Shortest":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 0;
+                            break;
+                        case "VeryShort":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 1;
+                            break;
+                        case "Short":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 2;
+                            break;
+                        case "Medium":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 3;
+                            break;
+                        case "Long":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 4;
+                            break;
+                        case "VeryLong":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 5;
+                            break;
+                        case "LongLong":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 6;
+                            break;
+                        case "Longest":
+                            LoadedSettings.WarEventGameSettings.MajorDuration = 7;
+                            break;
+                    }
+                }
+                else
+                {
+                    LoadedSettings.WarEventGameSettings.MajorDuration = MajorDurationValue;
+                }
                 switch (LoadedSettings.StarterEquipmentId)
                 {
-                    case -387090868:
+                    case 742198603:
                         StarterEquipmentCombo.SelectedIndex = 1;
                         break;
-                    case -376135143:
+                    case -663535879:
                         StarterEquipmentCombo.SelectedIndex = 2;
                         break;
-                    case -1613823352:
+                    case 688096336:
                         StarterEquipmentCombo.SelectedIndex = 3;
                         break;
-                    case -1714743400:
+                    case -1502721803:
                         StarterEquipmentCombo.SelectedIndex = 4;
                         break;
-                    case -258598606:
+                    case 28431735:
                         StarterEquipmentCombo.SelectedIndex = 5;
                         break;
-                    case 1177675846:
+                    case -983090495:
                         StarterEquipmentCombo.SelectedIndex = 6;
                         break;
                     default:
@@ -507,22 +615,22 @@ namespace VRisingServerManager
                 }
                 switch (LoadedSettings.StarterResourcesId)
                 {
-                    case -696202180:
+                    case 1982471388:
                         StarterResourcesCombo.SelectedIndex = 1;
                         break;
-                    case 329280709:
+                    case 1504234317:
                         StarterResourcesCombo.SelectedIndex = 2;
                         break;
-                    case 481718792:
+                    case 548330870:
                         StarterResourcesCombo.SelectedIndex = 3;
                         break;
-                    case 470364250:
+                    case 815373441:
                         StarterResourcesCombo.SelectedIndex = 4;
                         break;
-                    case -766909665:
+                    case -1370930855:
                         StarterResourcesCombo.SelectedIndex = 5;
                         break;
-                    case -2131982548:
+                    case -1394108841:
                         StarterResourcesCombo.SelectedIndex = 6;
                         break;
                     default:
@@ -609,6 +717,11 @@ namespace VRisingServerManager
         {
             string toSend = ((MenuItem)parameter).Tag.ToString();
             LoadPreset(toSend);
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

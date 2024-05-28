@@ -1,6 +1,5 @@
 ﻿{
   "GameModeType": "PvP",
-  "CastleDamageMode": "TimeRestricted",
   "CastleHeartDamageMode": "CanBeDestroyedOnlyWhenDecaying",
   "DeathContainerPermission": "Anyone",
   "RelicSpawnType": "Plentiful",
@@ -35,5 +34,17 @@
       }
     },
     "CastleLimit": 2
+  },
+  "WarEventGameSettings": {
+    "WeekdayTime": {
+      "StartHour": 8,
+      "EndHour": 2,
+      "EndMinute": 0
+    },
+    "WeekendTime": {
+      "StartHour": 8,
+      "EndHour": 2,
+      "EndMinute": 0
+    }
   }
 }

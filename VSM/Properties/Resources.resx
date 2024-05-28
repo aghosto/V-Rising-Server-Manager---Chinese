@@ -127,6 +127,18 @@
   <data name="DownloadNoColor" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DownloadNoColor.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TrioPvP_DailySiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\TrioPvP_DailySiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TrioPvP_NoSiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\TrioPvP_NoSiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TrioPvP_WeekendSiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\TrioPvP_WeekendSiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="TrioPvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\TrioPvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="DuoPvP_DailySiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DuoPvP_DailySiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -136,14 +148,17 @@
   <data name="DuoPvP_WeekendSiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\DuoPvP_WeekendSiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="Duo_PvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\Duo_PvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="DuoPvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\DuoPvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="EditDocument" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\EditDocument.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="FolderOpened" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\FolderOpened.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="HardcoreTrioPvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\HardcoreTrioPvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="HardcoreDuoPvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\HardcoreDuoPvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -187,6 +202,12 @@
   <data name="Level80PvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Level80PvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="Level90PvE" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\Level90PvE.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Level90PvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\Level90PvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="logo" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\logo.ico;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -211,35 +232,26 @@
   <data name="StandardPvE" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StandardPvE.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="StandardPvE_Easy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\StandardPvE_Easy.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="StandardPvE_Hard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\StandardPvE_Hard.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="StandardPvE_Shuffle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\StandardPvE_Shuffle.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="StandardPvP" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StandardPvP.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="StandardPvP_DailySiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StandardPvP_DailySiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="StandardPvP_Easy" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\StandardPvP_Easy.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="StandardPvP_Hard" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\StandardPvP_Hard.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="StandardPvP_NoSiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StandardPvP_NoSiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="StandardPvP_Shuffle" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\StandardPvP_Shuffle.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
   <data name="StandardPvP_WeekendSiege" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StandardPvP_WeekendSiege.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Difficulty_Easy" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\Difficulty_Easy.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Difficulty_Normal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\Difficulty_Normal.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="Difficulty_Brutal" type="System.Resources.ResXFileRef, System.Windows.Forms">
+	<value>..\Resources\Difficulty_Brutal.json;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="StatusRunning" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\StatusRunning.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>

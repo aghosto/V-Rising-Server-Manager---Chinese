@@ -7,15 +7,25 @@
   "BloodBoundEquipment": true,
   "PlayerDamageMode": "Always",
   "PvPProtectionMode": "Short",
+  "SiegeWeaponHealth": "High",
+  "AnnounceSiegeWeaponSpawn": true,
+  "ShowSiegeWeaponMapIcon": false,
   "ClanSize": 1,
-
+  "BatBoundItems": true,
   "DropTableModifier_General": 1.5,
   "DropTableModifier_Missions": 1.5,
   "MaterialYieldModifier_Global": 1.5,
   "BloodEssenceYieldModifier": 1.5,
   "BloodDrainModifier": 1.25,
-
   "CastleStatModifiers_Global": {
     "CastleLimit": 2
+  },
+  "WarEventGameSettings": {
+    "WeekdayTime": {
+      "StartHour": 8
+    },
+    "WeekendTime": {
+      "StartHour": 8
+    }
   }
 }

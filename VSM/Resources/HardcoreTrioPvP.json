@@ -22,7 +22,6 @@
   "BloodEssenceYieldModifier": 2,
   "BloodDrainModifier": 1.25,
   "CastleStatModifiers_Global": {
-    "TombLimit": 8,
     "HeartLimits": {
       "Level1": {
         "ServantLimit": 2
@@ -40,7 +39,7 @@
         "ServantLimit": 5
       }
     },
-    "CastleLimit": 1
+    "CastleLimit": 2
   },
   "WarEventGameSettings": {
     "WeekdayTime": {

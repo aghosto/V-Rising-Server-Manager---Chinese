@@ -1,0 +1,16 @@
+﻿{
+  "GameDifficulty": 0,
+  "SunDamageModifier": 0.75,
+  "BloodDrainModifier": 0.75,
+  "UnitStatModifiers_Global": {
+    "MaxHealthModifier": 1,
+    "PowerModifier": 0.7
+  },
+  "UnitStatModifiers_VBlood": {
+    "MaxHealthModifier": 0.8,
+    "PowerModifier": 0.6,
+    "LevelIncrease": 0
+  },
+  "DropTableModifier_General": 1,
+  "DurabilityDrainModifier": 1
+}

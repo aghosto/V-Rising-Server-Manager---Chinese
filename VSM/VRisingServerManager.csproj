@@ -46,10 +46,15 @@
     <None Remove="Resources\Add.png" />
     <None Remove="Resources\Console.png" />
     <None Remove="Resources\DownloadNoColor.png" />
+	<None Remove="Resources\SoloPvP.json" />
     <None Remove="Resources\DuoPvP_DailySiege.json" />
     <None Remove="Resources\DuoPvP_NoSiege.json" />
     <None Remove="Resources\DuoPvP_WeekendSiege.json" />
-    <None Remove="Resources\Duo_PvP.json" />
+    <None Remove="Resources\DuoPvP.json" />
+	<None Remove="Resources\TrioPvP_DailySiege.json" />
+	<None Remove="Resources\TrioPvP_NoSiege.json" />
+	<None Remove="Resources\TrioPvP_WeekendSiege.json" />
+	<None Remove="Resources\TrioPvP.json" />
     <None Remove="Resources\EditDocument.png" />
     <None Remove="Resources\FolderOpened.png" />
     <None Remove="Resources\HardcoreDuoPvP.json" />
@@ -66,24 +71,23 @@
     <None Remove="Resources\Level70PvP.json" />
     <None Remove="Resources\Level80PvE.json" />
     <None Remove="Resources\Level80PvP.json" />
+	<None Remove="Resources\Level90PvE.json" />
+	<None Remove="Resources\Level90PvP.json" />
     <None Remove="Resources\logo.ico" />
     <None Remove="Resources\Play.png" />
     <None Remove="Resources\Refresh.png" />
     <None Remove="Resources\Remove.png" />
     <None Remove="Resources\RunUpdate.png" />
     <None Remove="Resources\Settings.png" />
-    <None Remove="Resources\SoloPvP.json" />
     <None Remove="Resources\StandardPvE.json" />
-    <None Remove="Resources\StandardPvE_Easy.json" />
-    <None Remove="Resources\StandardPvE_Hard.json" />
-    <None Remove="Resources\StandardPvE_Shuffle.json" />
     <None Remove="Resources\StandardPvP.json" />
     <None Remove="Resources\StandardPvP_DailySiege.json" />
-    <None Remove="Resources\StandardPvP_Easy.json" />
-    <None Remove="Resources\StandardPvP_Hard.json" />
     <None Remove="Resources\StandardPvP_NoSiege.json" />
     <None Remove="Resources\StandardPvP_Shuffle.json" />
     <None Remove="Resources\StandardPvP_WeekendSiege.json" />
+	<None Remove="Resources\Difficulty_Easy.json" />
+	<None Remove="Resources\Difficulty_Normal.json" />
+	<None Remove="Resources\Difficulty_Brutal.json" />
     <None Remove="Resources\StatusRunning.png" />
     <None Remove="Resources\StatusStopped.png" />
     <None Remove="Resources\Stop.png" />
@@ -104,10 +108,15 @@
   </ItemGroup>
 
   <ItemGroup>
+	<EmbeddedResource Include="Resources\TrioPvP_DailySiege.json" />
+	<EmbeddedResource Include="Resources\TrioPvP_NoSiege.json" />
+	<EmbeddedResource Include="Resources\TrioPvP_WeekendSiege.json" />
+	<EmbeddedResource Include="Resources\TrioPvP.json" />
     <EmbeddedResource Include="Resources\DuoPvP_DailySiege.json" />
     <EmbeddedResource Include="Resources\DuoPvP_NoSiege.json" />
     <EmbeddedResource Include="Resources\DuoPvP_WeekendSiege.json" />
-    <EmbeddedResource Include="Resources\Duo_PvP.json" />
+    <EmbeddedResource Include="Resources\DuoPvP.json" />
+	<EmbeddedResource Include="Resources\HardcoreTrioPvP.json" />
     <EmbeddedResource Include="Resources\HardcoreDuoPvP.json" />
     <EmbeddedResource Include="Resources\HardcorePvP.json" />
     <EmbeddedResource Include="Resources\Level30PvE.json" />
@@ -122,18 +131,17 @@
     <EmbeddedResource Include="Resources\Level70PvP.json" />
     <EmbeddedResource Include="Resources\Level80PvE.json" />
     <EmbeddedResource Include="Resources\Level80PvP.json" />
+	<EmbeddedResource Include="Resources\Level90PvE.json" />
+	<EmbeddedResource Include="Resources\Level90PvP.json" />
     <EmbeddedResource Include="Resources\SoloPvP.json" />
     <EmbeddedResource Include="Resources\StandardPvE.json" />
-    <EmbeddedResource Include="Resources\StandardPvE_Easy.json" />
-    <EmbeddedResource Include="Resources\StandardPvE_Hard.json" />
-    <EmbeddedResource Include="Resources\StandardPvE_Shuffle.json" />
     <EmbeddedResource Include="Resources\StandardPvP.json" />
     <EmbeddedResource Include="Resources\StandardPvP_DailySiege.json" />
-    <EmbeddedResource Include="Resources\StandardPvP_Easy.json" />
-    <EmbeddedResource Include="Resources\StandardPvP_Hard.json" />
     <EmbeddedResource Include="Resources\StandardPvP_NoSiege.json" />
-    <EmbeddedResource Include="Resources\StandardPvP_Shuffle.json" />
     <EmbeddedResource Include="Resources\StandardPvP_WeekendSiege.json" />
+	<EmbeddedResource Include="Resources\Difficulty_Easy.json" />
+	<EmbeddedResource Include="Resources\Difficulty_Normal.json" />
+	<EmbeddedResource Include="Resources\Difficulty_Brutal.json" />
   </ItemGroup>
 
   <ItemGroup>

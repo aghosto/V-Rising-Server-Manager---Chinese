@@ -197,6 +197,46 @@ namespace VRisingServerManager
         public double ReviveCancelDelay { get; set; } = 5.0;
     }
 
+    public class WarEventGameSettings
+    {
+        public dynamic Interval { get; set; } = 1;
+        public dynamic MinorDuration { get; set; } = 2;
+        public dynamic MajorDuration { get; set; } = 2;
+        public class WeekdayTime
+        {
+            public dynamic StartHour { get; set; } = 0;
+            public dynamic StartMinute { get; set; } = 0;
+            public dynamic EndHour { get; set; } = 23;
+            public dynamic EndtMinute { get; set; } = 59;
+        }
+        public class WeekendTime
+        {
+            public dynamic StartHour { get; set; } = 0;
+            public dynamic StartMinute { get; set; } = 0;
+            public dynamic EndHour { get; set; } = 23;
+            public dynamic EndtMinute { get; set; } = 59;
+        }
+        public class ScalingPlayers1
+        {
+            public dynamic PointsModifier { get; set; } = 1.0;
+            public dynamic DropModifier { get; set; } = 1.0;
+        }
+        public class ScalingPlayers2
+        {
+            public dynamic PointsModifier { get; set; } = 0.5;
+            public dynamic DropModifier { get; set; } = 0.5;
+        }
+        public class ScalingPlayers3
+        {
+            public dynamic PointsModifier { get; set; } = 0.25;
+            public dynamic DropModifier { get; set; } = 0.25;
+        }
+        public class ScalingPlayers4
+        {
+            public dynamic PointsModifier { get; set; } = 0.25;
+            public dynamic DropModifier { get; set; } = 0.25;
+        }
+    }
     public class VSCastleWeekdayTime
     {
         public int StartHour { get; set; } = 17;
@@ -262,6 +302,7 @@ namespace VRisingServerManager
         public bool CanLootEnemyContainers { get; set; } = true;
         public bool BloodBoundEquipment { get; set; } = true;
         public bool TeleportBoundItems { get; set; } = true;
+        public bool BatBoundItems { get; set; } = true;
         public bool AllowGlobalChat { get; set; } = true;
         public bool AllWaypointsUnlocked { get; set; } = false;
         public bool FreeCastleRaid { get; set; } = false;
@@ -324,6 +365,7 @@ namespace VRisingServerManager
         public CastleStatModifiersGlobal CastleStatModifiers_Global { get; set; } = new CastleStatModifiersGlobal();
         public PlayerInteractionSettings PlayerInteractionSettings { get; set; } = new PlayerInteractionSettings();
         public TraderModifiers TraderModifiers { get; set; } = new TraderModifiers();
+        public WarEventGameSettings WarEventGameSettings { get; set;} = new WarEventGameSettings();
     }
 
     public class ServerSettings

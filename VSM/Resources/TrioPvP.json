@@ -10,13 +10,32 @@
   "SiegeWeaponHealth": "High",
   "AnnounceSiegeWeaponSpawn": true,
   "ShowSiegeWeaponMapIcon": false,
+  "ClanSize": 3,
+  "DropTableModifier_General": 1.25,
+  "DropTableModifier_Missions": 1.75,
+  "MaterialYieldModifier_Global": 1.25,
+  "BloodEssenceYieldModifier": 1.25,
   "BloodDrainModifier": 1.25,
   "BatBoundItems": true,
-  "StarterEquipmentId": -1502721803,
-  "StarterResourcesId": 815373441,
-  "StartingProgressionLevel": 60,
   "CastleStatModifiers_Global": {
-    "CastleLimit": 1
+    "HeartLimits": {
+      "Level1": {
+        "ServantLimit": 2
+      },
+      "Level2": {
+        "ServantLimit": 3
+      },
+      "Level3": {
+        "ServantLimit": 4
+      },
+      "Level4": {
+        "ServantLimit": 5
+      },
+      "Level5": {
+        "ServantLimit": 5
+      }
+    },
+    "CastleLimit": 2
   },
   "WarEventGameSettings": {
     "WeekdayTime": {

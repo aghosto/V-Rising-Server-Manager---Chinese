@@ -7,16 +7,19 @@
   "BloodBoundEquipment": true,
   "PlayerDamageMode": "Always",
   "PvPProtectionMode": "Short",
+  "SiegeWeaponHealth": "High",
+  "AnnounceSiegeWeaponSpawn": true,
+  "ShowSiegeWeaponMapIcon": false,
   "ClanSize": 2,
-
+  "BatBoundItems": true,
   "DropTableModifier_General": 1.25,
   "DropTableModifier_Missions": 1.75,
   "MaterialYieldModifier_Global": 1.25,
   "BloodEssenceYieldModifier": 1.25,
   "BloodDrainModifier": 1.25,
-
   "CastleStatModifiers_Global": {
-      "HeartLimits": {
+    "TombLimit": 8,
+    "HeartLimits": {
       "Level1": {
         "ServantLimit": 2
       },
@@ -33,14 +36,25 @@
         "ServantLimit": 5
       }
     },
-    "CastleLimit": 2
+    "CastleLimit": 1
   },
-
-    "PlayerInteractionSettings": {
+  "PlayerInteractionSettings": {
     "VSCastleWeekdayTime": {
       "StartHour": 0,
       "StartMinute": 0,
       "EndHour": 0,
+      "EndMinute": 0
+    }
+  },
+  "WarEventGameSettings": {
+    "WeekdayTime": {
+      "StartHour": 8,
+      "EndHour": 2,
+      "EndMinute": 0
+    },
+    "WeekendTime": {
+      "StartHour": 8,
+      "EndHour": 2,
       "EndMinute": 0
     }
   }

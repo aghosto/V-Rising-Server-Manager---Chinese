@@ -8,8 +8,21 @@
   "CastleDamageMode": "Never",
   "PvPProtectionMode": "Short",
   "BloodDrainModifier": 1.25,
+  "BatBoundItems": true,
 
   "CastleStatModifiers_Global": {
     "CastleLimit": 1
+  },
+  "WarEventGameSettings": {
+    "WeekdayTime": {
+      "StartHour": 8,
+      "EndHour": 2,
+      "EndMinute": 0
+    },
+    "WeekendTime": {
+      "StartHour": 8,
+      "EndHour": 2,
+      "EndMinute": 0
+    }
   }
 }

@@ -12,9 +12,9 @@
   "ShowSiegeWeaponMapIcon": false,
   "BloodDrainModifier": 1.25,
   "BatBoundItems": true,
-  "StarterEquipmentId": -1502721803,
-  "StarterResourcesId": 815373441,
-  "StartingProgressionLevel": 60,
+  "StarterEquipmentId": -1466803079,
+  "StarterResourcesId": -1394108841,
+  "StartingProgressionLevel": 90,
   "CastleStatModifiers_Global": {
     "CastleLimit": 1
   },

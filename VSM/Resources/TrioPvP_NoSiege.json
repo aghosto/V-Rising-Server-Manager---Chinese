@@ -1,29 +1,23 @@
 ﻿{
   "GameModeType": "PvP",
-  "CastleDamageMode": "TimeRestricted",
-  "CastleHeartClaimMode": "TimeRestricted",
-  "CastleHeartDamageMode": "CanBeSeizedOrDestroyedByPlayers",
+  "CastleHeartDamageMode": "CanBeDestroyedOnlyWhenDecaying",
   "DeathContainerPermission": "Anyone",
-  "RelicSpawnType": "Unique",
-  "BloodBoundEquipment": false,
+  "RelicSpawnType": "Plentiful",
+  "BloodBoundEquipment": true,
   "PlayerDamageMode": "Always",
+  "CastleDamageMode": "Never",
   "PvPProtectionMode": "Short",
-  "SiegeWeaponHealth": "High",
-  "AnnounceSiegeWeaponSpawn": true,
-  "ShowSiegeWeaponMapIcon": false,
-  "Death_DurabilityFactorLoss": 0.0,
-  "Death_DurabilityLossFactorAsResources": 0.0,
-  "ClanSize": 2,
+  "ClanSize": 3,
   "BatBoundItems": true,
-  "CastleHeartSafetyBoxLimit": 0,
-  "DropTableModifier_General": 2,
-  "DropTableModifier_Missions": 2,
-  "MaterialYieldModifier_Global": 2,
-  "BloodEssenceYieldModifier": 2,
+
+  "DropTableModifier_General": 1.25,
+  "DropTableModifier_Missions": 1.75,
+  "MaterialYieldModifier_Global": 1.25,
+  "BloodEssenceYieldModifier": 1.25,
   "BloodDrainModifier": 1.25,
+
   "CastleStatModifiers_Global": {
-    "TombLimit": 8,
-    "HeartLimits": {
+      "HeartLimits": {
       "Level1": {
         "ServantLimit": 2
       },
@@ -40,7 +34,7 @@
         "ServantLimit": 5
       }
     },
-    "CastleLimit": 1
+    "CastleLimit": 2
   },
   "WarEventGameSettings": {
     "WeekdayTime": {
