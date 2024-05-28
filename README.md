@@ -135,7 +135,7 @@ All APIs in this project are derived from the open network, and this project has
 - source-rcon-server
 - ModernWPF
 
-# To Do : book :
+# To Do 📖
 预设功能已完成大半，剩下预设等级以及法术需要同步。
 
 # 星星获取
