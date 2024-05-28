@@ -135,6 +135,11 @@ All APIs in this project are derived from the open network, and this project has
 - source-rcon-server
 - ModernWPF
 
+# To Do : book :
+官方预设发生较大变动，还未把预设文件修改完成，预设功能暂时不能正常使用。
+
+
+
 # 图片
 ## 实机使用情况图片
 <img src=Resources/软件主界面.png width="400">
