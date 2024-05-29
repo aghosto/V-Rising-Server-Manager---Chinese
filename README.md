@@ -136,7 +136,7 @@ All APIs in this project are derived from the open network, and this project has
 - ModernWPF
 
 # To Do 📖
-预设功能已完成大半，剩下预设等级以及法术需要同步。
+预设功能已完成大半，剩下预设中的成就、BOSS、法术等需要同步。
 
 # 星星获取
 [![Stargazers over time](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese.svg?variant=adaptive)](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese)
