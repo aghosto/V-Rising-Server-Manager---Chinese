@@ -137,7 +137,7 @@ All APIs in this project are derived from the open network, and this project has
 
 # To Do 📖
 预设功能已完成大半，剩下预设中的成就、BOSS、法术等需要同步。
-
+游戏属性设置：部分关于PVP的时间设定等内容需要更改。
 # 星星获取
 [![Stargazers over time](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese.svg?variant=adaptive)](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese)
 
