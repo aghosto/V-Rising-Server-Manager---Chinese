@@ -9,7 +9,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <StackPanel>
         <TextBlock Text="选择要将设置文件保存到的服务器： " HorizontalAlignment="Center"/>
-        <ComboBox Name="ServerCombo" ItemsSource="{Binding}" HorizontalAlignment="Stretch" Margin="5">
+        <ComboBox Name="ServerCombo" ItemsSource="{Binding}" HorizontalAlignment="Stretch" Margin="5" Background="#B3FF6565">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
                     <TextBlock Text="{Binding Name}"/>

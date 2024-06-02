@@ -85,11 +85,11 @@ namespace VRisingServerManager
             if (VsmSettings.AppSettings.AutoUpdate == true)
             {
 #if DEBUG
-                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+//                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
-                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
+//                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-                AutoUpdateLoop();
+//                AutoUpdateLoop();
             }
         }
 
@@ -439,7 +439,7 @@ namespace VRisingServerManager
             string json = await HttpClient.GetStringAsync("https://api.steamcmd.net/v1/info/1829350");
             JsonNode jsonNode = JsonNode.Parse(json);
 
-            var version = jsonNode!["data"]["1829350"]["depots"]["branches"]["beta"]["timeupdated"]!.ToString();
+            var version = jsonNode!["data"]["1829350"]["depots"]["branches"]["public"]["timeupdated"]!.ToString();
 
             if (version == VsmSettings.AppSettings.LastUpdateTimeUNIX)
             {
@@ -566,11 +566,12 @@ namespace VRisingServerManager
                     if (VsmSettings.AppSettings.AutoUpdate == true)
                     {
 #if DEBUG
-                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+//                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
-                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
+//                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-                        AutoUpdateLoop();
+//                        AutoUpdateLoop();
+                        LookForUpdate();
                     }
                     else
                     {
@@ -583,13 +584,13 @@ namespace VRisingServerManager
                 case "AutoUpdateInterval":
                     if (VsmSettings.AppSettings.AutoUpdate == true && AutoUpdateTimer != null)
                     {
-                        AutoUpdateTimer.Dispose();
+//                        AutoUpdateTimer.Dispose();
 #if DEBUG
-                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+//                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
-                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
+//                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-                        AutoUpdateLoop();
+//                        AutoUpdateLoop();
                     }
                     break;
                 case "DarkMode":

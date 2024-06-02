@@ -113,7 +113,7 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "巨兽戈雷库什",          UnitId = -1936575244,   UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "恐怖翼兽",              UnitId = -393555055,    UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "长子亚当",              UnitId = 1233988687,    UnitLevel = 83, DefaultUnlocked = false });
-            VBloodData.ItemsSource = fakeVBloodUnits;
+//            VBloodData.ItemsSource = fakeVBloodUnits;
             fakeAchievements.Clear();
             fakeAchievements.Add(new Achievement() { ID = -1770927128,      Name = "收集遗骸",              Count = 1,  Unlocked = false }) ;
             fakeAchievements.Add(new Achievement() { ID = 436375429,        Name = "舞刀弄剑",              Count = 2,  Unlocked = false });
@@ -138,35 +138,35 @@ namespace VRisingServerManager
             fakeAchievements.Add(new Achievement() { ID = 1861267375,       Name = "吸血鬼帝国",            Count = 21, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -327597689,       Name = "灵魂之石",              Count = 22, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1762480233,       Name = "光明之血",              Count = 23, Unlocked = false });
-            AchievementsData.ItemsSource = fakeAchievements;
+//            AchievementsData.ItemsSource = fakeAchievements;
             fakeResearch.Clear();
             fakeResearch.Add(new Research() { Name = "1 阶段", ID = -495424062,  Unlocked = false });
             fakeResearch.Add(new Research() { Name = "2 阶段", ID = -1292809886, Unlocked = false });
             fakeResearch.Add(new Research() { Name = "3 阶段", ID = -1262194203, Unlocked = false });
-            ResearchData.ItemsSource = fakeResearch;
+//            ResearchData.ItemsSource = fakeResearch;
         }
 
         private async void FileMenuSave_Click(object sender, RoutedEventArgs e)
         {
-            gameSettings.UnlockedAchievements.Clear();
-            foreach (var item in fakeAchievements)
-            {
-                if (item.Unlocked == true)
-                {
-                    gameSettings.UnlockedAchievements.Add(item.ID);
-                }
-            }
-            gameSettings.VBloodUnitSettings.Clear();
-            foreach (var vblood in fakeVBloodUnits)
-            {
-                gameSettings.VBloodUnitSettings.Add(new VBloodUnitSetting() { UnitId = vblood.UnitId, UnitLevel = vblood.UnitLevel, DefaultUnlocked = vblood.DefaultUnlocked });
-            }
-            gameSettings.UnlockedResearchs.Clear();
-            foreach (var research in fakeResearch)
-            {
-                if (research.Unlocked == true)
-                    gameSettings.UnlockedResearchs.Add(research.ID);
-            }
+            //gameSettings.UnlockedAchievements.Clear();
+            //foreach (var item in fakeAchievements)
+            //{
+            //    if (item.Unlocked == true)
+            //    {
+            //        gameSettings.UnlockedAchievements.Add(item.ID);
+            //    }
+            //}
+            //gameSettings.VBloodUnitSettings.Clear();
+            //foreach (var vblood in fakeVBloodUnits)
+            //{
+            //    gameSettings.VBloodUnitSettings.Add(new VBloodUnitSetting() { UnitId = vblood.UnitId, UnitLevel = vblood.UnitLevel, DefaultUnlocked = vblood.DefaultUnlocked });
+            //}
+            //gameSettings.UnlockedResearchs.Clear();
+            //foreach (var research in fakeResearch)
+            //{
+            //    if (research.Unlocked == true)
+            //        gameSettings.UnlockedResearchs.Add(research.ID);
+            //}
             switch (StarterEquipmentCombo.SelectedIndex)
             {
                 case 0: 
@@ -697,9 +697,9 @@ namespace VRisingServerManager
                 }
                 gameSettings = LoadedSettings;
                 DataContext = gameSettings;
-                VBloodData.Items.Refresh();
-                AchievementsData.Items.Refresh();
-                ResearchData.Items.Refresh();
+//                VBloodData.Items.Refresh();
+//                AchievementsData.Items.Refresh();
+//                ResearchData.Items.Refresh();
             }
             catch (Exception ex)
             {
