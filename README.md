@@ -136,8 +136,8 @@ All APIs in this project are derived from the open network, and this project has
 - ModernWPF
 
 # To Do 📖
-预设功能已完成大半，剩下预设中的成就、BOSS、法术等需要同步。
-游戏属性设置：部分关于PVP的时间设定等内容需要更改。
+创建的服务器有时候不能在Steam上搜索到，软件美化（主题、配色等）
+除上述两个，所有问题均已解决，所以更新放缓，估计很长时间才会更新，有bug记得会回来修的。
 # 星星获取
 [![Stargazers over time](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese.svg?variant=adaptive)](https://starchart.cc/aghosto/V-Rising-Server-Manager---Chinese)
 
