@@ -10,19 +10,19 @@
 </div>
 
 * [软件信息](#软件信息)
-* [说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%AF%B4%E6%98%8E)
-  * [使用说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
-  * [特别声明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E7%89%B9%E5%88%AB%E8%AF%B4%E6%98%8E)
-* [下载与安装](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%B8%8B%E8%BD%BD%E4%B8%8E%E5%AE%89%E8%A3%85)
-  * [下载](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%B8%8B%E8%BD%BD)
-  * [安装](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%AE%89%E8%A3%85)
-  * [首次使用](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E7%AC%AC%E4%B8%80%E6%AC%A1%E4%BD%BF%E7%94%A8)
-  * [服务器连接配置编辑](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E6%9C%8D%E5%8A%A1%E5%99%A8%E8%BF%9E%E6%8E%A5%E9%85%8D%E7%BD%AE%E7%BC%96%E8%BE%91)
-  * [游戏属性设置编辑](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E6%B8%B8%E6%88%8F%E5%B1%9E%E6%80%A7%E8%AE%BE%E7%BD%AE%E7%BC%96%E8%BE%91)
-  * [GM账号管理](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%B8%B8%E6%88%8F%E7%AE%A1%E7%90%86%E5%91%98gm%E8%AE%BE%E7%BD%AE)
-  * [远程控制(RCON)](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6rcon)
-* [致开发者](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%87%B4%E5%BC%80%E5%8F%91%E8%80%85)
-* [图片](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%9B%BE%E7%89%87)
+* [说明](#说明)
+  * [使用说明](#使用说明)
+  * [特别声明](#特别声明)
+* [下载与安装](#下载与安装)
+  * [下载](#下载)
+  * [安装](#安装)
+  * [首次使用](#首次使用)
+  * [服务器连接配置编辑](#服务器连接配置编辑)
+  * [游戏属性设置编辑](#游戏属性设置编辑)
+  * [GM账号管理](#服务器游戏管理员(GM)设置)
+  * [远程控制(RCON)](#远程控制(RCON))
+* [致开发者](#致开发者)
+* [图片](#图片)
   * [实机使用情况图片](#实机使用情况图片)
 
 # 软件信息
@@ -39,17 +39,17 @@
 运行软件所需要的工具：
 [.NET Runtime 6.0](https://download.visualstudio.microsoft.com/download/pr/5681bdf9-0a48-45ac-b7bf-21b7b61657aa/bbdc43bc7bf0d15b97c1a98ae2e82ec0/windowsdesktop-runtime-6.0.5-win-x64.exe)
 
-本项目仅供Python爱好者学习使用, 若您基于本项目进行商业行为, 您将承担所有的法律责任, 作者与其他贡献者将不承担任何责任。
+本项目仅供C#爱好者学习使用, 若您基于本项目进行商业行为, 您将承担所有的法律责任, 作者与其他贡献者将不承担任何责任。
 
 本项目的所有API均来源于公开网络, 本项目无任何破解、盗版等行为。
 
-This project is for Python enthusiasts to learn and use. If you conduct business behavior based on this project, you will bear all legal responsibilities, and the author and other contributors will not bear any responsibility. 
+This project is for C# enthusiasts to learn and use. If you conduct business behavior based on this project, you will bear all legal responsibilities, and the author and other contributors will not bear any responsibility. 
 
 All APIs in this project are derived from the open network, and this project has no cracking or pirated behaviors.
 
 **本文仅做简单的软件介绍，详细教程请跳转[Wiki](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/wiki/%E9%A6%96%E9%A1%B5)查看。**
 
-## 特别说明
+## 特别声明
 本软件为原项目的个人汉化，原意旨在方便自己开服和管理，感觉软件界面和管理实在不错，所以也发布上来。
 
 已经把用户界面能看到的几乎所有叙述文本都翻译为较为容易理解的简中文本，个人精力有限，或许会有遗漏。
@@ -57,8 +57,6 @@ All APIs in this project are derived from the open network, and this project has
 如在使用中有出现问题（翻译遗漏、错误、软件bug等）可以提issue给我，“有幸”的话我看到会去解决一下（很少上），也可直接QQ联系我`1812301343`。
 
 本项目翻译纯是自己闲的，原意就是方便自己，所以相关的比如C#也是在翻译途中稍微学了下，实际上并不熟练，只能处理一些比较小的问题。
-
-所以有C#开发经验的不妨下载源码尝试下自定义自己的服务端管理器。
 
 # 下载与安装
 ## 下载
