@@ -9,7 +9,7 @@
 
 </div>
 
-* [软件信息](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BD%AF%E4%BB%B6%E4%BF%A1%E6%81%AF)
+* [软件信息](#软件信息)
 * [说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%AF%B4%E6%98%8E)
   * [使用说明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E4%BD%BF%E7%94%A8%E8%AF%B4%E6%98%8E)
   * [特别声明](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E7%89%B9%E5%88%AB%E8%AF%B4%E6%98%8E)
@@ -23,7 +23,7 @@
   * [远程控制(RCON)](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%BF%9C%E7%A8%8B%E6%8E%A7%E5%88%B6rcon)
 * [致开发者](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E8%87%B4%E5%BC%80%E5%8F%91%E8%80%85)
 * [图片](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%9B%BE%E7%89%87)
-  * [实机使用情况图片](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/blob/master/README.md#%E5%AE%9E%E6%9C%BA%E4%BD%BF%E7%94%A8%E6%83%85%E5%86%B5%E5%9B%BE%E7%89%87)
+  * [实机使用情况图片](#实机使用情况图片)
 
 # 软件信息
 站内作者[@Lacyway](https://github.com/Lacyway)的VSM项目个人汉化版，集合了一键开服、服务器连接配置和游戏配置管理等各项功能的软件（基本功能都齐全，仅适用于Windows），并针对个人使用习惯进行了部分的小更改。
