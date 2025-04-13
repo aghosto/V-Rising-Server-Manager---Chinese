@@ -12,6 +12,7 @@ namespace VRisingServerManager
     public partial class CreateServer : Window
     {
         Server newServer = new Server();
+
         MainSettings settings;
         public JsonSerializerOptions serializerOptions = new JsonSerializerOptions { WriteIndented = true };
 
@@ -40,7 +41,7 @@ namespace VRisingServerManager
         {
             foreach (Server server in settings.Servers)
             {
-                if (server.Name == newServer.Name)
+                if (server.vsmServerName == newServer.vsmServerName)
                 {
                     System.Windows.MessageBox.Show("已存在一个同名的服务器，请输入不同的服务器名！", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;

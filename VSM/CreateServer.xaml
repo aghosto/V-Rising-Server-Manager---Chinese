@@ -12,7 +12,7 @@
         <StackPanel Margin="5">
             <DockPanel>
                 <TextBlock Text="服务器名称：" Width="90" VerticalAlignment="Center"/>
-                <TextBox Text="{Binding Name, Mode=TwoWay}" Margin="5" Width="625" MaxLength="30" ToolTip="服务器管理器中使用的服务器的名称，该名称只会应用于VSM以分辨不同的服务器" HorizontalAlignment="Left"/>
+                <TextBox Text="{Binding vsmServerName, Mode=TwoWay}" Margin="5" Width="625" MaxLength="30" ToolTip="服务器管理器中使用的服务器的名称，该名称只会应用于VSM以分辨不同的服务器" HorizontalAlignment="Left"/>
             </DockPanel>
             <DockPanel>
                 <TextBlock Text="服务器存档路径：" Width="90" VerticalAlignment="Center"/>

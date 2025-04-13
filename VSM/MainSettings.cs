@@ -65,8 +65,8 @@ namespace VRisingServerManager
     /// </summary>
     public class Server : PropertyChangedBase
     {
-        public string Name { get; set; } = "夜族崛起服务器";
-        private string _path = Directory.GetCurrentDirectory() + @"\Server";
+        public string vsmServerName { get; set; } = "夜族崛起服务器";
+        private string _path = Directory.GetCurrentDirectory() + @"\Server1";
         public string Path
         {
             get => _path;
@@ -224,7 +224,7 @@ namespace VRisingServerManager
     /// </summary>
     public class LaunchSettings
     {
-        public string DisplayName { get; set; } = "V Rising Server";
+        public string DisplayName { get; set; } = "此处服务器名字只是展示，非游戏内名";
         public string WorldName { get; set; } = "world1";
         public bool BindToIP { get; set; } = false;
         public string BindingIP { get; set; } = "127.0.0.1";
@@ -277,7 +277,7 @@ namespace VRisingServerManager
             get => _lastUpdateTime;
             set => SetField(ref _lastUpdateTime, value);
         }
-        private string _version = "1.1.0Ch";
+        private string _version = "1.3.0";
         public string Version
         {
             get => _version;

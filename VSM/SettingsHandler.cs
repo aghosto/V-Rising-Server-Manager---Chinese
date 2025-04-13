@@ -14,6 +14,7 @@ namespace VRisingServerManager
         public double TickPeriod { get; set; } = 5.0;
         public double DamageResistance { get; set; } = 0.0;
         public int SafetyBoxLimit { get; set; } = 1;
+        public int EyeStructuresLimit { get; set; } = 1;
         public int TombLimit { get; set; } = 12;
         public int VerminNestLimit { get; set; } = 4;
         public int PrisonCellLimit { get; set; } = 16;
@@ -23,6 +24,8 @@ namespace VRisingServerManager
         public FloorPenalties FloorPenalties { get; set; } = new FloorPenalties();
         public HeartLimits HeartLimits { get; set; } = new HeartLimits();
         public int CastleLimit { get; set; } = 2;
+        public int NetherGateLimit { get; set; } = 1;
+        public int ThroneOfDarknessLimit {  get; set; } = 1;
     }
 
     public class VBloodUnitSetting
@@ -87,8 +90,8 @@ namespace VRisingServerManager
     public class Level1
     {
         public int Level { get; set; } = 1;
-        public int FloorLimit { get; set; } = 30;
-        public int ServantLimit { get; set; } = 3;
+        public int FloorLimit { get; set; } = 50;
+        public int ServantLimit { get; set; } = 4;
         public int BuildLimits { get; set; } = 2;
         public int HeightLimit { get; set; } = 3;
     }
@@ -96,7 +99,7 @@ namespace VRisingServerManager
     public class Level2
     {
         public int Level { get; set; } = 2;
-        public int FloorLimit { get; set; } = 80;
+        public int FloorLimit { get; set; } = 140;
         public int ServantLimit { get; set; } = 5;
         public int BuildLimits { get; set; } = 2;
         public int HeightLimit { get; set; } = 3;
@@ -105,8 +108,8 @@ namespace VRisingServerManager
     public class Level3
     {
         public int Level { get; set; } = 3;
-        public int FloorLimit { get; set; } = 150;
-        public int ServantLimit { get; set; } = 7;
+        public int FloorLimit { get; set; } = 240;
+        public int ServantLimit { get; set; } = 6;
         public int BuildLimits { get; set; } = 2;
         public int HeightLimit { get; set; } = 3;
     }
@@ -114,8 +117,8 @@ namespace VRisingServerManager
     public class Level4
     {
         public int Level { get; set; } = 4;
-        public int FloorLimit { get; set; } = 250;
-        public int ServantLimit { get; set; } = 9;
+        public int FloorLimit { get; set; } = 360;
+        public int ServantLimit { get; set; } = 7;
         public int BuildLimits { get; set; } = 2;
         public int HeightLimit { get; set; } = 3;
     }
@@ -124,7 +127,7 @@ namespace VRisingServerManager
     {
         public int Level { get; set; } = 5;
         public int FloorLimit { get; set; } = 420;
-        public int ServantLimit { get; set; } = 9;
+        public int ServantLimit { get; set; } = 8;
         public int BuildLimits { get; set; } = 2;
         public int HeightLimit { get; set; } = 3;
     }
@@ -177,12 +180,14 @@ namespace VRisingServerManager
     {
         public double MaxHealthModifier { get; set; } = 1.0;
         public double PowerModifier { get; set; } = 1.0;
+        public int LevelIncrease { get; set; } = 0;
     }
 
     public class UnitStatModifiersVBlood
     {
         public double MaxHealthModifier { get; set; } = 1.0;
         public double PowerModifier { get; set; } = 1.0;
+        public int LevelIncrease { get; set; } = 0;
     }
 
     public class VampireStatModifiers
@@ -202,40 +207,47 @@ namespace VRisingServerManager
         public dynamic Interval { get; set; } = 1;
         public dynamic MinorDuration { get; set; } = 2;
         public dynamic MajorDuration { get; set; } = 2;
-        public class WeekdayTime
-        {
-            public dynamic StartHour { get; set; } = 0;
-            public dynamic StartMinute { get; set; } = 0;
-            public dynamic EndHour { get; set; } = 23;
-            public dynamic EndtMinute { get; set; } = 59;
-        }
-        public class WeekendTime
-        {
-            public dynamic StartHour { get; set; } = 0;
-            public dynamic StartMinute { get; set; } = 0;
-            public dynamic EndHour { get; set; } = 23;
-            public dynamic EndtMinute { get; set; } = 59;
-        }
-        public class ScalingPlayers1
-        {
-            public dynamic PointsModifier { get; set; } = 1.0;
-            public dynamic DropModifier { get; set; } = 1.0;
-        }
-        public class ScalingPlayers2
-        {
-            public dynamic PointsModifier { get; set; } = 0.5;
-            public dynamic DropModifier { get; set; } = 0.5;
-        }
-        public class ScalingPlayers3
-        {
-            public dynamic PointsModifier { get; set; } = 0.25;
-            public dynamic DropModifier { get; set; } = 0.25;
-        }
-        public class ScalingPlayers4
-        {
-            public dynamic PointsModifier { get; set; } = 0.25;
-            public dynamic DropModifier { get; set; } = 0.25;
-        }
+        public WeekdayTime WeekdayTime { get; set; } = new WeekdayTime();
+        public WeekendTime WeekendTime { get; set; } = new WeekendTime();
+        public ScalingPlayers1 ScalingPlayers1 { get; set; } = new ScalingPlayers1();
+        public ScalingPlayers2 ScalingPlayers2 { get; set; } = new ScalingPlayers2();
+        public ScalingPlayers3 ScalingPlayers3 { get; set; } = new ScalingPlayers3();
+        public ScalingPlayers4 ScalingPlayers4 { get; set; } = new ScalingPlayers4();
+
+    }
+    public class WeekdayTime
+    {
+        public int StartHour { get; set; } = 0;
+        public int StartMinute { get; set; } = 0;
+        public int EndHour { get; set; } = 23;
+        public int EndMinute { get; set; } = 59;
+    }
+    public class WeekendTime
+    {
+        public int StartHour { get; set; } = 0;
+        public int StartMinute { get; set; } = 0;
+        public int EndHour { get; set; } = 23;
+        public int EndMinute { get; set; } = 59;
+    }
+    public class ScalingPlayers1
+    {
+        public double PointsModifier { get; set; } = 1.00;
+        public double DropModifier { get; set; } = 1.00;
+    }
+    public class ScalingPlayers2
+    {
+        public double PointsModifier { get; set; } = 0.5;
+        public double DropModifier { get; set; } = 0.5;
+    }
+    public class ScalingPlayers3
+    {
+        public double PointsModifier { get; set; } = 0.25;
+        public double DropModifier { get; set; } = 0.25;
+    }
+    public class ScalingPlayers4
+    {
+        public double PointsModifier { get; set; } = 0.25;
+        public double DropModifier { get; set; } = 0.25;
     }
     public class VSCastleWeekdayTime
     {
@@ -291,6 +303,7 @@ namespace VRisingServerManager
 
     public class GameSettings
     {
+        public dynamic GameDifficulty { get; set; } = 1;
         public dynamic GameModeType { get; set; } = 0;
         public dynamic CastleDamageMode { get; set; } = 0;
         public dynamic SiegeWeaponHealth { get; set; } = 2;
@@ -313,6 +326,7 @@ namespace VRisingServerManager
         public int InactivityKillTimeMax { get; set; } = 604800;
         public int InactivityKillSafeTimeAddition { get; set; } = 172800;
         public int InactivityKillTimerMaxItemLevel { get; set; } = 84;
+        public int StartingProgressionLevel { get; set; } = 0;
         public bool DisableDisconnectedDeadEnabled { get; set; } = true;
         public int DisableDisconnectedDeadTimer { get; set; } = 60;
         public double DisconnectedSunImmunityTime { get; set; } = 300.0;
@@ -350,7 +364,7 @@ namespace VRisingServerManager
         public double DismantleResourceModifier { get; set; } = 0.75;
         public double ServantConvertRateModifier { get; set; } = 1.0;
         public double RepairCostModifier { get; set; } = 1.0;
-        public double Death_DurabilityFactorLoss { get; set; } = 0.15;
+        public double Death_DurabilityFactorLoss { get; set; } = 0.125;
         public double Death_DurabilityLossFactorAsResources { get; set; } = 1.0;
         public int StarterEquipmentId { get; set; } = 0;
         public int StarterResourcesId { get; set; } = 0;
@@ -371,6 +385,7 @@ namespace VRisingServerManager
     public class ServerSettings
     {
         public string Name { get; set; } = "V Rising Server";
+        //public string HostName { get; set; } = string.Empty;
         public string Description { get; set; } = "";
         public int Port { get; set; } = 9876;
         public int QueryPort { get; set; } = 9877;

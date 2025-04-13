@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Collections.ObjectModel;
 using ModernWpf.Controls;
 using VRisingServerManager.Controls;
+using Newtonsoft.Json;
 
 namespace VRisingServerManager
 {
@@ -51,7 +52,7 @@ namespace VRisingServerManager
             using (StreamReader reader = new StreamReader(fileToLoad))
             {
                 string LoadedJSON = reader.ReadToEnd();
-                ServerSettings LoadedSettings = JsonSerializer.Deserialize<ServerSettings>(LoadedJSON);
+                ServerSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<ServerSettings>(LoadedJSON);
                 serverSettings = LoadedSettings;
                 DataContext = serverSettings;
             }
@@ -80,7 +81,7 @@ namespace VRisingServerManager
                 using (StreamReader reader = new StreamReader(FileToLoad))
                 {
                     string LoadedJSON = reader.ReadToEnd();
-                    ServerSettings LoadedSettings = JsonSerializer.Deserialize<ServerSettings>(LoadedJSON);
+                    ServerSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<ServerSettings>(LoadedJSON);
                     serverSettings = LoadedSettings;
                     DataContext = serverSettings;
                 }
@@ -122,9 +123,40 @@ namespace VRisingServerManager
                         if (File.Exists(server.Path + @"\SaveData\Settings\ServerHostSettings.json"))
                             File.Copy(server.Path + @"\SaveData\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.bak", true);
 
-                        string SettingsJSON = JsonSerializer.Serialize(serverSettings, serializerOptions);
+                        string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(serverSettings, serializerOptions);
                         File.WriteAllText(server.Path + @"\SaveData\Settings\ServerHostSettings.json", SettingsJSON);
                         MessageBox.Show("文件成功保存于：\n" + server.Path + @"\SaveData\Settings\ServerHostSettings.json");
+
+
+                        string jsonString;
+                        string jsonFilePath = server.Path + @"\SaveData\Settings\ServerHostSettings.json";
+                        using (StreamReader reader = new StreamReader(jsonFilePath))
+                        {
+                            jsonString = reader.ReadToEnd();
+                        }
+                        var jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonString);
+                        if (File.Exists(server.Path + @"\start_server_example.bat"))
+                        {
+                            string[] StartServerCommond = { "@echo off\n" +
+                                "REM Copy this script to your own file and modify to your content. This file can be overwritten when updating.\n " +
+                                "set SteamAppId=1604030\n" +
+                                "echo \"Starting V Rising Dedicated Server - PRESS CTRL-C to exit\"\n\n" +
+                                "@echo on\n" +
+                                "VRisingServer.exe -persistentDataPath " + server.Path + @"\SaveData " + "-serverName \"" + jsonObject.Name  + "\" -saveName \"world1\" -logFile \".\\logs\\VRisingServer.log\""
+                            };
+                            File.WriteAllLines(server.Path + @"\start_server_example.txt", StartServerCommond);
+                            if (File.Exists(server.Path + @"\start_server_example.bat"))
+                            {
+                                File.Delete(server.Path + @"\start_server_example.bat");
+                                File.Copy(server.Path + @"\start_server_example.txt", server.Path + @"\start_server_example.bat");
+                            }
+                                File.Delete(server.Path + @"\start_server_example.txt");
+                        }
+                        string modifiedJsonString = JsonConvert.SerializeObject(jsonObject, Formatting.Indented);
+                        using (StreamWriter writer = new StreamWriter(jsonFilePath))
+                        {
+                            writer.Write(modifiedJsonString);
+                        }
                         return;
                     }
                     else
@@ -136,7 +168,7 @@ namespace VRisingServerManager
 
             try
             {
-                string SettingsJSON = JsonSerializer.Serialize(serverSettings, serializerOptions);
+                string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(serverSettings, serializerOptions);
                 SaveFileDialog SaveSettingsDialog = new SaveFileDialog
                 {
                     Filter = "\"JSON files\"|*.json",

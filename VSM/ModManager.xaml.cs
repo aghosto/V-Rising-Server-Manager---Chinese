@@ -110,7 +110,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 卸载错误",
-                    Content = $"{server.Name} 正在运行，请在安装BepInEx之前终止服务器。",
+                    Content = $"{server.vsmServerName} 正在运行，请在安装BepInEx之前终止服务器。",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -121,7 +121,7 @@ namespace VRisingServerManager
             {
                 Owner = this,
                 Title = "BepInEx - 安装",
-                Content = $"BepInEx现在将下载并安装在{server.Name}上。如果您以前已经手动安装过，请创建备份，因为所有文件都将被覆盖。\n\n是否开始安装？",
+                Content = $"BepInEx现在将下载并安装在{server.vsmServerName}上。如果您以前已经手动安装过，请创建备份，因为所有文件都将被覆盖。\n\n是否开始安装？",
                 PrimaryButtonText = "是",
                 CloseButtonText = "否",
                 DefaultButton = ContentDialogButton.Primary
@@ -173,7 +173,7 @@ namespace VRisingServerManager
                             {
                                 Owner = this,
                                 Title = "BepInEx - 安装",
-                                Content = $"BepInEx 已安装于 {server.Name}.",
+                                Content = $"BepInEx 已安装于 {server.vsmServerName}.",
                                 CloseButtonText = "好的",
                                 DefaultButton = ContentDialogButton.Close
                             }.ShowAsync();
@@ -234,7 +234,7 @@ namespace VRisingServerManager
                     {
                         Owner = this,
                         Title = "BepInEx - 安装",
-                        Content = $"BepInEx 已安装于 {server.Name}。",
+                        Content = $"BepInEx 已安装于 {server.vsmServerName}。",
                         CloseButtonText = "好的",
                         DefaultButton = ContentDialogButton.Close
                     }.ShowAsync();
@@ -260,7 +260,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 卸载错误",
-                    Content = $"{server.Name} 正在运行，请在卸载BepInEx之前终止服务器。",
+                    Content = $"{server.vsmServerName} 正在运行，请在卸载BepInEx之前终止服务器。",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -271,7 +271,7 @@ namespace VRisingServerManager
             {
                 Owner = this,
                 Title = "BepInEx - 卸载",
-                Content = $"BepInEx现在将从 {server.Name} 中卸载。此过程是不可逆的，如果您想要创建插件或配置的备份，请在继续之前完成。所有已安装的MOD也将从服务器上删除。\n\n是否立即卸载？",
+                Content = $"BepInEx现在将从 {server.vsmServerName} 中卸载。此过程是不可逆的，如果您想要创建插件或配置的备份，请在继续之前完成。所有已安装的MOD也将从服务器上删除。\n\n是否立即卸载？",
                 PrimaryButtonText = "时",
                 CloseButtonText = "否",
                 DefaultButton = ContentDialogButton.Primary
@@ -315,7 +315,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 卸载成功",
-                    Content = $"BepInEx已从 {server.Name} 卸载。",
+                    Content = $"BepInEx已从 {server.vsmServerName} 卸载。",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -392,7 +392,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 卸载错误",
-                    Content = $"{server.Name} 正在运行，请先终止服务器。",
+                    Content = $"{server.vsmServerName} 正在运行，请先终止服务器。",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -418,7 +418,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "错误 - BepInEx",
-                    Content = $"{server.Name} 上未安装BepInEx。请先安装BepInEx，然后再安装其他MOD。",
+                    Content = $"{server.vsmServerName} 上未安装BepInEx。请先安装BepInEx，然后再安装其他MOD。",
                     CloseButtonText = "好的",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -510,7 +510,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 卸载错误",
-                    Content = $"{server.Name} 正在运行，请先终止服务器。",
+                    Content = $"{server.vsmServerName} 正在运行，请先终止服务器。",
                     CloseButtonText = "好的",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -668,7 +668,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "安装Mod",
-                    Content = $"{mod.Full_Name} 已安装至 {server.Name}。",
+                    Content = $"{mod.Full_Name} 已安装至 {server.vsmServerName}。",
                     CloseButtonText = "好的",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -692,7 +692,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "卸载Mod",
-                    Content = $"{mod.Full_Name} 已从 {server.Name} 卸载。",
+                    Content = $"{mod.Full_Name} 已从 {server.vsmServerName} 卸载。",
                     CloseButtonText = "好的",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -716,7 +716,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 错误",
-                    Content = $"BepInEx已安装在 {server.Name}。",
+                    Content = $"BepInEx已安装在 {server.vsmServerName}。",
                     CloseButtonText = "好的",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -738,7 +738,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "BepInEx - 错误",
-                    Content = $"{server.Name}上未安装BepInEx。",
+                    Content = $"{server.vsmServerName}上未安装BepInEx。",
                     CloseButtonText = "好的",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
