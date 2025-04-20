@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="管理器设置" Height="600" MaxHeight="1000" Width="800" Icon="Resources\Settings.png" ResizeMode="CanResize">
+        Title="管理器设置" Height="600" MaxHeight="1000" Width="800" Icon="Resources\icon_Settings.png" ResizeMode="CanResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
@@ -17,20 +17,30 @@
             <DockPanel>
                 <TabControl Padding="10" DockPanel.Dock="Top">
 
-                    <TabItem Header="主要设置">
+                    <TabItem Header="主要设置" RenderTransformOrigin="1.786,0.684">
                         <GroupBox Header="主要设置">
                             <StackPanel>
-                                <CheckBox Content="搜索应用程序更新" IsChecked="{Binding AppSettings.AutoUpdateApp, Mode=TwoWay}" ToolTip="VSM是否应在启动时查找新版本。"/>
-                                <CheckBox Content="验证更新" IsChecked="{Binding AppSettings.VerifyUpdates, Mode=TwoWay}" ToolTip="SteamCMD是否应在更新游戏服务器后验证更新。建议启用。"/>
-                                <CheckBox Content="自动更新服务器" IsChecked="{Binding AppSettings.AutoUpdate, Mode=TwoWay}" ToolTip="VSM是否应自动查找游戏服务器的更新。"/>
+                                <CheckBox Content="搜索应用程序更新" IsChecked="{Binding AppSettings.AutoUpdateApp, Mode=TwoWay}" ToolTip="VSM是否应在启动时查找新版本。" FontSize="18"/>
+                                <CheckBox Content="验证更新" IsChecked="{Binding AppSettings.VerifyUpdates, Mode=TwoWay}" ToolTip="SteamCMD是否应在更新游戏服务器后验证更新。建议启用。" FontSize="18"/>
+                                <CheckBox Content="自动更新服务器" IsChecked="{Binding AppSettings.AutoUpdate, Mode=TwoWay}" ToolTip="VSM是否应自动查找游戏服务器的更新。" FontSize="18" Margin="0, 10, 0, 0"/>
                                 <DockPanel Width="140" HorizontalAlignment="Left">
-                                    <TextBlock Text="间隔：" VerticalAlignment="Center"/>
+                                    <TextBlock Text="间隔：" VerticalAlignment="Center" FontSize="18"/>
                                     <ui:NumberBox Value="{Binding AppSettings.AutoUpdateInterval}" Maximum="1440" Minimum="1" SpinButtonPlacementMode="Hidden" Margin="10,0,0,0" IsEnabled="{Binding AppSettings.AutoUpdate}" ToolTip="搜索更新的频率，单位为分，暂未确定是否稳定。"/>
                                 </DockPanel>
-                                <CheckBox Content="显示SteamCMD窗口" IsChecked="{Binding AppSettings.ShowSteamWindow, Mode=TwoWay}" ToolTip="在更新期间是否应显示SteamCMD窗口，在故障排除时很有用。"/>
-                                <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="应用程序是否应在黑暗模式下运行。"/>
-                                <CheckBox Content="自动加载设置文件" IsChecked="{Binding AppSettings.AutoLoadEditor, Mode=TwoWay}" ToolTip="游戏和服务器设置编辑器是否自动尝试加载选定的服务器文件。"/>
-                                <CheckBox Name="ModSupportCheckBox" Content="启用MOD支持" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用试验性MOD支持。" Click="ModSupportCheckBox_Click"/>
+                                <CheckBox Content="显示SteamCMD窗口" IsChecked="{Binding AppSettings.ShowSteamWindow, Mode=TwoWay}" ToolTip="在更新期间是否应显示SteamCMD窗口，在故障排除时很有用。" FontSize="18" Margin="0, 10, 0, 0"/>
+                                <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="应用程序是否应在黑暗模式下运行。" FontSize="18"/>
+                                <CheckBox Content="自动加载设置文件" IsChecked="{Binding AppSettings.AutoLoadEditor, Mode=TwoWay}" ToolTip="游戏和服务器设置编辑器是否自动尝试加载选定的服务器文件。" FontSize="18"/>
+                                <CheckBox Content="启用MOD支持" Name="ModSupportCheckBox" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用试验性MOD支持。" Click="ModSupportCheckBox_Click" FontSize="18"/>
+                                <DockPanel>
+                                    <StackPanel>
+                                        <TextBlock Text="当关闭按钮按下时系统选择" FontSize="18" Margin="5, 15, 0, 0"/>
+                                        <ComboBox x:Name="ColseExecuteSelectCombo" VerticalAlignment="Top" Width="300" Margin="5,0,5,0" OverridesDefaultStyle="True">
+                                            <ComboBoxItem Content="直接退出程序（软件）"/>
+                                            <ComboBoxItem Content="关闭服务器并退出程序"/>
+                                            <ComboBoxItem Content="最小化程序"/>
+                                        </ComboBox>
+                                    </StackPanel>
+                                </DockPanel>
                             </StackPanel>
                         </GroupBox>
                     </TabItem>
@@ -108,7 +118,7 @@
                                 <TextBlock Text="选择要自定义的服务器：" VerticalAlignment="Center" Margin="0,0,20,0"/>
                                 <ComboBox Name="ServerCombo2" ItemsSource="{Binding Servers}" DisplayMemberPath="Name" Width="250"/>
                             </DockPanel>
-                            
+
                             <Separator Margin="0,10,0,10"/>
 
                             <GroupBox Header="RCON">

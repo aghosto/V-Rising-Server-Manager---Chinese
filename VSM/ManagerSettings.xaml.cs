@@ -53,6 +53,19 @@ namespace VRisingServerManager
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
+            switch (ColseExecuteSelectCombo.SelectedIndex)
+            {
+                case 0:
+                    localMainSettings.AppSettings.CloseExecuteSelect = 1;
+                    break;
+                case 1:
+                    localMainSettings.AppSettings.CloseExecuteSelect = 2;
+                    break;
+                case 2:
+                    localMainSettings.AppSettings.CloseExecuteSelect = 3;
+                    break;
+            }
+
             MainSettings.Save(localMainSettings);
             Close();
         }
@@ -67,5 +80,6 @@ namespace VRisingServerManager
             localMainSettings.WebhookSettings.UpdateFound = new Webhook().UpdateFound;
             localMainSettings.WebhookSettings.UpdateWait = new Webhook().UpdateWait;
         }
+
     }
 }

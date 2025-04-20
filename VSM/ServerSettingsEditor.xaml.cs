@@ -7,6 +7,8 @@ using System.Collections.ObjectModel;
 using ModernWpf.Controls;
 using VRisingServerManager.Controls;
 using Newtonsoft.Json;
+using System.Threading.Tasks;
+
 
 namespace VRisingServerManager
 {
@@ -125,9 +127,17 @@ namespace VRisingServerManager
 
                         string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(serverSettings, serializerOptions);
                         File.WriteAllText(server.Path + @"\SaveData\Settings\ServerHostSettings.json", SettingsJSON);
-                        MessageBox.Show("文件成功保存于：\n" + server.Path + @"\SaveData\Settings\ServerHostSettings.json");
 
+                        ContentDialog closeFileDialog = new()
+                        {
+                            Content = "文件成功保存于：\n" + server.Path + @"\SaveData\Settings\ServerHostSettings.json",
+                            PrimaryButtonText = "是",
+                        };
+                        await closeFileDialog.ShowAsync();
+                        
+                        //MessageBox.Show("文件成功保存于：\n" + server.Path + @"\SaveData\Settings\ServerHostSettings.json");
 
+                        
                         string jsonString;
                         string jsonFilePath = server.Path + @"\SaveData\Settings\ServerHostSettings.json";
                         using (StreamReader reader = new StreamReader(jsonFilePath))
@@ -144,7 +154,8 @@ namespace VRisingServerManager
                                 "@echo on\n" +
                                 "VRisingServer.exe -persistentDataPath " + server.Path + @"\SaveData " + "-serverName \"" + jsonObject.Name  + "\" -saveName \"world1\" -logFile \".\\logs\\VRisingServer.log\""
                             };
-                            File.WriteAllLines(server.Path + @"\start_server_example.txt", StartServerCommond);
+                            File.WriteAllLines(server.Path + @"\start_server_example.txt", StartServerCommond, System.Text.Encoding.UTF8);
+
                             if (File.Exists(server.Path + @"\start_server_example.bat"))
                             {
                                 File.Delete(server.Path + @"\start_server_example.bat");
@@ -182,8 +193,9 @@ namespace VRisingServerManager
                     {
                         File.Copy(SaveSettingsDialog.FileName, SaveSettingsDialog.FileName + ".bak", true);
                     }
-                    File.WriteAllText(SaveSettingsDialog.FileName, SettingsJSON);
-                    MessageBox.Show("文件成功保存于：\n" + SaveSettingsDialog.FileName);
+                    File.WriteAllText(SaveSettingsDialog.FileName, SettingsJSON, System.Text.Encoding.UTF8);
+                    await Task.Delay(1000);
+                    MessageBox.Show("文件成功保存于：\n" + SaveSettingsDialog.FileName); 
                 }
             }
             catch (Exception)

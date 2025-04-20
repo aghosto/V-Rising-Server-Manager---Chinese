@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:VRisingServerManager"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
-        Title="管理账号管理器" Height="320" Width="320" Icon="Resources\User.png" ResizeMode="NoResize">
+        Title="管理账号管理器" Height="320" Width="320" Icon="Resources\icon_User.png" ResizeMode="NoResize">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

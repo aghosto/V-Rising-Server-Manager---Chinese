@@ -301,7 +301,14 @@ namespace VRisingServerManager
             get => _enableModSupport;
             set => SetField(ref _enableModSupport, value);
         }
+        private int _closeExecuteSelect;
+        public int CloseExecuteSelect
+        {
+            get => _closeExecuteSelect;
+            set => SetField(ref _closeExecuteSelect, value);
+        }
     }
+}
 
     /// <summary>
     /// Property of <see cref="MainSettings"/> used for webhook settings.
@@ -356,7 +363,6 @@ namespace VRisingServerManager
             set => SetField(ref _fileNames, value);
         }
     }
-}
 
 /// <summary>
 /// Class to implement INotifyPropertyChanged easily

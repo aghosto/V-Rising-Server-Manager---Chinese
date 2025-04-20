@@ -5,9 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:VRisingServerManager"
         xmlns:ui="http://schemas.modernwpf.com/2019"
+        xmlns:tb="http://www.hardcodet.net/taskbar"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
         Title="夜族崛起服务端管理器（V Rising Server Manager）" Height="650" Width="800" ResizeMode="CanMinimize">
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
@@ -16,6 +18,7 @@
             <RowDefinition/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
+
         <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}">
             <TabControl.ItemTemplate>
                 <DataTemplate>
@@ -27,15 +30,15 @@
                                 <Style TargetType="{x:Type Image}">
                                     <Style.Triggers>
                                         <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                            <Setter Property="Source" Value="Resources\StatusRunning.png"/>
+                                            <Setter Property="Source" Value="Resources\icon_StatusRunning.png"/>
                                             <Setter Property="ToolTip" Value="运行中"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                            <Setter Property="Source" Value="Resources\StatusStopped.png"/>
+                                            <Setter Property="Source" Value="Resources\icon_StatusStopped.png"/>
                                             <Setter Property="ToolTip" Value="已停止"/>
                                         </DataTrigger>
                                         <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                            <Setter Property="Source" Value="Resources\DownloadNoColor.png"/>
+                                            <Setter Property="Source" Value="Resources\icon_DownloadNoColor.png"/>
                                             <Setter Property="ToolTip" Value="更新中"/>
                                         </DataTrigger>
                                     </Style.Triggers>
@@ -78,15 +81,15 @@
                             <StackPanel>
                                 <DockPanel>
                                     <TextBlock Text="服务器名称：" VerticalAlignment="Center" Width="90"/>
-                                    <TextBox Text="{Binding LaunchSettings.DisplayName, Mode=TwoWay}" Width="300" IsEnabled="True" ToolTip="服务器列表中显示的服务器的名称(仅在服务端管理器中显示)。"/>
+                                    <TextBox Text="{Binding LaunchSettings.DisplayName, Mode=TwoWay}" Width="250" IsEnabled="True" ToolTip="服务器列表中显示的服务器的名称(仅在服务端管理器中显示)。"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,5,0,0">
                                     <TextBlock Text="存档名称：" IsEnabled="False" VerticalAlignment="Center" Width="90"/>
-                                    <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="300" ToolTip="将保存世界的目录的名称。除非您知道自己在做什么，否则不需要更改。"/>
+                                    <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="250" ToolTip="将保存世界的目录的名称。除非您知道自己在做什么，否则不需要更改。"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,5,0,0">
                                     <CheckBox x:Name="BindToIPCheck" Content="绑定到IP：" IsChecked="{Binding LaunchSettings.BindToIP}" ToolTip="服务器是否绑定到特定的IP地址。"/>
-                                    <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="250" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
+                                    <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="200" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
                                 </DockPanel>
                             </StackPanel>
                         </GroupBox>
@@ -95,8 +98,10 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
@@ -160,7 +165,7 @@
                                             </Style>
                                         </Button.Style>
                                         <DockPanel>
-                                            <Image Source="Resources\Play.png" Margin="5,0,0,0" Stretch="None"/>
+                                            <Image Source="Resources\icon_Play.png" Margin="5,0,0,0" Stretch="None"/>
                                             <TextBlock Text="启动服务器" Margin="5,0,5,0"/>
                                         </DockPanel>
                                     </Button>
@@ -183,7 +188,7 @@
                                             </Style>
                                         </Button.Style>
                                         <DockPanel>
-                                            <Image Source="Resources\Refresh.png" Margin="5,0,0,0" Stretch="None"/>
+                                            <Image Source="Resources\icon_Download.png" Margin="5,0,0,0" Stretch="None"/>
                                             <TextBlock Text="更新服务器" Margin="5,0,5,0"/>
                                         </DockPanel>
                                     </Button>
@@ -191,7 +196,7 @@
                                     <Button Margin="2" ToolTip="打开选定服务器的RCON控制台。" Click="RconServerButton_Click" HorizontalAlignment="Stretch">
                                         <Button.Content>
                                             <DockPanel>
-                                                <Image Source="Resources\Console.png" Margin="5,0,0,0" Stretch="None"/>
+                                                <Image Source="Resources\icon_Console.png" Margin="5,0,0,0" Stretch="None"/>
                                                 <TextBlock Text="远程控制(RCON)" Margin="5,0,5,0"/>
                                             </DockPanel>
                                         </Button.Content>
@@ -220,7 +225,7 @@
                                             </Style>
                                         </Button.Style>
                                         <DockPanel>
-                                            <Image Source="Resources\Stop.png" Margin="5,0,0,0" Stretch="None"/>
+                                            <Image Source="Resources\icon_Stop.png" Margin="5,0,0,0" Stretch="None"/>
                                             <TextBlock Text="停止服务器" Margin="5,0,5,0"/>
                                         </DockPanel>
                                     </Button>
@@ -228,7 +233,7 @@
                                     <Button Margin="2" Click="ServerFolderButton_Click" ToolTip="打开游戏服务器文件夹。" HorizontalAlignment="Stretch">
                                         <Button.Content>
                                             <DockPanel>
-                                                <Image Source="Resources\FolderOpened.png" Margin="5,0,0,0" Stretch="None"/>
+                                                <Image Source="Resources\icon_FolderOpened.png" Margin="5,0,0,0" Stretch="None"/>
                                                 <TextBlock Text="服务器文件夹" Margin="5,0,5,0"/>
                                             </DockPanel>
                                         </Button.Content>
@@ -237,8 +242,53 @@
                                     <Button Margin="2" Click="ManageAdminsButton_Click" ToolTip="管理游戏服务器的管理员。" HorizontalAlignment="Stretch">
                                         <Button.Content>
                                             <DockPanel>
-                                                <Image Source="Resources\User.png" Stretch="None"/>
+                                                <Image Source="Resources\icon_User.png" Stretch="None"/>
                                                 <TextBlock Text="GM管理" ClipToBounds="False"/>
+                                            </DockPanel>
+                                        </Button.Content>
+                                    </Button>
+
+                                </StackPanel>
+                                <StackPanel Grid.Column="2" Grid.Row="1">
+
+                                    <Button Margin="2" Click="RestartServerButton_Click" ToolTip="重启游戏服务器。" HorizontalAlignment="Stretch">
+                                        <Button.Style>
+                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
+                                                        <Setter Property="IsEnabled" Value="True"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Foreground" Value="Gray"/>
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
+                                                        <Setter Property="IsEnabled" Value="False"/>
+                                                        <Setter Property="Foreground" Value="Gray"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <DockPanel>
+                                            <Image Source="Resources\icon_Refresh.png" Margin="5,0,0,0" Stretch="None"/>
+                                            <TextBlock Text="重启服务器" Margin="5,0,5,0"/>
+                                        </DockPanel>
+                                    </Button>
+
+                                    <Button Margin="2" Click="ThemeSelect_Click" ToolTip="更改软件主题，暂未开发完成." HorizontalAlignment="Stretch">
+                                        <Button.Content>
+                                            <DockPanel>
+                                                <Image Source="Resources\icon_ThemeSelect.png" Margin="5,0,0,0" Stretch="None"/>
+                                                <TextBlock Text="更改主题" Margin="5,0,5,0"/>
+                                            </DockPanel>
+                                        </Button.Content>
+                                    </Button>
+
+                                    <Button Margin="2" Click="DevelopButton_Click" ToolTip="在开发中的功能，暂未有想法，点击可跳转Github界面。" HorizontalAlignment="Stretch">
+                                        <Button.Content>
+                                            <DockPanel>
+                                                <Image Source="Resources\icon_Develop.png" Stretch="None"/>
+                                                <TextBlock Text="尚在开发中..."/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
@@ -255,25 +305,25 @@
             <StackPanel Grid.Row="2" Orientation="Horizontal">
                 <Button Margin="5,0,5,0" Padding="5" Click="GameSettingsEditor_Click" ToolTip="打开游戏设置编辑器。">
                     <DockPanel>
-                        <Image Source="Resources\EditDocument.png" Margin="0,0,5,0"/>
+                        <Image Source="Resources\icon_EditDocument.png" Margin="0,0,5,0"/>
                         <TextBlock Text="游戏属性配置编辑器"/>
                     </DockPanel>
                 </Button>
                 <Button Margin="5,0,5,0" Padding="5" Click="ServerSettingsEditorButton_Click" ToolTip="打开服务器设置编辑器。">
                     <DockPanel>
-                        <Image Source="Resources\EditDocument.png" Margin="0,0,5,0"/>
+                        <Image Source="Resources\icon_EditDocument.png" Margin="0,0,5,0"/>
                         <TextBlock Text="服务器连接配置编辑器"/>
                     </DockPanel>
                 </Button>
                 <Button Margin="5,0,5,0" Click="ManagerSettingsButton_Click" Padding="5" ToolTip="打开VSM软件设置。">
                     <DockPanel>
-                        <Image Source="Resources\Settings.png" Margin="0,0,5,0"/>
+                        <Image Source="Resources\icon_Settings.png" Margin="0,0,5,0"/>
                         <TextBlock Text="软件设置"/>
                     </DockPanel>
                 </Button>
                 <Button Margin="5,0,5,0" Click="AddServerButton_Click" Padding="5" ToolTip="添加新的游戏服务器。">
                     <DockPanel>
-                        <Image Source="Resources\Add.png" Margin="0,0,5,0"/>
+                        <Image Source="Resources\icon_Add.png" Margin="0,0,5,0"/>
                         <TextBlock Text="添加服务器"/>
                     </DockPanel>
                 </Button>

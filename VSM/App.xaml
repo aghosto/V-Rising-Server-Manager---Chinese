@@ -3,7 +3,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="clr-namespace:VRisingServerManager"
              xmlns:ui="http://schemas.modernwpf.com/2019"
+             xmlns:tb="http://www.hardcodet.net/taskbar"
              StartupUri="MainWindow.xaml" ShutdownMode="OnMainWindowClose">
+    
     <Application.Resources>
         <ResourceDictionary>
 
@@ -11,7 +13,8 @@
                 <ui:ThemeResources />
                 <ui:XamlControlsResources />
             </ResourceDictionary.MergedDictionaries>
-
+            
+            
             <!--<Style TargetType="{x:Type TextBox}">
                 <Style.Resources>
                     <Style TargetType="{x:Type Border}">
@@ -29,5 +32,6 @@
             </Style>-->
 
         </ResourceDictionary>
+              
     </Application.Resources>
 </Application>

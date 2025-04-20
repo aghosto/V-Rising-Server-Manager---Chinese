@@ -18,6 +18,10 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Xml.Linq;
 using System.Windows.Markup;
+using System.Text;
+using System.Windows.Media.Animation;
+using System.Windows.Navigation;
+
 
 
 namespace VRisingServerManager
@@ -225,6 +229,7 @@ namespace VRisingServerManager
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
+                
             }
 
             await Task.Delay(3000);
@@ -400,7 +405,6 @@ namespace VRisingServerManager
 
         private async Task<bool> StopServer(Server server)
         {
-            LogToConsole("正在停止服务器：" + server.vsmServerName);
             if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.StopServer) && server.WebhookMessages.Enabled == true)
                 SendDiscordMessage(server.WebhookMessages.StopServer);
 
@@ -473,7 +477,7 @@ namespace VRisingServerManager
                 VsmSettings.AppSettings.LastUpdateTimeUNIX = version;
                 foundUpdate = false;
                 if (VsmSettings.AppSettings.LastUpdateTimeUNIX != "")
-                    VsmSettings.AppSettings.LastUpdateTime = "上一次在Steam更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
+                    VsmSettings.AppSettings.LastUpdateTime = "服务端最近更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
 
                 MainSettings.Save(VsmSettings);
                 LogToConsole("当前游戏服务器已是最新版本。");
@@ -669,7 +673,7 @@ namespace VRisingServerManager
         private async void StopServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;            
-
+            LogToConsole("正在停止服务器：" + server.vsmServerName);
             bool success = await StopServer(server);
             if (success)
             {
@@ -680,10 +684,12 @@ namespace VRisingServerManager
                 LogToConsole("无法停止服务器：" + server.vsmServerName);
             }   
         }
-        private async void Restart_Click(object sender, RoutedEventArgs e)
+        private async void RestartServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
+            LogToConsole("正在重启服务器：" + server.vsmServerName + "......");
             bool success = await StopServer(server);
+
             if (success)
             {
                 LogToConsole("已成功停止服务器：" + server.vsmServerName);
@@ -700,11 +706,21 @@ namespace VRisingServerManager
             if (File.Exists(server.Path + @"\start_server_example.bat"))
                 started = await StartServer(server);
             else
-
                 await Task.Delay(3000);
 
             if (started == true && VsmSettings.WebhookSettings.Enabled)
                 ReadLog(server);
+        }
+
+        private void ThemeSelect_Click(object sender, RoutedEventArgs e)
+        {
+            //Do Nothing
+        }
+
+        private void DevelopButton_Click(object sender, RoutedEventArgs e)
+        {
+            //Do Nothing 
+            Process.Start("explorer.exe", "https://github.com/aghosto/V-Rising-Server-Manager---Chinese");
         }
 
         private void RemoveServerButton_Click(object sender, RoutedEventArgs e)
@@ -840,6 +856,20 @@ namespace VRisingServerManager
                 rConsole.Show();
             }
         }
+
+        private void TaskIcon_Click(object sender, RoutedEventArgs e)
+        {
+            
+            MainWindow mainWindow = new MainWindow();
+            mainWindow.Show();
+        }
+
+
         #endregion
+
+        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
+        {
+            Process.Start("explorer.exe", "https://github.com/aghosto/V-Rising-Server-Manager---Chinese");
+        }
     }
 }
