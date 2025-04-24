@@ -2,6 +2,7 @@
 using System.IO;
 using System.Diagnostics;
 using System.Windows.Navigation;
+using ModernWpf.Controls;
 
 namespace VRisingServerManager
 {
@@ -48,7 +49,7 @@ namespace VRisingServerManager
                 AdminList.SelectedIndex = AdminList.Items.Count - 1;
         }
 
-        private void AddAdminButton_Click(object sender, RoutedEventArgs e)
+        private async void AddAdminButton_Click(object sender, RoutedEventArgs e)
         {
             if (AdminToAdd.Text != "")
             {
@@ -58,11 +59,17 @@ namespace VRisingServerManager
             }
             else
             {
-                MessageBox.Show("SteamID为空，添加失败", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                ContentDialog closeFileDialog = new()
+                {
+                    Content = "SteamID为空，添加失败",
+                    PrimaryButtonText = "是",
+                };
+                await closeFileDialog.ShowAsync();
+                //MessageBox.Show("SteamID为空，添加失败", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
-        private void RemoveAdminButton_Click(object sender, RoutedEventArgs e)
+        private async void RemoveAdminButton_Click(object sender, RoutedEventArgs e)
         {
             if (AdminList.SelectedIndex != -1)
             {
@@ -72,7 +79,13 @@ namespace VRisingServerManager
             }
             else
             {
-                MessageBox.Show("请选择需要移除的ID", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                ContentDialog closeFileDialog = new()
+                {
+                    Content = "请选择需要移除的ID",
+                    PrimaryButtonText = "是",
+                };
+                await closeFileDialog.ShowAsync();
+                //MessageBox.Show("请选择需要移除的ID", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             
         }
@@ -82,7 +95,7 @@ namespace VRisingServerManager
             Process.Start("explorer.exe", "https://steamid.io/lookup");
         }
 
-        private void SaveButton_Click(object sender, RoutedEventArgs e)
+        private async void SaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (File.Exists(serverToManage.Path + @"\SaveData\Settings\adminlist.txt"))
             {
@@ -97,7 +110,13 @@ namespace VRisingServerManager
             }
             else
             {
-                MessageBox.Show("未找到管理员文件(adminlist.txt)\n请确认服务器路径设置正确。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                ContentDialog closeFileDialog = new()
+                {
+                    Content = "未找到管理员文件(adminlist.txt)\n请确认服务器路径设置正确。",
+                    PrimaryButtonText = "是",
+                };
+                await closeFileDialog.ShowAsync();
+                //MessageBox.Show("未找到管理员文件(adminlist.txt)\n请确认服务器路径设置正确。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

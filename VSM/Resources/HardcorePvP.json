@@ -14,6 +14,7 @@
   "AnnounceSiegeWeaponSpawn": true,
   "ShowSiegeWeaponMapIcon": false,
   "BatBoundItems": true,
+  "BatBoundShards": true,
   "CastleHeartSafetyBoxLimit": 0,
   "DropTableModifier_General": 2,
   "DropTableModifier_Missions": 2,

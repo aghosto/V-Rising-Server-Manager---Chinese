@@ -7,6 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         ui:WindowHelper.UseModernWindowStyle="True"
+        WindowStartupLocation="CenterScreen"
         mc:Ignorable="d"
         Title="夜族崛起服务端管理器（V Rising Server Manager）" Height="650" Width="800" ResizeMode="CanMinimize">
 

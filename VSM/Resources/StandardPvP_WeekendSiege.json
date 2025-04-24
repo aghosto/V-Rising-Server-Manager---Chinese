@@ -12,6 +12,7 @@
   "ShowSiegeWeaponMapIcon": false,
   "BloodDrainModifier": 1.25,
   "BatBoundItems": true,
+  "BatBoundShards": true,
   "CastleStatModifiers_Global": {
     "CastleLimit": 1
   },

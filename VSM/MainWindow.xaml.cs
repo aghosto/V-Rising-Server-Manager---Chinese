@@ -74,11 +74,21 @@ namespace VRisingServerManager
 
             if (latestVersion != VsmSettings.AppSettings.Version)
             {
-                if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                ContentDialog yesNoDialog = new()
+                {
+                    Content = $"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}",
+                    PrimaryButtonText = "是",
+                };
+                if(await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
                 {
                     Process.Start("VSMUpdater.exe");
                     Application.Current.MainWindow.Close();
                 }
+                //if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                //{
+                //    Process.Start("VSMUpdater.exe");
+                //    Application.Current.MainWindow.Close();
+                //}
             }
             else
             {
@@ -426,20 +436,36 @@ namespace VRisingServerManager
             return success;
         }
 
-        private bool RemoveServer(Server server)
+        private async Task<bool> RemoveServer(Server server)
         {
             int serverIndex = VsmSettings.Servers.IndexOf(server);
             string workingDir = Directory.GetCurrentDirectory();
             string serverName = server.vsmServerName.Replace(" ", "_");
 
-            if (MessageBox.Show($"确认要移除服务器 {server.vsmServerName}？\n此动作将永久移除该服务器及其文件。", "移除服务器—确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            bool success;
+            ContentDialog yesNoDialog = new()
             {
+                Content = $"确认要移除服务器 {server.vsmServerName}？\n此动作将永久移除该服务器及其文件。",
+                PrimaryButtonText = "是",
+                SecondaryButtonText = "否"
+            };
+            if (await yesNoDialog.ShowAsync() is ContentDialogResult.Secondary)
                 return false;
-            }
+
+            //if (MessageBox.Show($"确认要移除服务器 {server.vsmServerName}？\n此动作将永久移除该服务器及其文件。", "移除服务器—确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
+            //{
+            //    return false;
+            //}
 
             if (serverIndex != -1)
             {
-                if (MessageBox.Show($@"是否为该服务器数据创建备份？{Environment.NewLine}备份将保存于：{workingDir}\Backups\{serverName}_Bak.zip", "移除服务器—备份", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                ContentDialog bakDialog = new()
+                {
+                    Content = $@"是否为该服务器数据创建备份？{Environment.NewLine}备份将保存于：{workingDir}\Backups\{serverName}_Bak.zip",
+                    PrimaryButtonText = "是",
+                    SecondaryButtonText = "否"
+                };
+                if (await bakDialog.ShowAsync() is ContentDialogResult.Primary)
                 {
                     if (!Directory.Exists(workingDir + @"\Backups"))
                         Directory.CreateDirectory(workingDir + @"\Backups");
@@ -452,10 +478,25 @@ namespace VRisingServerManager
                         ZipFile.CreateFromDirectory(server.Path + @"\SaveData\", workingDir + @"\Backups\" + serverName + "_Bak.zip");
                     }
                 }
+
+                //if (MessageBox.Show($@"是否为该服务器数据创建备份？{Environment.NewLine}备份将保存于：{workingDir}\Backups\{serverName}_Bak.zip", "移除服务器—备份", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+                //{
+                //    if (!Directory.Exists(workingDir + @"\Backups"))
+                //        Directory.CreateDirectory(workingDir + @"\Backups");
+
+                //    if (Directory.Exists(server.Path + @"\SaveData\"))
+                //    {
+                //        if (File.Exists(workingDir + @"\Backups\" + serverName + "_Bak.zip"))
+                //            File.Delete(workingDir + @"\Backups\" + serverName + "_Bak.zip");
+
+                //        ZipFile.CreateFromDirectory(server.Path + @"\SaveData\", workingDir + @"\Backups\" + serverName + "_Bak.zip");
+                //    }
+                //}
                 VsmSettings.Servers.RemoveAt(serverIndex);
                 if (Directory.Exists(server.Path))
                     Directory.Delete(server.Path, true);
-                return true;
+                success = true;
+                return success;
             }
             else
             {
@@ -715,6 +756,10 @@ namespace VRisingServerManager
         private void ThemeSelect_Click(object sender, RoutedEventArgs e)
         {
             //Do Nothing
+            if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light)
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
+            else
+                ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
         }
 
         private void DevelopButton_Click(object sender, RoutedEventArgs e)
@@ -723,7 +768,7 @@ namespace VRisingServerManager
             Process.Start("explorer.exe", "https://github.com/aghosto/V-Rising-Server-Manager---Chinese");
         }
 
-        private void RemoveServerButton_Click(object sender, RoutedEventArgs e)
+        private async void RemoveServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
 
@@ -732,7 +777,7 @@ namespace VRisingServerManager
                 LogToConsole("错误：找不到要删除的选定服务器");
                 return;
             }
-            bool success = RemoveServer(server);
+            bool success = await RemoveServer(server);
             if (!success)
                 LogToConsole("删除服务器时出错，或操作已中止。");
             else
@@ -756,13 +801,19 @@ namespace VRisingServerManager
             }
         }
 
-        private void ManageAdminsButton_Click(object sender, RoutedEventArgs e)
+        private async void ManageAdminsButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
 
             if (!File.Exists(server.Path + @"\SaveData\Settings\adminlist.txt"))
             {
-                LogToConsole("找不到管理员文件(adminlist.txt)，请确保服务器安装正确。");
+                ContentDialog closeFileDialog = new()
+                {
+                    Content = "找不到管理员文件(adminlist.txt)，请确保服务器安装正确。\n或尝试启动一次服务器",
+                    PrimaryButtonText = "是",
+                };
+                await closeFileDialog.ShowAsync();
+                //LogToConsole("找不到管理员文件(adminlist.txt)，请确保服务器安装正确。");
                 return;
             }
 
@@ -773,14 +824,22 @@ namespace VRisingServerManager
             }
         }
 
-        private void ServerFolderButton_Click(object sender, RoutedEventArgs e)
+        private async void ServerFolderButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
 
             if (Directory.Exists(server.Path))
                 Process.Start("explorer.exe", server.Path);
             else
-                LogToConsole("找不到服务器文件夹。");
+            {
+                ContentDialog closeFileDialog = new()
+                {
+                    Content = "找不到服务器文件夹。",
+                    PrimaryButtonText = "是",
+                };
+                await closeFileDialog.ShowAsync();
+            }
+                //LogToConsole("找不到服务器文件夹。");
         }
 
         private void AddServerButton_Click(object sender, RoutedEventArgs e)
@@ -863,13 +922,6 @@ namespace VRisingServerManager
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }
-
-
         #endregion
-
-        private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
-        {
-            Process.Start("explorer.exe", "https://github.com/aghosto/V-Rising-Server-Manager---Chinese");
-        }
     }
 }

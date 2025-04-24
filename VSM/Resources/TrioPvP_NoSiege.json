@@ -9,7 +9,7 @@
   "PvPProtectionMode": "Short",
   "ClanSize": 3,
   "BatBoundItems": true,
-
+  "BatBoundShards": true,
   "DropTableModifier_General": 1.25,
   "DropTableModifier_Missions": 1.75,
   "MaterialYieldModifier_Global": 1.25,

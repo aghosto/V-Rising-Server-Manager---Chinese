@@ -4,6 +4,8 @@
   "DeathContainerPermission": "Anyone",
   "RelicSpawnType": "Plentiful",
   "BloodBoundEquipment": true,
+  "BatBoundItems": true,
+  "BatBoundShards": true,
   "PlayerDamageMode": "Always",
   "CastleDamageMode": "Never",
   "PvPProtectionMode": "Short",

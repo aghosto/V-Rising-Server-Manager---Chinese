@@ -26,6 +26,8 @@ namespace VRisingServerManager
         public int CastleLimit { get; set; } = 2;
         public int NetherGateLimit { get; set; } = 1;
         public int ThroneOfDarknessLimit {  get; set; } = 1;
+        public string CastleHeartLimitType { get; set; } = "Clan";
+
     }
 
     public class VBloodUnitSetting
@@ -39,13 +41,10 @@ namespace VRisingServerManager
 
     public class EquipmentStatModifiersGlobal
     {
-        public double MaxEnergyModifier { get; set; } = 1.0;
         public double MaxHealthModifier { get; set; } = 1.0;
         public double ResourceYieldModifier { get; set; } = 1.0;
         public double PhysicalPowerModifier { get; set; } = 1.0;
         public double SpellPowerModifier { get; set; } = 1.0;
-        public double SiegePowerModifier { get; set; } = 1.0;
-        public double MovementSpeedModifier { get; set; } = 1.0;
     }
 
     public class FloorPenalties
@@ -193,11 +192,9 @@ namespace VRisingServerManager
     public class VampireStatModifiers
     {
         public double MaxHealthModifier { get; set; } = 1.0;
-        public double MaxEnergyModifier { get; set; } = 1.0;
         public double PhysicalPowerModifier { get; set; } = 1.0;
         public double SpellPowerModifier { get; set; } = 1.0;
         public double ResourcePowerModifier { get; set; } = 1.0;
-        public double SiegePowerModifier { get; set; } = 1.0;
         public double DamageReceivedModifier { get; set; } = 1.0;
         public double ReviveCancelDelay { get; set; } = 5.0;
     }
@@ -321,6 +318,8 @@ namespace VRisingServerManager
         public bool FreeCastleRaid { get; set; } = false;
         public bool FreeCastleClaim { get; set; } = false;
         public bool FreeCastleDestroy { get; set; } = false;        
+        public bool CastleRelocationEnabled { get; set; } = false;        
+        public int CastleRelocationCooldown { get; set; } = 60;        
         public bool InactivityKillEnabled { get; set; } = true;
         public int InactivityKillTimeMin { get; set; } = 3600;
         public int InactivityKillTimeMax { get; set; } = 604800;
@@ -333,6 +332,7 @@ namespace VRisingServerManager
         public double InventoryStacksModifier { get; set; } = 1.0;
         public double DropTableModifier_General { get; set; } = 1.0;
         public double DropTableModifier_Missions { get; set; } = 1.0;
+        public double DropTableModifier_StygianShards { get; set; } = 1.0;
         public double MaterialYieldModifier_Global { get; set; } = 1.0;
         public double BloodEssenceYieldModifier { get; set; } = 1.0;
         public double JournalVBloodSourceUnitMaxDistance { get; set; } = 25.0;
@@ -345,6 +345,7 @@ namespace VRisingServerManager
         public double HolyAreaStrengthModifier { get; set; } = 1.0;
         public double SilverStrengthModifier { get; set; } = 1.0;
         public double SunDamageModifier { get; set; } = 1.0;
+        public double SoulShard_DurabilityLossRate { get; set; } = 1.0;
         public double CastleDecayRateModifier { get; set; } = 1.0;
         public double CastleBloodEssenceDrainModifier { get; set; } = 1.0;
         public double CastleSiegeTimer { get; set; } = 420.0;
@@ -364,7 +365,7 @@ namespace VRisingServerManager
         public double DismantleResourceModifier { get; set; } = 0.75;
         public double ServantConvertRateModifier { get; set; } = 1.0;
         public double RepairCostModifier { get; set; } = 1.0;
-        public double Death_DurabilityFactorLoss { get; set; } = 0.125;
+        public double Death_DurabilityFactorLoss { get; set; } = 0;
         public double Death_DurabilityLossFactorAsResources { get; set; } = 1.0;
         public int StarterEquipmentId { get; set; } = 0;
         public int StarterResourcesId { get; set; } = 0;

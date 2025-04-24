@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019" xmlns:local1="clr-namespace:VRisingServerManager.Controls"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="服务器端设置编辑器" Height="560" Width="820" MinHeight="560" MinWidth="600" MaxHeight="600" MaxWidth="820" ResizeMode="CanResize" Icon="Resources\EditDocument.png">
+        Title="服务器端设置编辑器" Height="560" Width="820" MinHeight="560" MinWidth="600" MaxHeight="600" MaxWidth="820" ResizeMode="CanResize" Icon="Resources\icon_EditDocument.png">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>

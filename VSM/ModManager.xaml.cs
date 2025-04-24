@@ -243,7 +243,13 @@ namespace VRisingServerManager
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("安装BepInEx时出错：\n" + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                    ContentDialog yesDialog = new()
+                    {
+                        Content = $"安装BepInEx时出错：\n + {ex.Message}",
+                        PrimaryButtonText = "是",
+                    };
+                    await yesDialog.ShowAsync();
+                    //MessageBox.Show("安装BepInEx时出错：\n" + ex.Message, "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 }
 
 
@@ -272,7 +278,7 @@ namespace VRisingServerManager
                 Owner = this,
                 Title = "BepInEx - 卸载",
                 Content = $"BepInEx现在将从 {server.vsmServerName} 中卸载。此过程是不可逆的，如果您想要创建插件或配置的备份，请在继续之前完成。所有已安装的MOD也将从服务器上删除。\n\n是否立即卸载？",
-                PrimaryButtonText = "时",
+                PrimaryButtonText = "是",
                 CloseButtonText = "否",
                 DefaultButton = ContentDialogButton.Primary
             };
@@ -328,7 +334,13 @@ namespace VRisingServerManager
         {
             if (DownloadInProgress)
             {
-                MessageBox.Show("已有另一个下载程序正在运行", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                ContentDialog yesDialog = new()
+                {
+                    Content = "已有另一个下载程序正在运行",
+                    PrimaryButtonText = "是",
+                };
+                await yesDialog.ShowAsync();
+                //MessageBox.Show("已有另一个下载程序正在运行", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 

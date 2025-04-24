@@ -15,6 +15,7 @@
   "Death_DurabilityLossFactorAsResources": 0.0,
   "ClanSize": 2,
   "BatBoundItems": true,
+  "BatBoundShards": true,
   "CastleHeartSafetyBoxLimit": 0,
   "DropTableModifier_General": 2,
   "DropTableModifier_Missions": 2,

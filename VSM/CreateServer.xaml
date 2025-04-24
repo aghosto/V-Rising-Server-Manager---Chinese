@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="创建新的服务器" Height="160" Width="825" Icon="Resources\icon_Add.png" ResizeMode="NoResize">
+        Title="创建新的服务器" Height="250" MinWidth="825" Width="825" Icon="Resources\icon_Add.png" ResizeMode="CanResize" WindowStartupLocation="CenterScreen">
     <Grid>
         <StackPanel Margin="5">
             <DockPanel>
@@ -15,11 +15,11 @@
                 <TextBox Text="{Binding vsmServerName, Mode=TwoWay}" Margin="5" Width="625" MaxLength="30" ToolTip="服务器管理器中使用的服务器的名称，该名称只会应用于VSM以分辨不同的服务器" HorizontalAlignment="Left"/>
             </DockPanel>
             <DockPanel>
-                <TextBlock Text="服务器存档路径：" Width="90" VerticalAlignment="Center"/>
+                <TextBlock Text="服务器路径：" Width="90" VerticalAlignment="Center"/>
                 <TextBox x:Name="ServerPathText" Text="{Binding Path, Mode=TwoWay}" Margin="5" IsReadOnly="True" Width="625" ToolTip="安装服务器及其文件的路径。"/>
                 <Button x:Name="ServerPathButton" DockPanel.Dock="Right" Content="选择路径" Margin="5" Click="ServerPathButton_Click" ToolTip="浏览服务器文件存放的路径。"/>
             </DockPanel>
-            <Button Content="创建" HorizontalAlignment="Center" Width="80" Click="CreateButton_Click"/>
+            <Button Content="创建" FontSize="20" HorizontalAlignment="Center" Width="100" Height="40" Click="CreateButton_Click" Margin="0, 50, 0, 0"/>
         </StackPanel>
     </Grid>
 </Window>

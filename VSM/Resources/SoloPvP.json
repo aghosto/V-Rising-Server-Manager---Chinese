@@ -12,6 +12,7 @@
   "ShowSiegeWeaponMapIcon": false,
   "ClanSize": 1,
   "BatBoundItems": true,
+  "BatBoundShards": true,
   "DropTableModifier_General": 1.5,
   "DropTableModifier_Missions": 1.5,
   "MaterialYieldModifier_Global": 1.5,

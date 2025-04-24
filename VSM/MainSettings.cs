@@ -7,6 +7,7 @@ using System.Text.Json.Serialization;
 using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using ModernWpf.Controls;
 
 namespace VRisingServerManager
 {
@@ -52,7 +53,13 @@ namespace VRisingServerManager
             }
             else
             {
-                MessageBox.Show("未找到管理器配置文件(VSMSettings.json)，设置未能导入。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+                ContentDialog yesDialog = new()
+                {
+                    Content = $"未找到管理器配置文件(VSMSettings.json)，设置未能导入。",
+                    PrimaryButtonText = "是",
+                };
+                yesDialog.ShowAsync();
+                //MessageBox.Show("未找到管理器配置文件(VSMSettings.json)，设置未能导入。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
                 MainSettings DefaultSettings = new MainSettings();
                 return DefaultSettings;
             }

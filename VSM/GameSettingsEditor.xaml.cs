@@ -64,14 +64,14 @@ namespace VRisingServerManager
             fakeVBloodUnits.Clear();
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "头狼                    ",  UnitId = -1905691330,   UnitLevel = 16, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "冰霜弓箭手基利          ",  UnitId = 1124739990,    UnitLevel = 20, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "工头鲁弗斯              ",  UnitId = 2122229952,    UnitLevel = 20, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "碎石斗士埃罗尔          ",  UnitId = -2025101517,   UnitLevel = 20, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "工头鲁弗斯              ",  UnitId = 2122229952,    UnitLevel = 20, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "甲胄师格雷森            ",  UnitId = 1106149033,    UnitLevel = 27, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毁灭者戈雷斯温          ",  UnitId = 577478542,     UnitLevel = 27, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "混沌弓箭手莉迪亚        ",  UnitId = 763273073,     UnitLevel = 30, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "腐鼠                    ",  UnitId = -2039908510,   UnitLevel = 30, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "纵火狂克里夫            ",  UnitId = 1896428751,    UnitLevel = 30, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "渔夫芬恩                ",  UnitId = -2122682556,   UnitLevel = 30, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "腐鼠                    ",  UnitId = -2039908510,   UnitLevel = 30, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "渔夫芬恩                ",  UnitId = -2122682556,   UnitLevel = 32, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "精灵游侠波洛拉          ",  UnitId = -484556888,    UnitLevel = 35, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "恶熊                    ",  UnitId = -1391546313,   UnitLevel = 35, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者尼古拉斯          ",  UnitId = 153390636,     UnitLevel = 35, DefaultUnlocked = false });
@@ -80,6 +80,7 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "冰霜使者文森特          ",  UnitId = -29797003,     UnitLevel = 44, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "太阳祭司克里斯蒂娜      ",  UnitId = -99012450,     UnitLevel = 44, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "吸血鬼猎人特里斯坦      ",  UnitId = -1449631170,   UnitLevel = 44, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "英勇骑士欧文爵士（暂）  ",  UnitId = 619948378,     UnitLevel = 44, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "亡灵将军克雷格          ",  UnitId = -1365931036,   UnitLevel = 47, DefaultUnlocked = false }); 
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "暗影祭司琳德拉          ",  UnitId = 939467639,     UnitLevel = 47, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "黑暗学者玛雅            ",  UnitId = 1945956671,    UnitLevel = 47, DefaultUnlocked = false });
@@ -89,6 +90,7 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "地卜师泰拉              ",  UnitId = -1065970933,   UnitLevel = 53, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "雪山骇兽霜喉            ",  UnitId = 24378719,      UnitLevel = 53, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "无心者伊莲娜将军        ",  UnitId = 795262842,     UnitLevel = 53, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "被诅咒的勇者盖乌斯（暂）",  UnitId = -753453016,    UnitLevel = 53, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "背叛者卡西乌斯将军      ",  UnitId = -496360395,    UnitLevel = 57, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "吸血鬼猎人贾德          ",  UnitId = -1968372384,   UnitLevel = 57, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "牧羊人拉齐尔            ",  UnitId = -680831417,    UnitLevel = 57, DefaultUnlocked = false });
@@ -107,16 +109,21 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "风翼族长莫里安          ",  UnitId = 685266977,     UnitLevel = 70, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "元素法师梅尔文          ",  UnitId = -2013903325,   UnitLevel = 70, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "亨利·布莱克布鲁博士    ",  UnitId = 814083983,     UnitLevel = 74, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "暗影猎手夏奇拉（暂）    ",  UnitId = -1383529374,   UnitLevel = 74, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "割脸魔人斯达沃（暂）    ",  UnitId = -1669199769,   UnitLevel = 74, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毒液炼金师路西尔（暂）  ",  UnitId = 1295855316,    UnitLevel = 74, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "编咒师玛特卡            ",  UnitId = -910296704,    UnitLevel = 74, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "食人魔骇爪              ",  UnitId = -1347412392,   UnitLevel = 77, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "太阳使者阿扎瑞尔        ",  UnitId = 114912615,     UnitLevel = 77, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "能源主管沃尔塔蒂亚      ",  UnitId = 2054432370,    UnitLevel = 77, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "吸血鬼猎人西蒙·贝尔蒙特",  UnitId = 2054432370,    UnitLevel = 80, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "锻造工丹托斯（暂）      ",  UnitId = 173259239,     UnitLevel = 80, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "领主冥河-暗夜勇士       ",  UnitId = 1112948824,    UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "巨兽戈雷库什            ",  UnitId = -1936575244,   UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者瓦伦西亚将军      ",  UnitId = 2054432370,    UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "无瑕者索拉鲁斯          ",  UnitId = -740796338,    UnitLevel = 86, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "恐怖翼兽塔尔祖尔        ",  UnitId = -393555055,    UnitLevel = 86, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "巨蛇女王墨伽拉          ",  UnitId = 591725925,     UnitLevel = 86, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "长子亚当                ",  UnitId = 1233988687,    UnitLevel = 88, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "不死君王德古拉          ",  UnitId = -327335305,    UnitLevel = 90, DefaultUnlocked = false });
             VBloodData.ItemsSource = fakeVBloodUnits;
@@ -124,26 +131,33 @@ namespace VRisingServerManager
             fakeAchievements.Add(new Achievement() { ID = -1770927128,  Name = "收集遗骸          ",  Count = 1,  Unlocked = false }) ;
             fakeAchievements.Add(new Achievement() { ID = 436375429,    Name = "舞刀弄剑          ",  Count = 2,  Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -1400391027,  Name = "掌握魔法          ",  Count = 3,  Unlocked = false });
-            fakeAchievements.Add(new Achievement() { ID = -2071097880,  Name = "骨制护甲          ",  Count = 4,  Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -2102083739,  Name = "防御措施          ",  Count = 4,  Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = 1566228114,   Name = "野兽之皮          ",  Count = 4,  Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1695239324,   Name = "向森林进发        ",  Count = 5,  Unlocked = false });
-            fakeAchievements.Add(new Achievement() { ID = 1502386974,   Name = "碎岩利器          ",  Count = 6,  Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -54280488,    Name = "集合              ",  Count = 5,  Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1694767961,   Name = "暗影领主          ",  Count = 7,  Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -1899098914,  Name = "筑起工事          ",  Count = 8,  Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -122882616,   Name = "遮阳棚            ",  Count = 8,  Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 560247139,    Name = "为猎杀做好准备    ",  Count = 9,  Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -1995132640,  Name = "觅血              ",  Count = 10, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -302458684,   Name = "对力量的渴望      ",  Count = 10, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -1434604634,  Name = "图书馆里的第一本书",  Count = 11, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1668809517,   Name = "扩展领地          ",  Count = 12, Unlocked = false });
-            fakeAchievements.Add(new Achievement() { ID = 134993992,    Name = "传送门            ",  Count = 13, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 334973636,    Name = "建造城堡          ",  Count = 14, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = 134993992,    Name = "传送门            ",  Count = 13, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 606418711,    Name = "古堡领主          ",  Count = 15, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "仆从              ",  Count = 16, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -437605270,   Name = "黑暗军团          ",  Count = 17, Unlocked = false });
-            fakeAchievements.Add(new Achievement() { ID = -2104585843,  Name = "统帅宝座          ",  Count = 18, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -1472413073,  Name = "拓展视野          ",  Count = 16, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = 1248242594,   Name = "流出鲜血的龙头    ",  Count = 16, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -327597689,   Name = "统帅宝座          ",  Count = 18, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = 149111189,    Name = "至尊统治          ",  Count = 18, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -452204266,   Name = "窥视莫尔提姆之眼  ",  Count = 18, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1805684941,   Name = "高耸入云的城堡    ",  Count = 19, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -699165894,   Name = "夜幕战马          ",  Count = 20, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1861267375,   Name = "吸血鬼帝国        ",  Count = 21, Unlocked = false });
-            fakeAchievements.Add(new Achievement() { ID = -327597689,   Name = "灵魂之石          ",  Count = 22, Unlocked = false });
-            fakeAchievements.Add(new Achievement() { ID = 1762480233,   Name = "光明之血          ",  Count = 23, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = -2104585843,  Name = "灵魂之石          ",  Count = 22, Unlocked = false });
+            fakeAchievements.Add(new Achievement() { ID = 1762480233,   Name = "暗夜领主          ",  Count = 23, Unlocked = false });
             AchievementsData.ItemsSource = fakeAchievements;
             fakeResearch.Clear();
             fakeResearch.Add(new Research() { Name = "1 阶段", ID = -495424062,  Unlocked = false });
@@ -172,6 +186,15 @@ namespace VRisingServerManager
             {
                 if (research.Unlocked == true)
                     gameSettings.UnlockedResearchs.Add(research.ID);
+            }
+            switch (CastleHeartLimitTypeCombo.SelectedIndex)
+            {
+                case 0:
+                    gameSettings.CastleStatModifiers_Global.CastleHeartLimitType = "User";
+                    break;
+                case 1:
+                    gameSettings.CastleStatModifiers_Global.CastleHeartLimitType = "Clan";
+                    break;
             }
             switch (StarterEquipmentCombo.SelectedIndex)
             {
@@ -251,7 +274,12 @@ namespace VRisingServerManager
                         server = dialog.GetServer();
                         if (!Directory.Exists(server.Path + @"\SaveData\Settings"))
                         {
-                            MessageBox.Show("在服务器路径中未找到SaveData文件夹。请确保您已启动服务器一次。", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                            ContentDialog failDialog = new()
+                            {
+                                Content = "在服务器路径中未找到SaveData文件夹。请确保已启动服务器一次。",
+                                PrimaryButtonText = "是",
+                            };
+                            await failDialog.ShowAsync();
                             return;
                         }
                         if (File.Exists(server.Path + @"\SaveData\Settings\ServerGameSettings.json"))
@@ -259,7 +287,13 @@ namespace VRisingServerManager
 
                         string SettingsJSON = JsonSerializer.Serialize(gameSettings, serializerOptions);
                         File.WriteAllText(server.Path + @"\SaveData\Settings\ServerGameSettings.json", SettingsJSON);
-                        MessageBox.Show("文件已成功保存到：\n" + server.Path + @"\SaveData\Settings\ServerGameSettings.json");
+
+                        ContentDialog yesDialog = new()
+                        {
+                            Content = $"文件已成功保存到：\n" + server.Path + @"\SaveData\Settings\ServerGameSettings.json",
+                            PrimaryButtonText = "是",
+                        };
+                        await yesDialog.ShowAsync(); 
                         return;
                     }
                     else
@@ -286,7 +320,13 @@ namespace VRisingServerManager
                         File.Copy(SaveSettingsDialog.FileName, SaveSettingsDialog.FileName + ".bak", true);
                     }
                     File.WriteAllText(SaveSettingsDialog.FileName, SettingsJSON);
-                    MessageBox.Show("文件已成功保存到：\n" + SaveSettingsDialog.FileName);
+                    ContentDialog yesDialog = new()
+                    {
+                        Content = $"文件已成功保存到：\n" + SaveSettingsDialog.FileName,
+                        PrimaryButtonText = "是",
+                    };
+                    await yesDialog.ShowAsync();
+                    //MessageBox.Show("文件已成功保存到：\n" + SaveSettingsDialog.FileName);
                 }
             }
             catch (Exception)
@@ -391,6 +431,18 @@ namespace VRisingServerManager
                             break;
                         case "VeryHigh":
                             LoadedSettings.SiegeWeaponHealth = 4;
+                            break;
+                        case "MegaHigh":
+                            LoadedSettings.SiegeWeaponHealth = 5;
+                            break;
+                        case "UltraHigh":
+                            LoadedSettings.SiegeWeaponHealth = 6;
+                            break;
+                        case "CrazyHigh":
+                            LoadedSettings.SiegeWeaponHealth = 7;
+                            break;
+                        case "Max":
+                            LoadedSettings.SiegeWeaponHealth = 8;
                             break;
                     }
                 }
@@ -595,6 +647,16 @@ namespace VRisingServerManager
                 {
                     LoadedSettings.WarEventGameSettings.MajorDuration = MajorDurationValue;
                 }
+                switch (LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType)
+                {
+                    case "User":
+                        CastleHeartLimitTypeCombo.SelectedIndex = 0;
+                        break;
+                    case "Clan":
+                        CastleHeartLimitTypeCombo.SelectedIndex = 1;
+                        break;
+
+                }
                 switch (LoadedSettings.StarterEquipmentId)
                 {
                     case 742198603:
@@ -614,6 +676,9 @@ namespace VRisingServerManager
                         break;
                     case -983090495:
                         StarterEquipmentCombo.SelectedIndex = 6;
+                        break;
+                    case -1466803079:
+                        StarterEquipmentCombo.SelectedIndex = 7;
                         break;
                     default:
                         StarterEquipmentCombo.SelectedIndex = 0;

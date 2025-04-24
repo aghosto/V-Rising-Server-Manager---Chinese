@@ -12,6 +12,12 @@
   "ShowSiegeWeaponMapIcon": false,
   "BloodDrainModifier": 1.25,
   "BatBoundItems": true,
+  "BatBoundShards": true,
+  // Not decided yet disabled
+  //"DropTableModifier_General": 1.5,
+  //"DropTableModifier_Missions": 1.5,
+  //"MaterialYieldModifier_Global": 1.5,
+  //"BloodEssenceYieldModifier": 1.5,
   "StarterEquipmentId": 742198603,
   "StarterResourcesId": 1982471388,
   "StartingProgressionLevel": 30,
