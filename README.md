@@ -1,6 +1,6 @@
 <div align="center">
  
-# <img src = "VSM/Resources/logo.ico" width = "26">夜族崛起服务端管理器(VSM) - 简中汉化版
+# <img src = "VSM/Resources/logo.ico" width = "26">夜族崛起服务器管理端（VSM） - 简中汉化版
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/aghosto/V-Rising-Server-Manager---Chinese?logo=github)
 [![Release](https://img.shields.io/github/v/release/aghosto/V-Rising-Server-Manager---Chinese)](https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases)
