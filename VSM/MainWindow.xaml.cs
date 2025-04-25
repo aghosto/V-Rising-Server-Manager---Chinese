@@ -78,12 +78,15 @@ namespace VRisingServerManager
                 {
                     Content = $"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}",
                     PrimaryButtonText = "是",
+                    SecondaryButtonText = "否"
                 };
-                if(await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
                 {
                     Process.Start("VSMUpdater.exe");
                     Application.Current.MainWindow.Close();
                 }
+                else
+                    LogToConsole("用户取消了本次软件更新。");
                 //if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 //{
                 //    Process.Start("VSMUpdater.exe");
@@ -860,7 +863,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "MOD管理器",
-                    Content = $"没有添加任何服务器。请在尝试管理MODS之前至少添加一台服务器。",
+                    Content = $"没有添加任何服务器。请在尝试管理MODS之前至少添加一个服务器。",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
