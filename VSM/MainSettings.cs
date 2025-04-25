@@ -278,13 +278,13 @@ namespace VRisingServerManager
             get => _lastUpdateTimeUNIX;
             set => SetField(ref _lastUpdateTimeUNIX, value);
         }
-        private string _lastUpdateTime = "Last Update on Steam: Unknown";
+        private string _lastUpdateTime = "服务端上次更新：未知";
         public string LastUpdateTime
         {
             get => _lastUpdateTime;
             set => SetField(ref _lastUpdateTime, value);
         }
-        private string _version = "1.3.0";
+        private string _version = "1.3.1";
         public string Version
         {
             get => _version;
