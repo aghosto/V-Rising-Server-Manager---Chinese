@@ -10,8 +10,8 @@
 	<SignAssembly>False</SignAssembly>
 	<Company>Lacyway</Company>
 	<Copyright>Lacyway 2023</Copyright>
-	<PackageProjectUrl>https://github.com/Lacyway/V-Rising-Server-Manager</PackageProjectUrl>
-	<RepositoryUrl>https://github.com/Lacyway/V-Rising-Server-Manager</RepositoryUrl>
+	<PackageProjectUrl>https://github.com/aghosto/V-Rising-Server-Manager---Chinese</PackageProjectUrl>
+	<RepositoryUrl>https://github.com/aghosto/V-Rising-Server-Manager---Chinese</RepositoryUrl>
 	<ApplicationIcon>logo.ico</ApplicationIcon>
 	<ErrorReport>none</ErrorReport>
 	<Description>Server manager for V Rising.</Description>

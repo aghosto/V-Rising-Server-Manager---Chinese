@@ -1,9 +1,11 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
+using ModernWpf;
+
 
 Console.WriteLine("准备下载最新版本。");
-// Console.WriteLine("按任意键开始...");
-// Console.ReadLine();
+//Console.WriteLine("按任意键开始...");
+//Console.ReadLine();
 
 Process[] vsmProcesses = Process.GetProcessesByName("VRisingServerManager");
 if (vsmProcesses.Length != 0)
@@ -75,3 +77,4 @@ Console.ReadKey();
 Process.Start("VRisingServerManager.exe");
 
 Environment.Exit(0);
+
