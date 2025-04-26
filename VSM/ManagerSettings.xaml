@@ -33,7 +33,7 @@
                                 <CheckBox Content="启用MOD支持" Name="ModSupportCheckBox" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用试验性MOD支持。" Click="ModSupportCheckBox_Click" FontSize="18"/>
                                 <DockPanel>
                                     <StackPanel>
-                                        <TextBlock Text="当关闭按钮按下时系统选择" FontSize="18" Margin="5, 15, 0, 0"/>
+                                        <TextBlock Text="当关闭按钮按下时系统选择（未完善，请忽略）" FontSize="18" Margin="5, 15, 0, 0"/>
                                         <ComboBox x:Name="ColseExecuteSelectCombo" VerticalAlignment="Top" Width="300" Margin="5,0,5,0" OverridesDefaultStyle="True">
                                             <ComboBoxItem Content="直接退出程序（软件）"/>
                                             <ComboBoxItem Content="关闭服务器并退出程序"/>

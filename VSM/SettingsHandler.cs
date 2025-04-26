@@ -385,11 +385,11 @@ namespace VRisingServerManager
 
     public class ServerSettings
     {
-        public string Name { get; set; } = "V Rising Server";
-        //public string HostName { get; set; } = string.Empty;
+        public string Name { get; set; } = "My V Rising Server";
         public string Description { get; set; } = "";
         public int Port { get; set; } = 9876;
         public int QueryPort { get; set; } = 9877;
+        public string Address { get; set; } = "";
         public int MaxConnectedUsers { get; set; } = 40;
         public int MaxConnectedAdmins { get; set; } = 4;
         public int ServerFps { get; set; } = 30;

@@ -89,6 +89,10 @@
                                     <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="250" ToolTip="将保存世界的目录的名称。除非您知道自己在做什么，否则不需要更改。"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,5,0,0">
+                                    <TextBlock Text="服务器描述：" IsEnabled="False" VerticalAlignment="Center" Width="90" Height="50"/>
+                                    <TextBox Text="{Binding ServerSettings.Description, Mode=TwoWay}" Width="250" IsEnabled="False" ToolTip="服务器中的描述"/>
+                                </DockPanel>
+                                <DockPanel Margin="0,5,0,0">
                                     <CheckBox x:Name="BindToIPCheck" Content="绑定到IP：" IsChecked="{Binding LaunchSettings.BindToIP}" ToolTip="服务器是否绑定到特定的IP地址。"/>
                                     <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="200" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
                                 </DockPanel>
@@ -146,6 +150,7 @@
                                         </ui:ProgressRing.Style>
                                     </ui:ProgressRing>
                                 </DockPanel>
+                                <ui:ToggleSwitch Header="开发中，占位" Grid.Row="0" Margin="5" Width="100" Grid.Column="2" HorizontalAlignment="Center" IsOn="{Binding UpdateAutoStart, Mode=TwoWay}" ToolTip="更新完毕后自行启动服务器。" IsEnabled="False"/>
                                 <StackPanel Grid.Column="0" Grid.Row="1">
 
                                     <Button Margin="2" Click="StartServerButton_Click" ToolTip="启动游戏服务器。" HorizontalAlignment="Stretch">

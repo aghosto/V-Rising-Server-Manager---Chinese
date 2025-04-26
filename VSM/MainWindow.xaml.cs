@@ -174,7 +174,7 @@ namespace VRisingServerManager
                 File.Delete(workingDir + @"\steamcmd.zip");
             }
 
-            LogToConsole("正在获取V Rising应用信息。");
+            LogToConsole("正在获取V Rising Dedicated Server应用信息。");
             await CheckForUpdate();
 
             return true;
@@ -186,7 +186,7 @@ namespace VRisingServerManager
 
             if (server.Runtime.Process != null)
             {
-                LogToConsole("服务器已经启动并存活。");
+                LogToConsole("服务器 " + (server.vsmServerName) + " 已经启动并存活。");
                 return false;
             }
 
@@ -202,8 +202,8 @@ namespace VRisingServerManager
             }
 
             string workingDir = Directory.GetCurrentDirectory();
-            LogToConsole("正在更新游戏服务器：" + server.vsmServerName + "，在完成前请勿关闭窗口或对软件进行其他操作。");
-            LogToConsole("若显示更新成功但点击启动失败请到软件设置中把 “显示SteamCMD窗口” 选项打开");
+            LogToConsole("\n正在更新/下载游戏服务器：" + server.vsmServerName + "，在完成前请勿关闭窗口或对软件进行其他操作。");
+            LogToConsole("若显示更新成功但启动失败，请到软件设置中把 “显示SteamCMD窗口” 选项打开\n");
             string[] installScript = { "force_install_dir \"" + server.Path + "\"", "login anonymous", (VsmSettings.AppSettings.VerifyUpdates) ? "app_update 1829350 validate" : "app_update 1829350", "quit" };
             if (File.Exists(server.Path + @"\steamcmd.txt"))
                 File.Delete(server.Path + @"\steamcmd.txt");
@@ -223,7 +223,7 @@ namespace VRisingServerManager
             steamcmd.Start();
             await steamcmd.WaitForExitAsync();
 
-            LogToConsole("更新游戏服务器成功：" + server.vsmServerName);
+            LogToConsole("更新/下载游戏服务器成功：" + server.vsmServerName);
             server.Runtime.State = ServerRuntime.ServerState.Stopped;
 
 
@@ -237,34 +237,45 @@ namespace VRisingServerManager
                 LogToConsole($"错误：{server.vsmServerName} 已在运行中");
                 return false;
             }
+            
+            string jsonString;
+            string jsonFilePath;
+
             if (!Directory.Exists(server.Path + @"\SaveData\Settings"))
             {
+                jsonFilePath = server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json";
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
-                
+            }
+            else
+            {
+                if(!(File.Exists(server.Path + server.Path + @"\SaveData\Settings\ServerHostSettings.json") && File.Exists(server.Path + @"\SaveData\Settings\ServerGameSettings.json")))
+                {
+                    //Do Nothing
+                }
+                jsonFilePath = server.Path + @"\SaveData\Settings\ServerHostSettings.json";
             }
 
-            await Task.Delay(3000);
-            string jsonString;
-            string jsonFilePath = server.Path + @"\SaveData\Settings\ServerHostSettings.json";
             using (StreamReader reader = new StreamReader(jsonFilePath))
             {
                 jsonString = reader.ReadToEnd();
             }
-            var jsonObject = JsonConvert.DeserializeObject<dynamic>(jsonString);
+            ServerSettings jsonObject = JsonConvert.DeserializeObject<ServerSettings>(jsonString);
+            LogToConsole("\n当前目标服务器：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称" + server.LaunchSettings.DisplayName);
+            await Task.Delay(5000);
 
             if (File.Exists(server.Path + @"\VRisingServer.exe"))
             {
-                LogToConsole("启动服务器：" + server.vsmServerName + (server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3." : ""));
+                LogToConsole("启动服务器：" + server.vsmServerName + "......" + (server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3." : ""));
                 if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.StartServer) && server.WebhookMessages.Enabled == true)
                     SendDiscordMessage(server.WebhookMessages.StartServer);
-                string parameters = $@"-persistentDataPath ""{server.Path + @"\SaveData"}"" -serverName ""{jsonObject.Name}"" -saveName ""{server.LaunchSettings.WorldName}"" -logFile ""{server.Path + @"\logs\VRisingServer.log"}""{(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
+                string parameters = $@"-persistentDataPath ""{server.Path + @"\SaveData"}"" -serverName ""{jsonObject.Name}"" -saveName ""{server.LaunchSettings.WorldName}"" -logFile ""{server.Path + @"\logs\VRisingServer.log"}";// "{(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
                 Process serverProcess = new()
                 {
                     StartInfo = new ProcessStartInfo
                     {
-                        WindowStyle = ProcessWindowStyle.Minimized,
+                        WindowStyle = ProcessWindowStyle.Normal,
                         FileName = server.Path + @"\VRisingServer.exe",
                         UseShellExecute = true,
                         Arguments = parameters
@@ -276,7 +287,7 @@ namespace VRisingServerManager
                 server.Runtime.State = ServerRuntime.ServerState.Running;
                 server.Runtime.UserStopped = false;
                 server.Runtime.Process = serverProcess;
-
+                LogToConsole("启动服务器完成：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称" + server.LaunchSettings.DisplayName);
                 return true;
             }
 
@@ -510,7 +521,7 @@ namespace VRisingServerManager
         private async Task<bool> CheckForUpdate()
         {
             bool foundUpdate = false;
-            LogToConsole("正在查询更新...");
+            LogToConsole("正在查询服务器更新...");
             string json = await HttpClient.GetStringAsync("https://api.steamcmd.net/v1/info/1829350");
             JsonNode jsonNode = JsonNode.Parse(json);
 
@@ -521,7 +532,7 @@ namespace VRisingServerManager
                 VsmSettings.AppSettings.LastUpdateTimeUNIX = version;
                 foundUpdate = false;
                 if (VsmSettings.AppSettings.LastUpdateTimeUNIX != "")
-                    VsmSettings.AppSettings.LastUpdateTime = "服务端最近更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
+                    VsmSettings.AppSettings.LastUpdateTime = "服务器最近更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
 
                 MainSettings.Save(VsmSettings);
                 LogToConsole("当前游戏服务器已是最新版本。");
@@ -541,7 +552,7 @@ namespace VRisingServerManager
             }
 
             if (VsmSettings.AppSettings.LastUpdateTimeUNIX != "")
-                VsmSettings.AppSettings.LastUpdateTime = "上一次在Steam更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
+                VsmSettings.AppSettings.LastUpdateTime = "服务器上一次更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
 
             MainSettings.Save(VsmSettings);
             return foundUpdate;
@@ -700,11 +711,16 @@ namespace VRisingServerManager
             if (File.Exists(server.Path + @"\start_server_example.bat"))
                 started = await StartServer(server);
             else
-
-            await Task.Delay(3000);
+                await Task.Delay(3000);
 
             if (started == true && VsmSettings.WebhookSettings.Enabled)
                 ReadLog(server);
+
+            //if (!File.Exists(server.Path + @"\SaveData\Settings\ServerHostSettings.json"))
+            //{
+            //    File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
+            //    File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
+            //}
         }
 
         private async void UpdateServerButton_Click(object sender, RoutedEventArgs e)
@@ -731,14 +747,11 @@ namespace VRisingServerManager
         private async void RestartServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
-            LogToConsole("正在重启服务器：" + server.vsmServerName + "......");
+            LogToConsole("\n正在重启服务器：" + server.vsmServerName + "......");
             bool success = await StopServer(server);
 
             if (success)
-            {
                 LogToConsole("已成功停止服务器：" + server.vsmServerName);
-
-            }
             else
             {
                 LogToConsole("无法停止服务器：" + server.vsmServerName);

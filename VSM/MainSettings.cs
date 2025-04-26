@@ -231,7 +231,7 @@ namespace VRisingServerManager
     /// </summary>
     public class LaunchSettings
     {
-        public string DisplayName { get; set; } = "此处服务器名字只是展示，非游戏内名";
+        public string DisplayName { get; set; } = "展示名称，非游戏内名称";
         public string WorldName { get; set; } = "world1";
         public bool BindToIP { get; set; } = false;
         public string BindingIP { get; set; } = "127.0.0.1";
@@ -284,7 +284,7 @@ namespace VRisingServerManager
             get => _lastUpdateTime;
             set => SetField(ref _lastUpdateTime, value);
         }
-        private string _version = "1.3.1";
+        private string _version = "1.3.2";
         public string Version
         {
             get => _version;

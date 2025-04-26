@@ -38,7 +38,7 @@
             <ui:CommandBar.Content>
                 <DockPanel>
                     <TextBlock Text="服务器：" VerticalAlignment="Center" Padding="10,0,0,0"/>
-                    <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="Name" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
+                    <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
                     <TextBlock VerticalAlignment="Center" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
