@@ -110,14 +110,14 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "元素法师梅尔文          ",  UnitId = -2013903325,   UnitLevel = 70, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "亨利·布莱克布鲁博士    ",  UnitId = 814083983,     UnitLevel = 74, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "暗影猎手夏奇拉（暂）    ",  UnitId = -1383529374,   UnitLevel = 74, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "割脸魔人斯达沃（暂）    ",  UnitId = -1669199769,   UnitLevel = 74, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毒液炼金师路西尔（暂）  ",  UnitId = 1295855316,    UnitLevel = 74, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "雕刻师斯塔夫罗斯        ",  UnitId = -1669199769,   UnitLevel = 74, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "炼金术士露西尔          ",  UnitId = 1295855316,    UnitLevel = 74, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "编咒师玛特卡            ",  UnitId = -910296704,    UnitLevel = 74, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "食人魔骇爪              ",  UnitId = -1347412392,   UnitLevel = 77, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "太阳使者阿扎瑞尔        ",  UnitId = 114912615,     UnitLevel = 77, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "能源主管沃尔塔蒂亚      ",  UnitId = 2054432370,    UnitLevel = 77, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "吸血鬼猎人西蒙·贝尔蒙特",  UnitId = 2054432370,    UnitLevel = 80, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "锻造工丹托斯（暂）      ",  UnitId = 173259239,     UnitLevel = 80, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "锻造粘合专家丹特斯      ",  UnitId = 173259239,     UnitLevel = 80, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "领主冥河-暗夜勇士       ",  UnitId = 1112948824,    UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "巨兽戈雷库什            ",  UnitId = -1936575244,   UnitLevel = 83, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者瓦伦西亚将军      ",  UnitId = 2054432370,    UnitLevel = 83, DefaultUnlocked = false });
