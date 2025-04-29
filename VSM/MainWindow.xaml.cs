@@ -931,8 +931,13 @@ namespace VRisingServerManager
 
         private async void FixTools_Click(object sender, RoutedEventArgs e)
         {
+            string workingDir = Directory.GetCurrentDirectory();
             string Thumbprint = "8da7f965ec5efc37910f1c6e59fdc1cc6a6ede16"; //CA证书指纹
+            string registryPath = @"SOFTWARE\Microsoft\VisualStudio";
+            int directxMajorVersion = 0;
+            var OSVersion = Environment.OSVersion;
 
+            // 检查证书
             X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
             store.Open(OpenFlags.MaxAllowed);
             X509Certificate2Collection collection = store.Certificates;
@@ -965,9 +970,8 @@ namespace VRisingServerManager
             else
                 LogToConsole("AmazonRootCA1 证书已存在于你的电脑中。\r");
 
+            //检查VC++ runtime
             LogToConsole("检测是否已安装VC++ runtime。");
-            string registryPath = @"SOFTWARE\Microsoft\VisualStudio";
-            string workingDir = Directory.GetCurrentDirectory();
             RegistryKey key = Registry.LocalMachine.OpenSubKey(registryPath, true);
 
             if (key == null)
@@ -995,6 +999,53 @@ namespace VRisingServerManager
                 LogToConsole("已存在VC++ runtime，跳过本次安装。\r");
             }
             LogToConsole("安装完成。\r");
+
+            //检查DirectX
+            if (OSVersion.Version.Major >= 6)
+            {
+                if (OSVersion.Version.Major > 6 || OSVersion.Version.Minor >= 1)
+                {
+                    directxMajorVersion = 11;
+                }
+                else
+                {
+                    directxMajorVersion = 10;
+                }
+            }
+            if (11 == directxMajorVersion)
+                LogToConsole("本机Directx版本信息正常，可尝试进入游戏查看。\r");
+            else
+            {
+                LogToConsole("本机 Directx 版本信息错误，即将下载运行时，请稍等。");
+                if (!File.Exists(workingDir + @"directx_Jun2010_redist.exe"))
+                {
+                    byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://download.microsoft.com/download/8/4/a/84a35bf1-dafe-4ae8-82af-ad2ae20b6b14/directx_Jun2010_redist.exe");
+                    await File.WriteAllBytesAsync(workingDir + @"\directx_Jun2010_redist.exe", fileBytes);
+                    if (!Directory.Exists(workingDir + @"\directx_Jun2010_redist"))
+                    {
+                        LogToConsole("文件解压中");
+                        Directory.CreateDirectory(workingDir + @"\directx_Jun2010_redist");
+                        Process process = new Process();
+                        process.StartInfo.FileName = "directx_Jun2010_redist.exe";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.Arguments = "/q /T:" + workingDir + "directx_Jun2010_redist' -Wait";
+                        process.Start();
+                        await Task.Delay(5000);
+                        LogToConsole("解压完毕");
+                        File.Delete(workingDir + @"\directx_Jun2010_redist.exe");
+                    }
+
+                    if (File.Exists(workingDir + @"\directx_Jun2010_redist\DXSETUP.exe") == true)
+                    {
+                        Process process = new Process();
+                        process.StartInfo.FileName = "DXSETUP.exe";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.Arguments = "/silent";
+                        process.Start();
+                        LogToConsole("正在安装 DirectX, 大概需要30秒时间...");
+                    }
+                }
+            }
             #endregion
         }
     }
