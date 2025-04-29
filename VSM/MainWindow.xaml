@@ -349,6 +349,12 @@
                         <TextBlock Text="管理模组"/>
                     </DockPanel>
                 </Button>
+                <Button Margin="5,0,5,0" Click="FixTools_Click" Padding="5" ToolTip="打开VSM软件设置。">
+                    <DockPanel>
+                        <ui:SymbolIcon Symbol="Pin" Margin="0,0,5,0"/>
+                        <TextBlock Text="修复工具"/>
+                    </DockPanel>
+                </Button>
             </StackPanel>
         </GroupBox>
         <Grid Grid.Row="2" Margin="0,96,0,37" Grid.RowSpan="3">
@@ -357,7 +363,6 @@
         <DockPanel Grid.Row="4">
             <StatusBar>
                 <StatusBarItem HorizontalAlignment="Left">
-
                     <Button ToolTip="单击以搜索新的更新。" Click="VersionButton_Click">
                         <Button.Content>
                             <TextBlock>                                                            
