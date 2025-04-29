@@ -53,7 +53,7 @@
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="描述" Height="20" DockPanel.Dock="Left" VerticalAlignment="Top"/>
-                        <TextBox Height="150" Text="{Binding Description, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="简短的服务器描述。设置条目后，将显示在服务器列表的详细信息面板中，当连接到服务器时，还会在聊天中暂时显示。"/>
+                        <TextBox Height="150" Text="{Binding Description, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="简短的服务器描述。设置条目后，将显示在服务器列表的详细信息面板中，当连接到服务器时，还会在聊天中暂时显示。" TextWrapping="Wrap"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="连接端口" Height="20" ToolTip="UDP port for game traffic."/>

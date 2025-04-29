@@ -202,8 +202,8 @@ namespace VRisingServerManager
             }
 
             string workingDir = Directory.GetCurrentDirectory();
-            LogToConsole("\n正在更新/下载游戏服务器：" + server.vsmServerName + "，在完成前请勿关闭窗口或对软件进行其他操作。");
-            LogToConsole("若显示更新成功但启动失败，请到软件设置中把 “显示SteamCMD窗口” 选项打开\n");
+            LogToConsole("\r正在更新/下载游戏服务器：" + server.vsmServerName + "，在完成前请勿关闭窗口或对软件进行其他操作。");
+            LogToConsole("若显示更新成功但启动失败，请到软件设置中把 “显示SteamCMD窗口” 选项打开\r");
             string[] installScript = { "force_install_dir \"" + server.Path + "\"", "login anonymous", (VsmSettings.AppSettings.VerifyUpdates) ? "app_update 1829350 validate" : "app_update 1829350", "quit" };
             if (File.Exists(server.Path + @"\steamcmd.txt"))
                 File.Delete(server.Path + @"\steamcmd.txt");
@@ -247,6 +247,7 @@ namespace VRisingServerManager
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
+                LogToConsole("已完成创建SaveData文件夹存放自定义设置文件。");
             }
             else
             {
@@ -262,7 +263,7 @@ namespace VRisingServerManager
                 jsonString = reader.ReadToEnd();
             }
             ServerSettings jsonObject = JsonConvert.DeserializeObject<ServerSettings>(jsonString);
-            LogToConsole("\n当前目标服务器：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称" + server.LaunchSettings.DisplayName);
+            LogToConsole("\r当前目标服务器：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称：" + server.LaunchSettings.DisplayName);
             await Task.Delay(5000);
 
             if (File.Exists(server.Path + @"\VRisingServer.exe"))
@@ -270,7 +271,7 @@ namespace VRisingServerManager
                 LogToConsole("启动服务器：" + server.vsmServerName + "......" + (server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3." : ""));
                 if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.StartServer) && server.WebhookMessages.Enabled == true)
                     SendDiscordMessage(server.WebhookMessages.StartServer);
-                string parameters = $@"-persistentDataPath ""{server.Path + @"\SaveData"}"" -serverName ""{jsonObject.Name}"" -saveName ""{server.LaunchSettings.WorldName}"" -logFile ""{server.Path + @"\logs\VRisingServer.log"}";// "{(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
+                string parameters = $@"-persistentDataPath ""{server.Path + @"\SaveData"}"" -serverName ""{jsonObject.Name}"" -saveName ""{server.LaunchSettings.WorldName}"" -logFile ""{server.Path + @"\logs\VRisingServer.log"}""{(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
                 Process serverProcess = new()
                 {
                     StartInfo = new ProcessStartInfo
@@ -282,6 +283,7 @@ namespace VRisingServerManager
                     },
                     EnableRaisingEvents = true
                 };
+                LogToConsole("正在载入配置文件...");
                 serverProcess.Exited += new EventHandler((sender, e) => ServerProcessExited(sender, e, server));
                 serverProcess.Start();
                 server.Runtime.State = ServerRuntime.ServerState.Running;
@@ -747,7 +749,7 @@ namespace VRisingServerManager
         private async void RestartServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
-            LogToConsole("\n正在重启服务器：" + server.vsmServerName + "......");
+            LogToConsole("\r正在重启服务器：" + server.vsmServerName + "......");
             bool success = await StopServer(server);
 
             if (success)
@@ -758,6 +760,7 @@ namespace VRisingServerManager
                 return;
             }
             await Task.Delay(3000);
+            LogToConsole("正在启动服务器：" + server.vsmServerName + "......");
             bool started = false;
             MainSettings.Save(VsmSettings);
             if (File.Exists(server.Path + @"\start_server_example.bat"))

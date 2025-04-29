@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using static System.Windows.Forms.DataFormats;
 
 namespace VRisingServerManager
 {
@@ -319,7 +320,7 @@ namespace VRisingServerManager
         public bool FreeCastleClaim { get; set; } = false;
         public bool FreeCastleDestroy { get; set; } = false;        
         public bool CastleRelocationEnabled { get; set; } = false;        
-        public int CastleRelocationCooldown { get; set; } = 60;        
+        public float CastleRelocationCooldown { get; set; } = 60;        
         public bool InactivityKillEnabled { get; set; } = true;
         public int InactivityKillTimeMin { get; set; } = 3600;
         public int InactivityKillTimeMax { get; set; } = 604800;

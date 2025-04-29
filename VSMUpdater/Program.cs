@@ -2,8 +2,6 @@
 using System.IO.Compression;
 
 Console.WriteLine("准备下载最新版本。");
-// Console.WriteLine("按任意键开始...");
-// Console.ReadLine();
 
 Process[] vsmProcesses = Process.GetProcessesByName("VRisingServerManager");
 if (vsmProcesses.Length != 0)
@@ -27,7 +25,6 @@ if (!File.Exists(workingDir + @"\VRisingServerManager.exe"))
 Console.WriteLine("正在开始更新VSM。");
 Console.WriteLine("正在下载文件...");
 
-//byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
 byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://gh-proxy.com/github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
 Console.WriteLine("下载成功。");
 
@@ -59,7 +56,7 @@ foreach (string file in files)
     string fileName = Path.GetFileName(file);    
     if (fileName != "VSMUpdater.exe" && fileName != "VSM.zip")
     {
-        Console.WriteLine("Copying: " + fileName);
+        Console.WriteLine("正在复制: " + fileName);
         File.Copy(file, workingDir + fileName, true);
     }
 }

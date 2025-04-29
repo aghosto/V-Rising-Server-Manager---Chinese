@@ -85,13 +85,13 @@
                                     <TextBox Text="{Binding LaunchSettings.DisplayName, Mode=TwoWay}" Width="250" IsEnabled="True" ToolTip="服务器列表中显示的服务器的名称(仅在服务端管理器中显示)。"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,5,0,0">
-                                    <TextBlock Text="存档名称：" IsEnabled="False" VerticalAlignment="Center" Width="90"/>
-                                    <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="250" ToolTip="将保存世界的目录的名称。除非您知道自己在做什么，否则不需要更改。"/>
+                                    <TextBlock Text="存档名称：" VerticalAlignment="Center" Width="90"/>
+                                    <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="250" IsEnabled="False" ToolTip="将保存世界的目录的名称。除非您知道自己在做什么，否则不需要更改。"/>
                                 </DockPanel>
-                                <DockPanel Margin="0,5,0,0">
-                                    <TextBlock Text="服务器描述：" IsEnabled="False" VerticalAlignment="Center" Width="90" Height="50"/>
+                                <!--<DockPanel Margin="0,5,0,0">
+                                    <TextBlock Text="服务器描述：" VerticalAlignment="Center" Width="90" Height="50"/>
                                     <TextBox Text="{Binding ServerSettings.Description, Mode=TwoWay}" Width="250" IsEnabled="False" ToolTip="服务器中的描述"/>
-                                </DockPanel>
+                                </DockPanel>-->
                                 <DockPanel Margin="0,5,0,0">
                                     <CheckBox x:Name="BindToIPCheck" Content="绑定到IP：" IsChecked="{Binding LaunchSettings.BindToIP}" ToolTip="服务器是否绑定到特定的IP地址。"/>
                                     <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="200" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
