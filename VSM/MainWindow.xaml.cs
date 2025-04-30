@@ -37,6 +37,7 @@ namespace VRisingServerManager
         public MainSettings VsmSettings = new();
         private static dWebhook DiscordSender = new();
         private static HttpClient HttpClient = new();
+        private VoiceServicesSettings VoiceServicesSettings = new();
         private PeriodicTimer? AutoUpdateTimer;
         private RemoteConClient RCONClient;
 
@@ -90,11 +91,6 @@ namespace VRisingServerManager
                 }
                 else
                     LogToConsole("用户取消了本次软件更新。");
-                //if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                //{
-                //    Process.Start("VSMUpdater.exe");
-                //    Application.Current.MainWindow.Close();
-                //}
             }
             else
             {
@@ -245,7 +241,6 @@ namespace VRisingServerManager
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
-
             }
 
             await Task.Delay(3000);
@@ -761,17 +756,52 @@ namespace VRisingServerManager
 
         private void ThemeSelect_Click(object sender, RoutedEventArgs e)
         {
-            //Do Nothing
             if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light)
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             else
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
         }
 
-        private void DevelopButton_Click(object sender, RoutedEventArgs e)
+        private async void VoiceServices_Click(object sender, RoutedEventArgs e)
         {
-            //Do Nothing 
-            Process.Start("explorer.exe", "https://github.com/aghosto/V-Rising-Server-Manager---Chinese");
+            Server server = ((Button)sender).DataContext as Server;
+             
+            if (!File.Exists(server.Path + @"\SaveData\Settings\ServerVoipSettings.json"))
+            {
+                ContentDialog yesNoDialog = new ContentDialog()
+                {
+                    Content = "未检测到Unity语音配置文件，是否进行配置？",
+                    PrimaryButtonText = "是",
+                    SecondaryButtonText = "否"
+                };
+                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                {
+                    string Json = JsonConvert.SerializeObject(VoiceServicesSettings, Formatting.Indented);
+                    File.WriteAllText(server.Path + @"\SaveData\Settings\ServerVoipSettings.json", Json);
+                }
+                else
+                {
+                    ContentDialog yesDialog = new ContentDialog()
+                    {
+                        Content = "用户取消本次配置。",
+                        PrimaryButtonText = "关闭",
+                    };
+                }
+            }
+
+            if (!Application.Current.Windows.OfType<VoiceServicesEditor>().Any())
+            {
+                if (VsmSettings.AppSettings.AutoLoadEditor == true && !(ServerTabControl.SelectedIndex == -1))
+                {
+                    VoiceServicesEditor vSettingsEditor = new(VsmSettings.Servers, true, ServerTabControl.SelectedIndex);
+                    vSettingsEditor.Show();
+                }
+                else
+                {
+                    VoiceServicesEditor vSettingsEditor = new(VsmSettings.Servers);
+                    vSettingsEditor.Show();
+                }
+            }
         }
 
         private async void RemoveServerButton_Click(object sender, RoutedEventArgs e)

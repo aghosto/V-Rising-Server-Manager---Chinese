@@ -285,11 +285,11 @@
                                         </Button.Content>
                                     </Button>
 
-                                    <Button Margin="2" Click="DevelopButton_Click" ToolTip="在开发中的功能，暂未有想法，点击可跳转Github界面。" HorizontalAlignment="Stretch">
+                                    <Button Margin="2" Click="VoiceServices_Click" ToolTip="点击可为服务器安装语音功能，需要自行到官网注册获取Token。" HorizontalAlignment="Stretch">
                                         <Button.Content>
                                             <DockPanel>
-                                                <Image Source="Resources\icon_Develop.png" Stretch="None"/>
-                                                <TextBlock Text="尚在开发中..."/>
+                                                <ui:SymbolIcon Symbol="Phone" Margin="0 0 3 0"/>
+                                                <TextBlock Text="近场语音"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
