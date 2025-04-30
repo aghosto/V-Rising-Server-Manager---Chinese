@@ -293,7 +293,8 @@
                                     <Button Margin="2" Click="VoiceServices_Click" ToolTip="点击可为服务器安装语音功能，需要自行到官网注册获取Token。" HorizontalAlignment="Stretch">
                                         <Button.Content>
                                             <DockPanel>
-                                                <ui:SymbolIcon Symbol="Phone" Margin="0 0 3 0"/>
+                                                <!--<ui:SymbolIcon Symbol="Phone" Margin="0 0 3 0"/>-->
+                                                <Image Source="Resources\icon_Develop.png" Margin="0 0 5 0"/>
                                                 <TextBlock Text="近场语音"/>
                                             </DockPanel>
                                         </Button.Content>

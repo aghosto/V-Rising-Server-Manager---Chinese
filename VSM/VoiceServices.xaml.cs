@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using System.Threading.Tasks;
 using System.IO.Compression;
 using System.Net.Http;
+using System.Diagnostics;
 
 
 namespace VRisingServerManager
@@ -139,6 +140,7 @@ namespace VRisingServerManager
                             PrimaryButtonText = "是",
                         };
                         await closeFileDialog.ShowAsync();
+                        return;
                     }
                     else
                     {
@@ -177,6 +179,11 @@ namespace VRisingServerManager
         private void FileMenuExit_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
+        {
+            Process.Start("explorer.exe", "https://unity.com/products/vivox-voice-chat");
         }
     }
 }

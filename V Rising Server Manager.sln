@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VRisingServerManager", "VSM
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resources", "Resources", "{7BC5C92F-E788-4B06-ABAF-097023EF8173}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VSMUpdater", "VSMUpdater\VSMUpdater.csproj", "{2F749ABE-2914-4859-8094-790E5C7BD3A9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VSMUpdater", "VSMUpdater\VSMUpdater.csproj", "{2F749ABE-2914-4859-8094-790E5C7BD3A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

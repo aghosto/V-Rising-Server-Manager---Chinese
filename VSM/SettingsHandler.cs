@@ -415,12 +415,12 @@ namespace VRisingServerManager
     public class VoiceServicesSettings
     {
         public bool VOIPEnabled { get; set; } = false;
-        public string VOIPIssuer = "";
-        public string VOIPSecret = "";
-        public string VOIPAppUserId = "";
-        public string VOIPAppUserPwd = "";
-        public string VOIPVivoxDomain = "";
-        public string VOIPAPIEndpoint = "";
+        public string VOIPIssuer { get; set; } = "";
+        public string VOIPSecret { get; set; } = "";
+        public string VOIPAppUserId { get; set; } = "";
+        public string VOIPAppUserPwd { get; set; } = "";
+        public string VOIPVivoxDomain { get; set; } = "";
+        public string VOIPAPIEndpoint { get; set; } = "";
         public int VOIPConversationalDistance { get; set; } = 14;
         public int VOIPAudibleDistance { get; set; } = 40;
         public double VOIPConversationalSpeed { get; set; } = 2.0;

@@ -24,6 +24,7 @@ using System.Windows.Navigation;
 using System.Security.Cryptography.X509Certificates;
 using System.Runtime.InteropServices;
 using Microsoft.Win32;
+using System.Timers;
 
 
 
@@ -91,14 +92,6 @@ namespace VRisingServerManager
                 }
                 else
                     LogToConsole("用户取消了本次软件更新。");
-<<<<<<< HEAD
-                //if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                //{
-                //    Process.Start("VSMUpdater.exe");
-                //    Application.Current.MainWindow.Close();
-                //}
-=======
->>>>>>> dev
             }
             else
             {
@@ -114,11 +107,11 @@ namespace VRisingServerManager
             if (VsmSettings.AppSettings.AutoUpdate == true)
             {
 #if DEBUG
-                //                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
-//                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
+                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-                //                AutoUpdateLoop();
+                AutoUpdateLoop();
             }
         }
 
@@ -254,7 +247,6 @@ namespace VRisingServerManager
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
-<<<<<<< HEAD
                 LogToConsole("已完成创建SaveData文件夹存放自定义设置文件。");
             }
             else
@@ -264,8 +256,6 @@ namespace VRisingServerManager
                     //Do Nothing
                 }
                 jsonFilePath = server.Path + @"\SaveData\Settings\ServerHostSettings.json";
-=======
->>>>>>> dev
             }
 
             using (StreamReader reader = new StreamReader(jsonFilePath))
@@ -504,20 +494,6 @@ namespace VRisingServerManager
                         ZipFile.CreateFromDirectory(server.Path + @"\SaveData\", workingDir + @"\Backups\" + serverName + "_Bak.zip");
                     }
                 }
-
-                //if (MessageBox.Show($@"是否为该服务器数据创建备份？{Environment.NewLine}备份将保存于：{workingDir}\Backups\{serverName}_Bak.zip", "移除服务器—备份", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
-                //{
-                //    if (!Directory.Exists(workingDir + @"\Backups"))
-                //        Directory.CreateDirectory(workingDir + @"\Backups");
-
-                //    if (Directory.Exists(server.Path + @"\SaveData\"))
-                //    {
-                //        if (File.Exists(workingDir + @"\Backups\" + serverName + "_Bak.zip"))
-                //            File.Delete(workingDir + @"\Backups\" + serverName + "_Bak.zip");
-
-                //        ZipFile.CreateFromDirectory(server.Path + @"\SaveData\", workingDir + @"\Backups\" + serverName + "_Bak.zip");
-                //    }
-                //}
                 VsmSettings.Servers.RemoveAt(serverIndex);
                 if (Directory.Exists(server.Path))
                     Directory.Delete(server.Path, true);
@@ -658,17 +634,18 @@ namespace VRisingServerManager
 
         private void AppSettings_PropertyChanged(object? sender, PropertyChangedEventArgs e)
         {
+
             switch (e.PropertyName)
             {
                 case "AutoUpdate":
                     if (VsmSettings.AppSettings.AutoUpdate == true)
                     {
 #if DEBUG
-                        //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+                        //AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
 //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-                        //                        AutoUpdateLoop();
+                        //AutoUpdateLoop();
                         LookForUpdate();
                     }
                     else
@@ -682,13 +659,13 @@ namespace VRisingServerManager
                 case "AutoUpdateInterval":
                     if (VsmSettings.AppSettings.AutoUpdate == true && AutoUpdateTimer != null)
                     {
-                        //                        AutoUpdateTimer.Dispose();
+                        AutoUpdateTimer.Dispose();
 #if DEBUG
-                        //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
 //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-                        //                        AutoUpdateLoop();
+                        AutoUpdateLoop();
                     }
                     break;
                 case "DarkMode":
@@ -723,20 +700,10 @@ namespace VRisingServerManager
             if (File.Exists(server.Path + @"\start_server_example.bat"))
                 started = await StartServer(server);
             else
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
                 await Task.Delay(3000);
 
             if (started == true && VsmSettings.WebhookSettings.Enabled)
                 ReadLog(server);
-
-            //if (!File.Exists(server.Path + @"\SaveData\Settings\ServerHostSettings.json"))
-            //{
-            //    File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
-            //    File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
-            //}
         }
 
         private async void UpdateServerButton_Click(object sender, RoutedEventArgs e)

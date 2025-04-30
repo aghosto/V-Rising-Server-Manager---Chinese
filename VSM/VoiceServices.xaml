@@ -46,43 +46,51 @@
 
                 <StackPanel HorizontalAlignment="Left">
                     <DockPanel>
-                        <CheckBox Content="启用VOIP服务" Height="20" IsChecked="{Binding VoiceServicesSettings.VOIPEnabled, Mode=TwoWay}" FontSize="20"/>
+                        <CheckBox Content="启用VOIP服务" Height="20" IsChecked="{Binding VOIPEnabled, Mode=TwoWay}" FontSize="18"/>
+                        <TextBlock x:Name="TextLink" VerticalAlignment="Center" Margin="85,0,0,0" ToolTip="点击进入Unity注册语音服务。" HorizontalAlignment="Left" FontSize="20">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="{DynamicResource {x:Static SystemColors.HighlightColorKey}}"/>
+                            </TextBlock.Foreground>
+                            <Hyperlink NavigateUri="https://unity.com/products/vivox-voice-chat" RequestNavigate="Hyperlink_RequestNavigate">
+                                VOIP语音服务网站
+                            </Hyperlink>
+                        </TextBlock>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP颁发者(Issuer)" Height="20" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0 0 5 0"/>
-                        <TextBox Text="{Binding VoiceServicesSettings.VOIPIssuer, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的发行人（注册的号）。"/>
+                        <TextBox Text="{Binding VOIPIssuer, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的发行人（注册的号）。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP秘钥(Secret)" Height="20" ToolTip="UDP port for game traffic." />
-                        <TextBox Text="{Binding VoiceServicesSettings.VOIPSecret, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的秘钥。"/>
+                        <TextBox Text="{Binding VOIPSecret, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的秘钥。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP用户ID(ApppUserId)" Height="20"/>
-                        <ui:NumberBox Value="{Binding VoiceServicesSettings.VOIPAppUserId, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的用户ID。"/>
+                        <ui:NumberBox Value="{Binding VOIPAppUserId, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的用户ID。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP用户密码(AppUserPwd)" Height="20" Margin="0 0 20 0"/>
-                        <ui:NumberBox Value="{Binding VoiceServicesSettings.VOIPAppUserPwd, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的用户密码。"/>
+                        <ui:NumberBox Value="{Binding VOIPAppUserPwd, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的用户密码。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP语音域名(VivoxDomain)" Height="20"/>
-                        <TextBox Text="{Binding VoiceServicesSettings.VOIPVivoxDomain, Mode=TwoWay}"  HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的语音域名。"/>
+                        <TextBox Text="{Binding VOIPVivoxDomain, Mode=TwoWay}"  HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的语音域名。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP接口端点(APIEndpoint)" Height="20"/>
-                        <TextBox Text="{Binding VoiceServicesSettings.VOIPAPIEndpoint, Mode=TwoWay}"  HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的接口端点。"/>
+                        <TextBox Text="{Binding VOIPAPIEndpoint, Mode=TwoWay}"  HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的接口端点。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP对话距离(Conversation)" Height="20" />
-                        <ui:NumberBox Value="{Binding VoiceServicesSettings.VOIPConversationalDistance, Mode=TwoWay}" IsEnabled="False" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器内游戏语音对话的距离（数值越大，可对话距离越远）。" FontSize="14"/>
+                        <ui:NumberBox Value="{Binding VOIPConversationalDistance, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器内游戏语音对话的距离（数值越大，可对话距离越远）。" FontSize="14"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP可听范围(Audible)" Height="20"/>
-                        <ui:NumberBox Value="{Binding VoiceServicesSettings.VOIPAudibleDistance, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器内游戏语音对话可听的范围（数值越高，可听范围越广）。"/>
+                        <ui:NumberBox Value="{Binding VOIPAudibleDistance, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器内游戏语音对话可听的范围（数值越高，可听范围越广）。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="VOIP消失强度(FadeIntensity)" Height="20"/>
-                        <ui:NumberBox Value="{Binding VoiceServicesSettings.VOIPConversationalSpeed, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器内游戏语音对话消失的强度（数值越高，远离玩家的话声音就越快消失）"/>
+                        <ui:NumberBox Value="{Binding VOIPConversationalSpeed, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器内游戏语音对话消失的强度（数值越高，远离玩家的话声音就越快消失）"/>
                     </DockPanel>
                 </StackPanel>
             </Grid>

@@ -254,14 +254,14 @@ namespace VRisingServerManager
             get => _autoUpdate;
             set => SetField(ref _autoUpdate, value);
         }
-        private bool _autoUpdateApp = false;
+        private bool _autoUpdateApp = true;
         public bool AutoUpdateApp
         {
             get => _autoUpdateApp;
             set => SetField(ref _autoUpdateApp, value);
         }
         private int _autoUpdateInterval = 60;
-        private bool _showSteamWindow = false;
+        private bool _showSteamWindow = true;
         public bool ShowSteamWindow
         {
             get => _showSteamWindow;
@@ -284,11 +284,8 @@ namespace VRisingServerManager
             get => _lastUpdateTime;
             set => SetField(ref _lastUpdateTime, value);
         }
-<<<<<<< HEAD
-        private string _version = "1.3.2";
-=======
-        private string _version = "1.2.0";
->>>>>>> dev
+
+        private string _version = "1.3.3";
         public string Version
         {
             get => _version;
@@ -300,7 +297,7 @@ namespace VRisingServerManager
             get => _darkMode;
             set => SetField(ref _darkMode, value);
         }
-        private bool _autoLoadEditor = false;
+        private bool _autoLoadEditor = true;
         public bool AutoLoadEditor
         {
             get => _autoLoadEditor;
