@@ -1,7 +1,14 @@
 ﻿using System.Diagnostics;
 using System.IO.Compression;
+using ModernWpf;
+
 
 Console.WriteLine("准备下载最新版本。");
+<<<<<<< HEAD
+=======
+//Console.WriteLine("按任意键开始...");
+//Console.ReadLine();
+>>>>>>> dev
 
 Process[] vsmProcesses = Process.GetProcessesByName("VRisingServerManager");
 if (vsmProcesses.Length != 0)
@@ -25,7 +32,12 @@ if (!File.Exists(workingDir + @"\VRisingServerManager.exe"))
 Console.WriteLine("正在开始更新VSM。");
 Console.WriteLine("正在下载文件...");
 
+<<<<<<< HEAD
 byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://gh-proxy.com/github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
+=======
+byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
+//byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://api.gitcode.com/api/v5/repos/aGHOSToZero/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
+>>>>>>> dev
 Console.WriteLine("下载成功。");
 
 if (Directory.Exists(workingDir + @"\temp"))
@@ -72,3 +84,4 @@ Console.ReadKey();
 Process.Start("VRisingServerManager.exe");
 
 Environment.Exit(0);
+

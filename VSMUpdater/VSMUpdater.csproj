@@ -19,4 +19,8 @@
     <Exec Command="xcopy &quot;$(MSBuildProjectDirectory)\bin\Release\net6.0\publish\win-x64\*&quot; &quot;$(SolutionDir)Release&quot; /s /i /Y" />
   </Target>
 
+  <ItemGroup>
+    <PackageReference Include="ModernWpfUI" Version="0.9.6" />
+  </ItemGroup>
+
 </Project>

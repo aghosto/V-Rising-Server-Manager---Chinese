@@ -412,6 +412,19 @@ namespace VRisingServerManager
         public Rcon Rcon { get; set; } = new Rcon();
     }
 
+    public class VoiceServicesSettings
+    {
+        public bool VOIPEnabled { get; set; } = false;
+        public string VOIPIssuer = "";
+        public string VOIPSecret = "";
+        public string VOIPAppUserId = "";
+        public string VOIPAppUserPwd = "";
+        public string VOIPVivoxDomain = "";
+        public string VOIPAPIEndpoint = "";
+        public int VOIPConversationalDistance { get; set; } = 14;
+        public int VOIPAudibleDistance { get; set; } = 40;
+        public double VOIPConversationalSpeed { get; set; } = 2.0;
+    }
     public class Achievement
     {
         [JsonIgnore]

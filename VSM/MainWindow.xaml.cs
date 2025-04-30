@@ -21,6 +21,9 @@ using System.Windows.Markup;
 using System.Text;
 using System.Windows.Media.Animation;
 using System.Windows.Navigation;
+using System.Security.Cryptography.X509Certificates;
+using System.Runtime.InteropServices;
+using Microsoft.Win32;
 
 
 
@@ -34,6 +37,7 @@ namespace VRisingServerManager
         public MainSettings VsmSettings = new();
         private static dWebhook DiscordSender = new();
         private static HttpClient HttpClient = new();
+        private VoiceServicesSettings VoiceServicesSettings = new();
         private PeriodicTimer? AutoUpdateTimer;
         private RemoteConClient RCONClient;
 
@@ -87,11 +91,14 @@ namespace VRisingServerManager
                 }
                 else
                     LogToConsole("用户取消了本次软件更新。");
+<<<<<<< HEAD
                 //if (MessageBox.Show($"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}", "VSM更新—新版本发布", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
                 //{
                 //    Process.Start("VSMUpdater.exe");
                 //    Application.Current.MainWindow.Close();
                 //}
+=======
+>>>>>>> dev
             }
             else
             {
@@ -107,11 +114,11 @@ namespace VRisingServerManager
             if (VsmSettings.AppSettings.AutoUpdate == true)
             {
 #if DEBUG
-//                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+                //                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
 //                AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-//                AutoUpdateLoop();
+                //                AutoUpdateLoop();
             }
         }
 
@@ -124,7 +131,7 @@ namespace VRisingServerManager
                     AutoUpdate();
             }
         }
-        
+
         private void LogToConsole(string logMessage)
         {
             Dispatcher.Invoke(new Action(() =>
@@ -148,7 +155,7 @@ namespace VRisingServerManager
             if (DiscordSender.WebHook == null)
             {
                 DiscordSender.WebHook = VsmSettings.WebhookSettings.URL;
-            }            
+            }
 
             DiscordSender.SendMessage(message);
         }
@@ -158,7 +165,7 @@ namespace VRisingServerManager
         /// </summary>
         /// <returns><see cref="bool"/> true if succeeded</returns>
         private async Task<bool> UpdateSteamCMD()
-        {            
+        {
             string workingDir = Directory.GetCurrentDirectory();
             LogToConsole("未找到SteamCMD，正在下载...");
             byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip");
@@ -209,7 +216,7 @@ namespace VRisingServerManager
                 File.Delete(server.Path + @"\steamcmd.txt");
             File.WriteAllLines(server.Path + @"\steamcmd.txt", installScript);
             string parameters = $@"+runscript ""{server.Path}\steamcmd.txt""";
-            
+
             Process steamcmd = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -247,6 +254,7 @@ namespace VRisingServerManager
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
+<<<<<<< HEAD
                 LogToConsole("已完成创建SaveData文件夹存放自定义设置文件。");
             }
             else
@@ -256,6 +264,8 @@ namespace VRisingServerManager
                     //Do Nothing
                 }
                 jsonFilePath = server.Path + @"\SaveData\Settings\ServerHostSettings.json";
+=======
+>>>>>>> dev
             }
 
             using (StreamReader reader = new StreamReader(jsonFilePath))
@@ -299,7 +309,7 @@ namespace VRisingServerManager
                 return false;
             }
         }
-        
+
         private async Task SendRconRestartMessage(Server server)
         {
             RCONClient = new()
@@ -382,7 +392,7 @@ namespace VRisingServerManager
             foreach (Server server in VsmSettings.Servers)
             {
                 if (server.Runtime.State == ServerRuntime.ServerState.Running)
-                {                    
+                {
                     runningServers.Add(server);
                 }
             }
@@ -437,7 +447,7 @@ namespace VRisingServerManager
             server.Runtime.UserStopped = true;
 
             bool success;
-            bool close = server.Runtime.Process.CloseMainWindow();            
+            bool close = server.Runtime.Process.CloseMainWindow();
 
             if (close)
             {
@@ -586,7 +596,7 @@ namespace VRisingServerManager
                         }
                         if (line.Contains("Shutting down Asynchronous Streaming"))
                             foundVariables++;
-                    }                    
+                    }
                 }
 
                 if (foundVariables == 3 && VsmSettings.WebhookSettings.Enabled == true && server.WebhookMessages.Enabled == true)
@@ -654,11 +664,11 @@ namespace VRisingServerManager
                     if (VsmSettings.AppSettings.AutoUpdate == true)
                     {
 #if DEBUG
-//                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+                        //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
 //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-//                        AutoUpdateLoop();
+                        //                        AutoUpdateLoop();
                         LookForUpdate();
                     }
                     else
@@ -672,13 +682,13 @@ namespace VRisingServerManager
                 case "AutoUpdateInterval":
                     if (VsmSettings.AppSettings.AutoUpdate == true && AutoUpdateTimer != null)
                     {
-//                        AutoUpdateTimer.Dispose();
+                        //                        AutoUpdateTimer.Dispose();
 #if DEBUG
-//                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
+                        //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromSeconds(10));
 #else
 //                        AutoUpdateTimer = new PeriodicTimer(TimeSpan.FromMinutes(VsmSettings.AppSettings.AutoUpdateInterval));
 #endif
-//                        AutoUpdateLoop();
+                        //                        AutoUpdateLoop();
                     }
                     break;
                 case "DarkMode":
@@ -702,7 +712,7 @@ namespace VRisingServerManager
                 ServerTabControl.SelectedIndex = serversLength - 1;
             }
         }
-#endregion
+        #endregion
 
         #region Buttons
         private async void StartServerButton_Click(object sender, RoutedEventArgs e)
@@ -713,6 +723,10 @@ namespace VRisingServerManager
             if (File.Exists(server.Path + @"\start_server_example.bat"))
                 started = await StartServer(server);
             else
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev
                 await Task.Delay(3000);
 
             if (started == true && VsmSettings.WebhookSettings.Enabled)
@@ -734,7 +748,7 @@ namespace VRisingServerManager
 
         private async void StopServerButton_Click(object sender, RoutedEventArgs e)
         {
-            Server server = ((Button)sender).DataContext as Server;            
+            Server server = ((Button)sender).DataContext as Server;
             LogToConsole("正在停止服务器：" + server.vsmServerName);
             bool success = await StopServer(server);
             if (success)
@@ -744,7 +758,7 @@ namespace VRisingServerManager
             else
             {
                 LogToConsole("无法停止服务器：" + server.vsmServerName);
-            }   
+            }
         }
         private async void RestartServerButton_Click(object sender, RoutedEventArgs e)
         {
@@ -774,17 +788,52 @@ namespace VRisingServerManager
 
         private void ThemeSelect_Click(object sender, RoutedEventArgs e)
         {
-            //Do Nothing
             if (ThemeManager.Current.ApplicationTheme == ApplicationTheme.Light)
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Dark;
             else
                 ThemeManager.Current.ApplicationTheme = ApplicationTheme.Light;
         }
 
-        private void DevelopButton_Click(object sender, RoutedEventArgs e)
+        private async void VoiceServices_Click(object sender, RoutedEventArgs e)
         {
-            //Do Nothing 
-            Process.Start("explorer.exe", "https://github.com/aghosto/V-Rising-Server-Manager---Chinese");
+            Server server = ((Button)sender).DataContext as Server;
+             
+            if (!File.Exists(server.Path + @"\SaveData\Settings\ServerVoipSettings.json"))
+            {
+                ContentDialog yesNoDialog = new ContentDialog()
+                {
+                    Content = "未检测到Unity语音配置文件，是否进行配置？",
+                    PrimaryButtonText = "是",
+                    SecondaryButtonText = "否"
+                };
+                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                {
+                    string Json = JsonConvert.SerializeObject(VoiceServicesSettings, Formatting.Indented);
+                    File.WriteAllText(server.Path + @"\SaveData\Settings\ServerVoipSettings.json", Json);
+                }
+                else
+                {
+                    ContentDialog yesDialog = new ContentDialog()
+                    {
+                        Content = "用户取消本次配置。",
+                        PrimaryButtonText = "关闭",
+                    };
+                }
+            }
+
+            if (!Application.Current.Windows.OfType<VoiceServicesEditor>().Any())
+            {
+                if (VsmSettings.AppSettings.AutoLoadEditor == true && !(ServerTabControl.SelectedIndex == -1))
+                {
+                    VoiceServicesEditor vSettingsEditor = new(VsmSettings.Servers, true, ServerTabControl.SelectedIndex);
+                    vSettingsEditor.Show();
+                }
+                else
+                {
+                    VoiceServicesEditor vSettingsEditor = new(VsmSettings.Servers);
+                    vSettingsEditor.Show();
+                }
+            }
         }
 
         private async void RemoveServerButton_Click(object sender, RoutedEventArgs e)
@@ -858,12 +907,12 @@ namespace VRisingServerManager
                 };
                 await closeFileDialog.ShowAsync();
             }
-                //LogToConsole("找不到服务器文件夹。");
+            //LogToConsole("找不到服务器文件夹。");
         }
 
         private void AddServerButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
             if (!Application.Current.Windows.OfType<CreateServer>().Any())
             {
                 CreateServer cServer = new(VsmSettings);
@@ -879,7 +928,7 @@ namespace VRisingServerManager
                 {
                     Owner = this,
                     Title = "MOD管理器",
-                    Content = $"没有添加任何服务器。请在尝试管理MODS之前至少添加一台服务器。",
+                    Content = $"没有添加任何服务器。请在尝试管理MODS之前至少添加一个服务器。",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
@@ -937,10 +986,129 @@ namespace VRisingServerManager
 
         private void TaskIcon_Click(object sender, RoutedEventArgs e)
         {
-            
+
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
+        }       
+
+        private async void FixTools_Click(object sender, RoutedEventArgs e)
+        {
+            string workingDir = Directory.GetCurrentDirectory();
+            string Thumbprint = "8da7f965ec5efc37910f1c6e59fdc1cc6a6ede16"; //CA证书指纹
+            string registryPath = @"SOFTWARE\Microsoft\VisualStudio";
+            int directxMajorVersion = 0;
+            var OSVersion = Environment.OSVersion;
+
+            // 检查证书
+            X509Store store = new X509Store(StoreName.Root, StoreLocation.LocalMachine);
+            store.Open(OpenFlags.MaxAllowed);
+            X509Certificate2Collection collection = store.Certificates;
+            X509Certificate2Collection fcollection = collection.Find(X509FindType.FindByThumbprint, Thumbprint, false);
+            if (fcollection != null && fcollection.Count == 0)
+            {
+                ContentDialog yesNoDialog = new()
+                {
+                    Content = "没有 AmazonRootCA1 证书，是否导入？",
+                    PrimaryButtonText = "是",
+                    SecondaryButtonText = "否"
+                };
+                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                {
+                    string caCertPath = "./AmazonRootCA1.cer";
+
+                    X509Certificate2 caCert = new X509Certificate2(caCertPath);
+                    store.Open(OpenFlags.ReadWrite);
+                    store.Add(caCert);
+                    store.Close();
+
+                    LogToConsole("证书安装成功。");
+                }
+                else
+                {
+                    LogToConsole("用户取消了安装证书，退出此次修复。\r");
+                    return;
+                }
+            }
+            else
+                LogToConsole("AmazonRootCA1 证书已存在于你的电脑中。\r");
+
+            //检查VC++ runtime
+            LogToConsole("检测是否已安装VC++ runtime。");
+            RegistryKey key = Registry.LocalMachine.OpenSubKey(registryPath, true);
+
+            if (key == null)
+            {
+                if (!File.Exists(workingDir + @"\vc_redist.x64.exe"))
+                {
+                    LogToConsole("VC++ runtime 不存在，正在下载发行包...");
+                    byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://aka.ms/vs/17/release/vc_redist.x64.exe");
+                    await File.WriteAllBytesAsync(workingDir + @"\vc_redist.x64.exe", fileBytes);
+                }
+
+                if (File.Exists(workingDir + @"\vc_redist.x64.exe"))
+                {
+                    LogToConsole("正在安装VC++ runtime。");
+                    Process process = new Process();
+                    process.StartInfo.FileName = "vc_redist.x64.exe";
+                    process.StartInfo.UseShellExecute = false;
+                    process.StartInfo.Arguments = "/install /quiet";
+                    process.Start();
+                    await Task.Delay(3000);
+                }
+            }
+            else
+            {
+                LogToConsole("已存在VC++ runtime，跳过本次安装。\r");
+            }
+            LogToConsole("安装完成。\r");
+
+            //检查DirectX
+            if (OSVersion.Version.Major >= 6)
+            {
+                if (OSVersion.Version.Major > 6 || OSVersion.Version.Minor >= 1)
+                {
+                    directxMajorVersion = 11;
+                }
+                else
+                {
+                    directxMajorVersion = 10;
+                }
+            }
+            if (11 == directxMajorVersion)
+                LogToConsole("本机Directx版本信息正常，可尝试进入游戏查看。\r");
+            else
+            {
+                LogToConsole("本机 Directx 版本信息错误，即将下载运行时，请稍等。");
+                if (!File.Exists(workingDir + @"directx_Jun2010_redist.exe"))
+                {
+                    byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://download.microsoft.com/download/8/4/a/84a35bf1-dafe-4ae8-82af-ad2ae20b6b14/directx_Jun2010_redist.exe");
+                    await File.WriteAllBytesAsync(workingDir + @"\directx_Jun2010_redist.exe", fileBytes);
+                    if (!Directory.Exists(workingDir + @"\directx_Jun2010_redist"))
+                    {
+                        LogToConsole("文件解压中");
+                        Directory.CreateDirectory(workingDir + @"\directx_Jun2010_redist");
+                        Process process = new Process();
+                        process.StartInfo.FileName = "directx_Jun2010_redist.exe";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.Arguments = "/q /T:" + workingDir + "directx_Jun2010_redist' -Wait";
+                        process.Start();
+                        await Task.Delay(5000);
+                        LogToConsole("解压完毕");
+                        File.Delete(workingDir + @"\directx_Jun2010_redist.exe");
+                    }
+
+                    if (File.Exists(workingDir + @"\directx_Jun2010_redist\DXSETUP.exe") == true)
+                    {
+                        Process process = new Process();
+                        process.StartInfo.FileName = "DXSETUP.exe";
+                        process.StartInfo.UseShellExecute = false;
+                        process.StartInfo.Arguments = "/silent";
+                        process.Start();
+                        LogToConsole("正在安装 DirectX, 大概需要30秒时间...");
+                    }
+                }
+            }
+            #endregion
         }
-        #endregion
     }
 }
