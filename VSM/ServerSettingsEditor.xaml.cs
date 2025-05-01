@@ -36,7 +36,7 @@ namespace VRisingServerManager
 
         private void AutoLoad(int serverIndex)
         {
-            string fileToLoad = servers[serverIndex].Path + @"\SaveData\Settings\ServerVoipSettings.json";
+            string fileToLoad = servers[serverIndex].Path + @"\SaveData\Settings\ServerHostSettings.json";
             if (!File.Exists(fileToLoad))
             {
                 _ = new ContentDialog
