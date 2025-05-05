@@ -6,10 +6,12 @@
   "CastleDamageMode": "Never",
   "BloodBoundEquipment": true,
   "CanLootEnemyContainers": false,
+  "SoulShard_DurabilityLossRate": 0.25,
   "Death_DurabilityFactorLoss": 0.0,
   "Death_DurabilityLossFactorAsResources": 0.0,
-  "AnnounceSiegeWeaponSpawn":  false,
+  "AnnounceSiegeWeaponSpawn": false,
   "CastleStatModifiers_Global": {
-    "CastleLimit": 1
+    "CastleLimit": 2,
+    "CastleHeartLimitType": 1
   }
 }

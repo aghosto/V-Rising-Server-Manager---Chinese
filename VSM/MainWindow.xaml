@@ -96,7 +96,27 @@
                                     <CheckBox x:Name="BindToIPCheck" Content="绑定到IP：" IsChecked="{Binding LaunchSettings.BindToIP}" ToolTip="服务器是否绑定到特定的IP地址。"/>
                                     <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="200" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
                                 </DockPanel>
+                                <DockPanel>
+                                    <Button Margin="2 10 0 0" Click="ServerSpecSettingsEditor_Click" ToolTip="更改服务器特殊设置。" HorizontalAlignment="Stretch">
+                                        <Button.Content>
+                                            <DockPanel>
+                                                <Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>
+                                                <TextBlock Text="服务器特殊设置" Margin="5,0,5,0"/>
+                                            </DockPanel>
+                                        </Button.Content>
+                                    </Button>
+                                    <Button Margin="2 10 0 0" Click="ChangeSaveFile_Click" ToolTip="更改服务器存档。" HorizontalAlignment="Stretch">
+                                        <Button.Content>
+                                            <DockPanel>
+                                                <ui:SymbolIcon Symbol="Folder"/>
+                                                <!--<Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>-->
+                                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0"/>
+                                            </DockPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </DockPanel>
                             </StackPanel>
+
                         </GroupBox>
                         <GroupBox Header="服务器管理" Grid.Column="1" Margin="5">
                             <Grid>
@@ -289,17 +309,14 @@
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-
-                                    <Button Margin="2" Click="VoiceServices_Click" ToolTip="点击可为服务器安装语音功能，需要自行到官网注册获取Token。" HorizontalAlignment="Stretch">
+                                    <Button Margin="2" Click="VoiceServices_Click" ToolTip="点击可为服务器安装语音功能，需要自行到官网注册获取Token。">
                                         <Button.Content>
                                             <DockPanel>
-                                                <!--<ui:SymbolIcon Symbol="Phone" Margin="0 0 3 0"/>-->
-                                                <Image Source="Resources\icon_Develop.png" Margin="0 0 5 0"/>
-                                                <TextBlock Text="近场语音"/>
+                                                <Image Source="Resources\icon_Develop.png" Margin="0, 0, 5, 0"/>
+                                                <TextBlock Text="近场语音配置"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-
                                 </StackPanel>
                             </Grid>
                         </GroupBox>
@@ -322,6 +339,7 @@
                         <TextBlock Text="服务器连接配置编辑器"/>
                     </DockPanel>
                 </Button>
+                
                 <Button Margin="5,0,5,0" Click="ManagerSettingsButton_Click" Padding="5" ToolTip="打开VSM软件设置。">
                     <DockPanel>
                         <Image Source="Resources\icon_Settings.png" Margin="0,0,5,0"/>
@@ -355,10 +373,10 @@
                         <TextBlock Text="管理模组"/>
                     </DockPanel>
                 </Button>
-                <Button Margin="5,0,5,0" Click="FixTools_Click" Padding="5" ToolTip="打开VSM软件设置。">
+                <Button Click="FixTools_Click" ToolTip="打开VSM软件设置。"  HorizontalAlignment="Stretch">
                     <DockPanel>
-                        <ui:SymbolIcon Symbol="Pin" Margin="0,0,5,0"/>
-                        <TextBlock Text="修复工具"/>
+                        <ui:SymbolIcon Symbol="Pin" Margin="5,0,0,0" />
+                        <TextBlock Text="修复工具" Margin="5,0,5,0"/>
                     </DockPanel>
                 </Button>
             </StackPanel>

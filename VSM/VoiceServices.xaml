@@ -61,7 +61,7 @@
                         <TextBox Text="{Binding VOIPIssuer, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的发行人（注册的号）。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
-                        <TextBlock Text="VOIP秘钥(Secret)" Height="20" ToolTip="UDP port for game traffic." />
+                        <TextBlock Text="VOIP秘钥(Secret)" Height="20"/>
                         <TextBox Text="{Binding VOIPSecret, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="VOIP服务的秘钥。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">

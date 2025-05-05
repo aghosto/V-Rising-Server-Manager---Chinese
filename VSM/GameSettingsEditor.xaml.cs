@@ -147,7 +147,7 @@ namespace VRisingServerManager
             fakeAchievements.Add(new Achievement() { ID = 134993992,    Name = "传送门            ",  Count = 13, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 606418711,    Name = "古堡领主          ",  Count = 15, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "仆从              ",  Count = 16, Unlocked = false });
-            //fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "仆从              ",  Count = 16, Unlocked = false });
+            //fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "宝藏室              ",  Count = 16, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -437605270,   Name = "黑暗军团          ",  Count = 17, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -1472413073,  Name = "拓展视野          ",  Count = 16, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1248242594,   Name = "流出鲜血的龙头    ",  Count = 16, Unlocked = false });
@@ -187,15 +187,6 @@ namespace VRisingServerManager
             {
                 if (research.Unlocked == true)
                     gameSettings.UnlockedResearchs.Add(research.ID);
-            }
-            switch (CastleHeartLimitTypeCombo.SelectedIndex)
-            {
-                case 0:
-                    gameSettings.CastleStatModifiers_Global.CastleHeartLimitType = "User";
-                    break;
-                case 1:
-                    gameSettings.CastleStatModifiers_Global.CastleHeartLimitType = "Clan";
-                    break;
             }
             switch (StarterEquipmentCombo.SelectedIndex)
             {
@@ -648,15 +639,21 @@ namespace VRisingServerManager
                 {
                     LoadedSettings.WarEventGameSettings.MajorDuration = MajorDurationValue;
                 }
-                switch (LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType)
+                if (!int.TryParse(LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType.ToString(), out int CastleHeartLimitTypeValue))
                 {
-                    case "User":
-                        CastleHeartLimitTypeCombo.SelectedIndex = 0;
-                        break;
-                    case "Clan":
-                        CastleHeartLimitTypeCombo.SelectedIndex = 1;
-                        break;
-
+                    switch (LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType.ToString())
+                    {
+                        case "User":
+                            LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType = "User";
+                            break;
+                        case "Clan":
+                            LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType = "Clan";
+                            break;
+                    }
+                }
+                else
+                {
+                    LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType = CastleHeartLimitTypeValue;
                 }
                 switch (LoadedSettings.StarterEquipmentId)
                 {

@@ -7,48 +7,72 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="RCON终端" Height="500" Width="800" MaxWidth="800" Icon="/Resources/logo.ico" ResizeMode="CanMinimize">
-    <StackPanel Margin="5">
-        <StackPanel Orientation="Horizontal">
-            <GroupBox Header="RCON设置" Width="250" HorizontalAlignment="Left">
-                <StackPanel>
-                    <DockPanel>
-                        <TextBlock Text="IP地址：" Width="80" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding RconServerSettings.IPAddress}" DockPanel.Dock="Right" Width="150" HorizontalAlignment="Right"/>
-                    </DockPanel>
-                    <DockPanel>
-                        <TextBlock Text="端口：" Width="80" VerticalAlignment="Center"/>
-                        <ui:NumberBox Value="{Binding RconServerSettings.Port}" HorizontalAlignment="Right" Width="150" SpinButtonPlacementMode="Hidden" Minimum="1" Maximum="65535"/>
-                    </DockPanel>
-                    <DockPanel>
-                        <TextBlock Text="密码：" Width="80" VerticalAlignment="Center"/>
-                        <TextBox Text="{Binding RconServerSettings.Password}" DockPanel.Dock="Right" Width="150" HorizontalAlignment="Right"/>
-                    </DockPanel>
-                    <DockPanel Margin="0,5,0,5" HorizontalAlignment="Center">
-                        <Button x:Name="ConnectButton" Content="连接" HorizontalAlignment="Left" Click="ConnectButton_Click"/>
-                        <Button x:Name="DisconnectButton" Content="断开连接" HorizontalAlignment="Left" Click="DisconnectButton_Click" IsEnabled="False" Margin="10,0,0,0"/>
-                    </DockPanel>
-                </StackPanel>
-            </GroupBox>
+        Title="RCON终端" Height="675" Width="800" MaxWidth="800" Icon="/Resources/logo.ico" ResizeMode="CanMinimize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height ="Auto"/>
+            <RowDefinition Height ="Auto"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Margin="5 5 0 0" Grid.Row="0">
+            <StackPanel Orientation="Vertical">
+                <GroupBox Header="RCON设置" HorizontalAlignment="Left">
+                    <StackPanel>
+                        <DockPanel>
+                            <TextBlock Text="IP地址：" Width="80" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding RconServerSettings.IPAddress}" DockPanel.Dock="Right" Width="110" HorizontalAlignment="Right"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="端口：" Width="80" VerticalAlignment="Center"/>
+                            <ui:NumberBox Value="{Binding RconServerSettings.Port}" HorizontalAlignment="Right" Width="110" SpinButtonPlacementMode="Hidden" Minimum="1" Maximum="65535"/>
+                        </DockPanel>
+                        <DockPanel>
+                            <TextBlock Text="密码：" Width="80" VerticalAlignment="Center"/>
+                            <TextBox Text="{Binding RconServerSettings.Password}" DockPanel.Dock="Right" Width="110" HorizontalAlignment="Right"/>
+                        </DockPanel>
+                        <DockPanel Margin="0,5,0,5" HorizontalAlignment="Center">
+                            <Button x:Name="ConnectButton" Content="连接" HorizontalAlignment="Left" Click="ConnectButton_Click"/>
+                            <Button x:Name="DisconnectButton" Content="断开连接" HorizontalAlignment="Left" Click="DisconnectButton_Click" IsEnabled="False" Margin="10,0,0,0"/>
+                        </DockPanel>
+                    </StackPanel>
+                </GroupBox>
+            </StackPanel>
+            
+        </StackPanel>
+        <StackPanel Grid.Row="0" Margin="5 190 0 0">
             <GroupBox Header="指令">
                 <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
                     <ListBox x:Name="CommandList" SelectionChanged="CommandList_SelectionChanged">
+                        <ListBoxItem Content="help" ToolTip="列出服务器 RCON 所有命令。" Width="190"/>
                         <ListBoxItem Content="announce" ToolTip="发送公告，只能发英文。"/>
-                        <ListBoxItem Content="announcerestart" ToolTip="发送重启公告，只能发数字。"/>
+                        <ListBoxItem Content="announcerestart" ToolTip="发送公告，只能输入数字。"/>
+                        <ListBoxItem Content="shutdown" ToolTip="关闭服务器，直接杀死进程。后面加"/>
+                        <ListBoxItem Content="cancelshutdown" ToolTip="取消关闭服务器。"/>
+                        <ListBoxItem Content="version" ToolTip="查看服务器版本号。"/>
+                        <ListBoxItem Content="time" ToolTip="查看服务器时间信息。"/>
+                        <ListBoxItem Content="name" ToolTip="查看服务器名称信息。"/>
+                        <ListBoxItem Content="description" ToolTip="查看服务器描述信息。"/>
+                        <ListBoxItem Content="password" ToolTip="查看服务器密码信息。后面加数字即可修改服务器密码，后面跟[--clear]即可删除服务器密码，更改需要一段时间生效。"/>
                     </ListBox>
-                    <Border BorderBrush="LightSlateGray" BorderThickness="1">
+                    <!--<Border BorderBrush="LightSlateGray" BorderThickness="1">
                         <TextBlock x:Name="CommandInfoTextbox" TextWrapping="Wrap" Width="400"/>
-                    </Border>
+                    </Border>-->
                 </StackPanel>
             </GroupBox>
         </StackPanel>
-        <StackPanel Margin="5">
-            <DockPanel>
-                <TextBlock Text="参数：" Width="80" VerticalAlignment="Center"/>
-                <TextBox x:Name="ParamaterTextbox" Width="625" IsEnabled="False"/>
-                <Button x:Name="SendCommandButton" Content="发送" Margin="5,0,0,0" Click="SendCommandButton_Click" IsEnabled="False"/>
-            </DockPanel>
+        <StackPanel Grid.Column="1" Margin="5 5 0 0">
+            <RichTextBox x:Name="RconConsoleOutput" Foreground="Lime" Background="Black" IsReadOnly="True" Height="585" Width="575"/>
+            <StackPanel Margin="5">
+                <DockPanel>
+                    <TextBlock Text="参数：" Width="80" VerticalAlignment="Center"/>
+                    <TextBox x:Name="ParamaterTextbox" Width="440"/>
+                    <Button x:Name="SendCommandButton" Content="发送" Margin="5,0,0,0" Click="SendCommandButton_Click" IsEnabled="False"/>
+                </DockPanel>
+            </StackPanel>
         </StackPanel>
-        <RichTextBox x:Name="RconConsoleOutput" Foreground="Lime" Background="Black" IsReadOnly="True" Height="210"/>
-    </StackPanel>
+    </Grid>
 </Window>

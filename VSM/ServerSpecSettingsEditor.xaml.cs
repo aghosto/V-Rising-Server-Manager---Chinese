@@ -16,19 +16,19 @@ using System.Diagnostics;
 namespace VRisingServerManager
 {
     /// <summary>
-    /// Interaction logic for ServerSettingsEditor.xaml
+    /// ServerSpecSettingsEditor.xaml 的交互逻辑
     /// </summary>
-    public partial class VoiceServicesEditor : Window
+    public partial class ServerSpecSettingsEditor : Window
     {
-        private VoiceServicesSettings voiceServicesSettings;
+        private ServerSpecSettings specServicesSettings;
         private JsonSerializerOptions serializerOptions = new JsonSerializerOptions { WriteIndented = true };
         private readonly ObservableCollection<Server> servers;
 
-        public VoiceServicesEditor(ObservableCollection<Server> sentServers, bool autoLoad = false, int indexToLoad = -1)
+        public ServerSpecSettingsEditor(ObservableCollection<Server> sentServers, bool autoLoad = false, int indexToLoad = -1)
         {
             servers = sentServers;
-            voiceServicesSettings = new VoiceServicesSettings();
-            DataContext = voiceServicesSettings;
+            specServicesSettings = new ServerSpecSettings();
+            DataContext = specServicesSettings;
             InitializeComponent();
 
             if (autoLoad == true && indexToLoad != -1 && servers.Count > 0)
@@ -38,26 +38,27 @@ namespace VRisingServerManager
         }
         private async void AutoLoad(int serverIndex)
         {
-            string fileToLoad = servers[serverIndex].Path + @"\SaveData\Settings\ServerVoipSettings.json";
+            string fileToLoad = servers[serverIndex].Path + @"\SaveData\Settings\ServerSpecSettings.json";
             if (!File.Exists(fileToLoad))
             {
                 _ = new ContentDialog
                 {
                     Owner = this,
                     Title = "错误",
-                    Content = $"加载服务器语音配置文件失败：{fileToLoad}\n请确认该服务器存在",
+                    Content = $"加载服务器特殊配置文件失败：{fileToLoad}\n请确认该服务器存在",
                     CloseButtonText = "Ok",
                     DefaultButton = ContentDialogButton.Close
                 }.ShowAsync();
+                //File.Create(fileToLoad);
                 return;
             }
-            
+
             using (StreamReader reader = new StreamReader(fileToLoad))
             {
                 string LoadedJSON = reader.ReadToEnd();
-                VoiceServicesSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<VoiceServicesSettings>(LoadedJSON);
-                voiceServicesSettings = LoadedSettings;
-                DataContext = voiceServicesSettings;
+                ServerSpecSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<ServerSpecSettings>(LoadedJSON);
+                specServicesSettings = LoadedSettings;
+                DataContext = specServicesSettings;
             }
         }
 
@@ -70,7 +71,7 @@ namespace VRisingServerManager
                 {
                     Filter = "\"JSON files\"|*.json",
                     DefaultExt = "json",
-                    FileName = "ServerVoipSettings.json",
+                    FileName = "ServerSpecSettings.json",
                     InitialDirectory = Directory.GetCurrentDirectory()
                 };
                 if (OpenSettingsDialog.ShowDialog() == true && FileToLoad != null)
@@ -84,9 +85,9 @@ namespace VRisingServerManager
                 using (StreamReader reader = new StreamReader(FileToLoad))
                 {
                     string LoadedJSON = reader.ReadToEnd();
-                    VoiceServicesSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<VoiceServicesSettings>(LoadedJSON);
-                    voiceServicesSettings = LoadedSettings;
-                    DataContext = voiceServicesSettings;
+                    ServerSpecSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<ServerSpecSettings>(LoadedJSON);
+                    specServicesSettings = LoadedSettings;
+                    DataContext = specServicesSettings;
                 }
             }
             catch (Exception)
@@ -128,15 +129,15 @@ namespace VRisingServerManager
                             await newDialog.ShowAsync();
                             return;
                         }
-                        if (File.Exists(server.Path + @"\SaveData\Settings\ServerVoipSettings.json"))
-                            File.Copy(server.Path + @"\SaveData\Settings\ServerVoipSettings.json", server.Path + @"\SaveData\Settings\ServerVoipSettings.bak", true);
+                        if (File.Exists(server.Path + @"\SaveData\Settings\ServerSpecSettings.json"))
+                            File.Copy(server.Path + @"\SaveData\Settings\ServerSpecSettings.json", server.Path + @"\SaveData\Settings\ServerSpecSettings.bak", true);
 
-                        string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(voiceServicesSettings, serializerOptions);
-                        File.WriteAllText(server.Path + @"\SaveData\Settings\ServerVoipSettings.json", SettingsJSON);
+                        string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(specServicesSettings, serializerOptions);
+                        File.WriteAllText(server.Path + @"\SaveData\Settings\ServerSpecSettings.json", SettingsJSON);
 
                         ContentDialog closeFileDialog = new()
                         {
-                            Content = "文件成功保存于：\n" + server.Path + @"\SaveData\Settings\ServerVoipSettings.json",
+                            Content = "文件成功保存于：\n" + server.Path + @"\SaveData\Settings\ServerSpecSettings.json",
                             PrimaryButtonText = "是",
                         };
                         await closeFileDialog.ShowAsync();
@@ -151,12 +152,12 @@ namespace VRisingServerManager
 
             try
             {
-                string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(voiceServicesSettings, serializerOptions);
+                string SettingsJSON = System.Text.Json.JsonSerializer.Serialize(specServicesSettings, serializerOptions);
                 SaveFileDialog SaveSettingsDialog = new SaveFileDialog
                 {
                     Filter = "\"JSON files\"|*.json",
                     DefaultExt = "json",
-                    FileName = "ServerVoipSettings.json",
+                    FileName = "ServerSpecSettings.json",
                     InitialDirectory = Directory.GetCurrentDirectory()
                 };
                 if (SaveSettingsDialog.ShowDialog() == true)
@@ -167,7 +168,7 @@ namespace VRisingServerManager
                     }
                     File.WriteAllText(SaveSettingsDialog.FileName, SettingsJSON, System.Text.Encoding.UTF8);
                     await Task.Delay(1000);
-                    MessageBox.Show("文件成功保存于：\n" + SaveSettingsDialog.FileName); 
+                    MessageBox.Show("文件成功保存于：\n" + SaveSettingsDialog.FileName);
                 }
             }
             catch (Exception)
@@ -181,9 +182,5 @@ namespace VRisingServerManager
             Close();
         }
 
-        private void Hyperlink_RequestNavigate(object sender, System.Windows.Navigation.RequestNavigateEventArgs e)
-        {
-            Process.Start("explorer.exe", "https://unity.com/products/vivox-voice-chat");
-        }
     }
 }

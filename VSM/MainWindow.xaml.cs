@@ -41,6 +41,8 @@ namespace VRisingServerManager
         private VoiceServicesSettings VoiceServicesSettings = new();
         private PeriodicTimer? AutoUpdateTimer;
         private RemoteConClient RCONClient;
+        private ServerSpecSettings ServerSpecSettings = new();
+        //private ChangeSaveFileEditor changeSaveFileEditor = new();
 
         public MainWindow()
         {
@@ -468,11 +470,6 @@ namespace VRisingServerManager
             if (await yesNoDialog.ShowAsync() is ContentDialogResult.Secondary)
                 return false;
 
-            //if (MessageBox.Show($"确认要移除服务器 {server.vsmServerName}？\n此动作将永久移除该服务器及其文件。", "移除服务器—确认", MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.No)
-            //{
-            //    return false;
-            //}
-
             if (serverIndex != -1)
             {
                 ContentDialog bakDialog = new()
@@ -548,7 +545,7 @@ namespace VRisingServerManager
 
         private async void ReadLog(Server server)
         {
-            using (FileStream fs = new FileStream(server.Path + @"\Logs\VRisingServer.log", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            using (FileStream fs = new FileStream(server.Path + @"\logs\VRisingServer.log", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
             using (StreamReader sr = new StreamReader(fs))
             {
                 string ipAddress = "";
@@ -560,9 +557,9 @@ namespace VRisingServerManager
                     string line = await sr.ReadLineAsync();
                     if (line != null)
                     {
-                        if (line.Contains("SteamPlatformSystem - OnPolicyResponse - Public IP: "))
+                        if (line.Contains("PlatformSystemBase - OnPolicyResponse - Public IP: "))
                         {
-                            ipAddress = line.Split("SteamPlatformSystem - OnPolicyResponse - Public IP: ")[1];
+                            ipAddress = line.Split("PlatformSystemBase - OnPolicyResponse - Public IP: ")[1];
                             foundVariables++;
                         }
                         if (line.Contains("SteamNetworking - Successfully logged in with the SteamGameServer API. SteamID: "))
@@ -593,6 +590,15 @@ namespace VRisingServerManager
 
                 sr.Close();
                 fs.Close();
+            }
+        }
+
+        private async void ReadPlayerData(Server server)
+        {
+            using (FileStream fs = new FileStream(server.Path + @"\logs\VRisingServer.log", FileMode.Open, FileAccess.ReadWrite, FileShare.ReadWrite))
+            using (StreamReader sr = new StreamReader(fs))
+            {
+                
             }
         }
 
@@ -785,6 +791,8 @@ namespace VRisingServerManager
                         Content = "用户取消本次配置。",
                         PrimaryButtonText = "关闭",
                     };
+                    await yesDialog.ShowAsync();
+                    return;
                 }
             }
 
@@ -1076,6 +1084,67 @@ namespace VRisingServerManager
                 }
             }
             #endregion
+        }
+
+        private async void ServerSpecSettingsEditor_Click(object sender, RoutedEventArgs e)
+        {
+            Server server = ((Button)sender).DataContext as Server;
+
+            if (!File.Exists(server.Path + @"\SaveData\Settings\ServerSpecSettings.json"))
+            {
+                ContentDialog yesNoDialog = new ContentDialog()
+                {
+                    Content = "未检测到特殊设置配置文件，是否进行配置？",
+                    PrimaryButtonText = "是",
+                    SecondaryButtonText = "否"
+                };
+                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                {
+                    string Json = JsonConvert.SerializeObject(ServerSpecSettings, Formatting.Indented);
+                    File.WriteAllText(server.Path + @"\SaveData\Settings\ServerSpecSettings.json", Json);
+                }
+                else
+                {
+                    ContentDialog yesDialog = new ContentDialog()
+                    {
+                        Content = "用户取消本次配置。",
+                        PrimaryButtonText = "关闭",
+                    };
+                    await yesDialog.ShowAsync();
+                    return;
+                }
+            }
+
+            if (!Application.Current.Windows.OfType<ServerSpecSettingsEditor>().Any())
+            {
+                if (VsmSettings.AppSettings.AutoLoadEditor == true && !(ServerTabControl.SelectedIndex == -1))
+                {
+                    ServerSpecSettingsEditor specSettingsEditor = new(VsmSettings.Servers, true, ServerTabControl.SelectedIndex);
+                    specSettingsEditor.Show();
+                }
+                else
+                {
+                    ServerSpecSettingsEditor specSettingsEditor = new(VsmSettings.Servers);
+                    specSettingsEditor.Show();
+                }
+            }
+        }
+
+        private void ChangeSaveFile_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Application.Current.Windows.OfType<ChangeSaveFileEditor>().Any())
+            {
+                if (VsmSettings.AppSettings.AutoLoadEditor == true && !(ServerTabControl.SelectedIndex == -1))
+                {
+                    ChangeSaveFileEditor changeSaveEditor = new(VsmSettings.Servers, true, ServerTabControl.SelectedIndex);
+                    changeSaveEditor.Show();
+                }
+                else
+                {
+                    ChangeSaveFileEditor changeSaveEditor = new(VsmSettings.Servers);
+                    changeSaveEditor.Show();
+                }
+            }
         }
     }
 }

@@ -56,7 +56,7 @@
                         <TextBox Height="150" Text="{Binding Description, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="简短的服务器描述。设置条目后，将显示在服务器列表的详细信息面板中，当连接到服务器时，还会在聊天中暂时显示。" TextWrapping="Wrap"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
-                        <TextBlock Text="连接端口" Height="20" ToolTip="UDP port for game traffic."/>
+                        <TextBlock Text="连接端口" Height="20"/>
                         <ui:NumberBox Value="{Binding Port, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="连接服务器时所需填写的端口"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">

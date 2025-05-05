@@ -1,0 +1,31 @@
+﻿<Window x:Class="VRisingServerManager.ChangeSaveFileEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+xmlns:local="clr-namespace:VRisingServerManager"
+xmlns:ui="http://schemas.modernwpf.com/2019"
+ui:WindowHelper.UseModernWindowStyle="True"
+mc:Ignorable="d"
+        Title="ChangeSaveFileEditor" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0">
+            <DockPanel>
+                <TextBlock Text="服务器：" VerticalAlignment="Center" Padding="10,0,0,0"/>
+                <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" VerticalAlignment="Top" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
+                <TextBlock VerticalAlignment="Center" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}">
+                    
+                </TextBlock>
+            </DockPanel>
+        </StackPanel>
+    </Grid>
+</Window>

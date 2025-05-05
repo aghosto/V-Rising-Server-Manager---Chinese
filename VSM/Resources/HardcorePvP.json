@@ -22,7 +22,8 @@
   "BloodEssenceYieldModifier": 2,
   "BloodDrainModifier": 1.25,
   "CastleStatModifiers_Global": {
-    "CastleLimit": 1
+    "CastleLimit": 1,
+    "CastleHeartLimitType": 1
   },
   "WarEventGameSettings": {
     "WeekdayTime": {
