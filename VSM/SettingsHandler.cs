@@ -366,7 +366,7 @@ namespace VRisingServerManager
         public double DismantleResourceModifier { get; set; } = 0.75;
         public double ServantConvertRateModifier { get; set; } = 1.0;
         public double RepairCostModifier { get; set; } = 1.0;
-        public double Death_DurabilityFactorLoss { get; set; } = 0;
+        public double Death_DurabilityFactorLoss { get; set; } = 0.000;
         public double Death_DurabilityLossFactorAsResources { get; set; } = 1.0;
         public int StarterEquipmentId { get; set; } = 0;
         public int StarterResourcesId { get; set; } = 0;
