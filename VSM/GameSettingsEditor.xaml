@@ -489,7 +489,7 @@
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="等级提升 - 全局" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.PowerModifier, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方标准单位的攻击伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.LevelIncrease, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方标准单位的等级。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="生命值倍率 - V型血" Width="200" VerticalAlignment="Center"/>
@@ -501,7 +501,7 @@
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="等级提升 - V型血" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.PowerModifier, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方标准单位的攻击伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.LevelIncrease, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方V型血单位的等级。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <StackPanel/>
                                             <StackPanel Grid.Column="1"/>
