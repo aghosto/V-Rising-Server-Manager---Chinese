@@ -33,19 +33,84 @@ namespace VRisingServerManager
         }
         private void ServerComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            Server server = (Server)ServerComboBox.SelectedItem;
+            //Server server = (Server)ServerComboBox.SelectedItem;
 
-            if (1== 1)
-            {
-                for (int i = 0; i < server.InstalledMods.Count; i++)
-                {
+            //if (1== 1)
+            //{
+            //    for (int i = 0; i < server.InstalledMods.Count; i++)
+            //    {
                     
-                }
-            }
-            else
-            {
+            //    }
+            //}
+            //else
+            //{
 
-            }
+            //}
+        }
+
+        private void RemoveServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ChangeSaveFile_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StartServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void UpdateServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RconServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void StopServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ServerFolderButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ManageAdminsButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void RestartServerButton_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ThemeSelect_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void VoiceServices_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ServerSpecSettingsEditor_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void SelectComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

@@ -57,23 +57,23 @@
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="连接端口" Height="20"/>
-                        <ui:NumberBox Value="{Binding Port, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="连接服务器时所需填写的端口"/>
+                        <ui:NumberBox Value="{Binding Port, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="连接服务器时所需填写的端口"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="查询端口" Height="20"/>
-                        <ui:NumberBox Value="{Binding QueryPort, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="Steam服务器的UDP端口列表功能。"/>
+                        <ui:NumberBox Value="{Binding QueryPort, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="Steam服务器的UDP端口列表功能。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="最大游戏玩家数" Height="20"/>
-                        <ui:NumberBox Value="{Binding MaxConnectedUsers, Mode=TwoWay}" Maximum="80" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="服务器上在线玩家的最大数量。"/>
+                        <ui:NumberBox Value="{Binding MaxConnectedUsers, Mode=TwoWay}" Maximum="80" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="服务器上在线玩家的最大数量。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="最大连接管理员数" Height="20"/>
-                        <ui:NumberBox Value="{Binding MaxConnectedAdmins, Mode=TwoWay}" Maximum="80" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="允许连接的最大管理员数量，即使服务器已满。"/>
+                        <ui:NumberBox Value="{Binding MaxConnectedAdmins, Mode=TwoWay}" Maximum="80" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="允许连接的最大管理员数量，即使服务器已满。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="服务器Fps" Height="20"/>
-                        <ui:NumberBox Value="{Binding ServerFps, Mode=TwoWay}" Maximum="120" Minimum="15" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="服务器的目标最大FPS。"/>
+                        <ui:NumberBox Value="{Binding ServerFps, Mode=TwoWay}" Maximum="120" Minimum="15" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="服务器的目标最大FPS。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="存档名称" Height="20" />
@@ -94,20 +94,20 @@
                 <StackPanel Grid.Column="1" Width="400" HorizontalAlignment="Left" Margin="10, 0, 0, 0">
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="自动保存数" Height="20"/>
-                        <ui:NumberBox Value="{Binding AutoSaveCount, Mode=TwoWay}" Maximum="200" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="要保留的自动保存存档的数量。"/>
+                        <ui:NumberBox Value="{Binding AutoSaveCount, Mode=TwoWay}" Maximum="200" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="要保留的自动保存存档的数量。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="自动保存间隔" Height="20"/>
-                        <ui:NumberBox Value="{Binding AutoSaveInterval, Mode=TwoWay}" Maximum="3600" Minimum="5" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="每次自动保存之间的间隔(以秒为单位)。"/>
+                        <ui:NumberBox Value="{Binding AutoSaveInterval, Mode=TwoWay}" Maximum="3600" Minimum="5" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="每次自动保存之间的间隔(以秒为单位)。"/>
                     </DockPanel>
                     <CheckBox Content="压缩保存文件" Height="20" IsChecked="{Binding CompressSaveFiles, Mode=TwoWay}" ToolTip="自动压缩保存的文件。" FontSize="12"/>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="重置天数间隔" Height="20"/>
-                        <ui:NumberBox Value="{Binding ResetDaysInterval, Mode=TwoWay}" Maximum="280" Minimum="0" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="计划重置/擦除之间的天数。当服务器启动并即将加载保存文件时，它会检查是否需要重置并启动新的保存文件；将备份以前的保存文件。默认为0，表示该功能处于禁用状态。"/>
+                        <ui:NumberBox Value="{Binding ResetDaysInterval, Mode=TwoWay}" Maximum="280" Minimum="0" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="计划重置/擦除之间的天数。当服务器启动并即将加载保存文件时，它会检查是否需要重置并启动新的保存文件；将备份以前的保存文件。默认为0，表示该功能处于禁用状态。"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="重置日" Height="20"/>
-                        <ui:NumberBox Value="{Binding DayOfReset, Mode=TwoWay}" Maximum="6" Minimum="-1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="如果您希望服务器在星期六重置，每两周重置一次，但当您初始设置服务器时不是星期六，则可以将重置天数间隔设置为14，然后将其设置为星期六。它将检查是否至少已过了重置天数间隔，那这就是重置的日期。如果您不想将重置限制在特定日期，只需依赖重置天数间隔的值，则将其设置为任意值，这也是默认设置。-1=禁用，0=星期一，6=星期日"/>
+                        <ui:NumberBox Value="{Binding DayOfReset, Mode=TwoWay}" Maximum="6" Minimum="-1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="如果您希望服务器在星期六重置，每两周重置一次，但当您初始设置服务器时不是星期六，则可以将重置天数间隔设置为14，然后将其设置为星期六。它将检查是否至少已过了重置天数间隔，那这就是重置的日期。如果您不想将重置限制在特定日期，只需依赖重置天数间隔的值，则将其设置为任意值，这也是默认设置。-1=禁用，0=星期一，6=星期日"/>
                     </DockPanel>
                     <CheckBox Content="仅限管理员调试事件" Height="20" IsChecked="{Binding AdminOnlyDebugEvents, Mode=TwoWay}" FontSize="12"/>
                     <CheckBox Content="禁用调试事件" Height="20" IsChecked="{Binding DisableDebugEvents, Mode=TwoWay}" FontSize="12"/>
@@ -124,7 +124,7 @@
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="RCON端口" Height="20"/>
-                        <ui:NumberBox Value="{Binding Rcon.Port, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Compact" ToolTip="RCON TCP端口。"/>
+                        <ui:NumberBox Value="{Binding Rcon.Port, Mode=TwoWay}" Maximum="65535" Minimum="1" HorizontalAlignment="Right" Width="250" SpinButtonPlacementMode="Inline" ToolTip="RCON TCP端口。"/>
                     </DockPanel>
                     <DockPanel Margin="0, 10, 0, 0" HorizontalAlignment="Center">
                         <CheckBox Content="防作弊" Height="20" IsChecked="{Binding Secure, Mode=TwoWay}" ToolTip="在服务器上启用VAC保护。VAC禁止的客户端将无法连接。" FontSize="12"/>

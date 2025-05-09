@@ -248,11 +248,11 @@
                                                     <StackPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="碎片掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers1.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定单人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers1.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定单人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="物品掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers1.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定单人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers1.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定单人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                     </StackPanel>
                                                 </TabItem>
@@ -260,11 +260,11 @@
                                                     <StackPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="碎片掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers2.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定双人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers2.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定双人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="物品掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers2.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定双人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers2.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定双人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                     </StackPanel>
                                                 </TabItem>
@@ -272,11 +272,11 @@
                                                     <StackPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="碎片掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers3.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定三人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers3.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定三人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="物品掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers3.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定三人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers3.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定三人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                     </StackPanel>
                                                 </TabItem>
@@ -284,11 +284,11 @@
                                                     <StackPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="碎片掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers4.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定四人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers4.PointsModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定四人挑战莫尔提姆裂隙时掉落的碎片数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                         <DockPanel>
                                                             <TextBlock Text="物品掉落" Width="130" VerticalAlignment="Center"/>
-                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers4.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定四人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Compact"/>
+                                                            <ui:NumberBox Value="{Binding WarEventGameSettings.ScalingPlayers4.DropModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="设定四人挑战莫尔提姆裂隙时掉落的物品数量倍率。" Maximum="5" Minimum="1.0" SpinButtonPlacementMode="Inline"/>
                                                         </DockPanel>
                                                     </StackPanel>
                                                 </TabItem>
@@ -317,7 +317,7 @@
                                     <ui:NumberBox Value="{Binding DropTableModifier_Missions, Mode=TwoWay}" SmallChange="0.25" ToolTip="将原本的猎杀获取数量与此值相乘。" Maximum="3" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                 </DockPanel>
                                 <DockPanel>
-                                    <TextBlock Text="击杀掉落倍率 - 冥河碎片" VerticalAlignment="Center" Width="275"/>
+                                    <TextBlock Text="击杀掉落倍率 - 暗影碎片" VerticalAlignment="Center" Width="275"/>
                                     <ui:NumberBox Value="{Binding DropTableModifier_StygianShards, Mode=TwoWay}" SmallChange="0.25" ToolTip="将原本的冥河碎片试下数量与此值相乘。" Maximum="3" Minimum="1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                 </DockPanel>
                                 <DockPanel>
