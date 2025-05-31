@@ -21,12 +21,19 @@ namespace VRisingServerManager
     public partial class ChangeSaveFileEditor : Window
     {
         private ChangeServerSaveSettings changeServerSaveSettings;
-        private JsonSerializerOptions serializerOptions = new JsonSerializerOptions { WriteIndented = true };
-        private readonly ObservableCollection<Server> servers;
+        MainSettings VsmSettings = new();
 
-        public ChangeSaveFileEditor(ObservableCollection<Server> sentServers, bool autoLoad = false, int indexToLoad = -1)
+
+        public ChangeSaveFileEditor(MainSettings mainSettings)
         {
-            servers = sentServers;
+            VsmSettings = mainSettings;
+
+            ServerComboBox.DataContext = mainSettings;
+
+            if (VsmSettings.Servers.Count > 0)
+            {
+                ServerComboBox.SelectedIndex = 0;
+            }
             changeServerSaveSettings = new ChangeServerSaveSettings();
             DataContext = changeServerSaveSettings;
             InitializeComponent();

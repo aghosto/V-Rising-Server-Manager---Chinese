@@ -101,7 +101,7 @@
                                         <Button.Content>
                                             <DockPanel>
                                                 <Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>
-                                                <TextBlock Text="服务器特殊设置" Margin="5,0,5,0"/>
+                                                <TextBlock Text="服务器特殊设置" Margin="5,0,5,0" IsEnabled="False"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
@@ -110,7 +110,7 @@
                                             <DockPanel>
                                                 <ui:SymbolIcon Symbol="Folder"/>
                                                 <!--<Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>-->
-                                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0"/>
+                                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0" IsEnabled="False"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>

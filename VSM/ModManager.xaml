@@ -73,8 +73,33 @@
 
         <StackPanel Orientation="Horizontal" Width="Auto">
             <DataGrid x:Name="ModsDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" Width="600" Height="600" SelectionChanged="ModsDataGrid_SelectionChanged" SelectionMode="Single">
+                <DataGrid.Resources>
+                    <ContextMenu x:Key="myContextMenu">
+                        <MenuItem Header="打开Mod设置文件" Click="ModFileEditor_Click"/>
+                    </ContextMenu>
+                </DataGrid.Resources>
+                <!--<DataGrid.ColumnHeaderStyle>
+                    <Style TargetType="{x:Type DataGridColumnHeader}">
+                        <Setter Property="ContextMenu" Value="{StaticResource myContextMenu}"/>
+                    </Style>
+                </DataGrid.ColumnHeaderStyle>-->
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Mod名称" Width="*" Binding="{Binding Name}" IsReadOnly="True"/>
+                    <DataGridTextColumn Header="Mod名称" Width="*" Binding="{Binding Name}" IsReadOnly="True">
+                        <DataGridTextColumn.ElementStyle>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="ContextMenu" Value="{StaticResource myContextMenu}"/>
+                            </Style>
+                            <!--<Style TargetType="TextBlock">
+                                <Setter Property="ContextMenu">
+                                    <Setter.Value>
+                                        <ContextMenu>
+                                            <MenuItem Header="打开Mod设置文件" Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                                        </ContextMenu>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>-->
+                        </DataGridTextColumn.ElementStyle>
+                    </DataGridTextColumn>
                     <DataGridTextColumn Header="最新版本" Binding="{Binding Versions[0].Version_Number}" IsReadOnly="True"/>
                     <DataGridCheckBoxColumn Header="已下载" Binding="{Binding Downloaded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
                     <DataGridCheckBoxColumn Header="已安装" Binding="{Binding Installed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>

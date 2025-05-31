@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
+using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -759,6 +760,25 @@ namespace VRisingServerManager
             else
             {
                 UninstallBepInEx(server);
+            }
+        }
+
+        private void ModFileEditor_Click(object sender, RoutedEventArgs e)
+        {
+            ModInfo mod = (ModInfo)ModsDataGrid.SelectedItem;
+            Server server = (Server)ServerComboBox.SelectedItem;
+            if (!Application.Current.Windows.OfType<ModFileEditor>().Any())
+            {
+                //if (VsmSettings.AppSettings.AutoLoadEditor == true && !(server == null))
+                //{
+                    //ModFileEditor mFileEditor = new(server, mod);
+                    //mFileEditor.Show();
+                //}
+                //else
+                //{
+                //    ModFileEditor sSettingsEditor = new(VsmSettings.Servers);
+                //    sSettingsEditor.Show();
+                //}
             }
         }
     }

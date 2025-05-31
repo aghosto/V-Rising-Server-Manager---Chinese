@@ -1,0 +1,53 @@
+﻿<Window x:Class="VRisingServerManager.ModFileEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VRisingServerManager"
+        xmlns:ui="http://schemas.modernwpf.com/2019" xmlns:local1="clr-namespace:VRisingServerManager.Controls"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Title="ModFileEditor" Height="800" Width="650" ResizeMode="NoResize">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <Menu Grid.ColumnSpan="2">
+            <MenuItem Header="文件" Width="168" VerticalContentAlignment="Center" TextElement.FontSize="20" TextBlock.TextAlignment="Center">
+                <!--<MenuItem x:Name="FileMenuLoad" Header="导入" Click="FileMenuLoad_Click">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="OpenFile"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem x:Name="FileMenuSave" Header="保存" Click="FileMenuSave_Click">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Save"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem x:Name="FileMenuExit" Header="退出" Click="FileMenuExit_Click">
+                    <MenuItem.Icon>
+                        <ui:SymbolIcon Symbol="Cancel"/>
+                    </MenuItem.Icon>
+                </MenuItem>-->
+            </MenuItem>
+        </Menu>
+
+        <StackPanel Grid.Row="1" Margin="5, 0, 0, 0">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <RichTextBox x:Name="ModCfgFileEditorBlock" Width="640" Height="740" Background="Black">
+                </RichTextBox>
+            </Grid>
+        </StackPanel>
+    </Grid>
+</Window>

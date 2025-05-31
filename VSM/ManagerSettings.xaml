@@ -31,6 +31,7 @@
                                 <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="应用程序是否应在黑暗模式下运行。" FontSize="18"/>
                                 <CheckBox Content="自动加载设置文件" IsChecked="{Binding AppSettings.AutoLoadEditor, Mode=TwoWay}" ToolTip="游戏和服务器设置编辑器是否自动尝试加载选定的服务器文件。" FontSize="18"/>
                                 <CheckBox Content="启用MOD支持" Name="ModSupportCheckBox" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用试验性MOD支持。" Click="ModSupportCheckBox_Click" FontSize="18"/>
+                                <CheckBox Content="服务器崩溃重启时保存Log备份" Name="SaveLogWhenCrashCheckBox" IsChecked="{Binding AppSettings.SaveLogWhenCrash}" ToolTip="启用试验性MOD支持。" FontSize="18"/>
                                 <DockPanel>
                                     <StackPanel>
                                         <TextBlock Text="当关闭按钮按下时系统选择（未完善，请忽略）" FontSize="18" Margin="5, 15, 0, 0"/>
