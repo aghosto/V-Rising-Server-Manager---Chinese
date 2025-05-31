@@ -97,20 +97,20 @@
                                     <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="200" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
                                 </DockPanel>
                                 <DockPanel>
-                                    <Button Margin="2 10 0 0" Click="ServerSpecSettingsEditor_Click" ToolTip="更改服务器特殊设置。" HorizontalAlignment="Stretch">
+                                    <Button Margin="2 10 0 0" Click="ServerSpecSettingsEditor_Click" ToolTip="更改服务器特殊设置。" HorizontalAlignment="Stretch" IsEnabled="False">
                                         <Button.Content>
                                             <DockPanel>
                                                 <Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>
-                                                <TextBlock Text="服务器特殊设置" Margin="5,0,5,0" IsEnabled="False"/>
+                                                <TextBlock Text="服务器特殊设置" Margin="5,0,5,0"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
-                                    <Button Margin="2 10 0 0" Click="ChangeSaveFile_Click" ToolTip="更改服务器存档。" HorizontalAlignment="Stretch">
+                                    <Button Margin="2 10 0 0" Click="ChangeSaveFile_Click" ToolTip="更改服务器存档。" HorizontalAlignment="Stretch" IsEnabled="False">
                                         <Button.Content>
                                             <DockPanel>
                                                 <ui:SymbolIcon Symbol="Folder"/>
                                                 <!--<Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>-->
-                                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0" IsEnabled="False"/>
+                                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0"/>
                                             </DockPanel>
                                         </Button.Content>
                                     </Button>
