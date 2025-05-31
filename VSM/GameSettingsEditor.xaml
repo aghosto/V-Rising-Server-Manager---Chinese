@@ -664,23 +664,12 @@
                                         <ui:NumberBox Value="{Binding CastleStatModifiers_Global.ThroneOfDarknessLimit, Mode=TwoWay}" SmallChange="1" ToolTip="每位玩家可以建造的城堡数量。" Maximum="5" Minimum="1" SpinButtonPlacementMode="Compact"/>
                                     </DockPanel>
                                     <DockPanel>
-<<<<<<< HEAD
                                         <TextBlock Text="城堡之心上限类型" Width="250" VerticalAlignment="Center"/>
                                         <ComboBox x:Name="CastleHeartLimitTypeCombo" SelectedIndex="{Binding CastleStatModifiers_Global.CastleHeartLimitTypeCombo, Mode=TwoWay}" ToolTip="定义城堡之心上限是以玩家还是以血族为单位。">
                                             <ComboBoxItem Content="玩家" ToolTip="城堡之心上限以玩家为单位。"/>
                                             <ComboBoxItem Content="血族" ToolTip="城堡之心上限以血族为单位。"/>
-=======
-                                        <TextBlock Text="城堡之心控制权" Width="250" VerticalAlignment="Center"/>
-                                        <ComboBox SelectedIndex="{Binding CastleStatModifiers_Global.CastleHeartLimitType, Mode=TwoWay}" ToolTip="定义与敌人城堡之心的互动。">
-                                            <ComboBoxItem Content="仅玩家" ToolTip="玩家只能在城堡之心处于衰败状态时摧毁敌人的城堡之心。"/>
-                                            <ComboBoxItem Content="仅血族" ToolTip="玩家只能在城堡之心处于衰败状态时摧毁敌人的城堡之心。"/>
->>>>>>> Dev
                                         </ComboBox>
                                     </DockPanel>
-                                    <StackPanel>
-                                    </StackPanel>
-                                    <StackPanel>
-                                    </StackPanel>
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
