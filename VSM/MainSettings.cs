@@ -285,7 +285,7 @@ namespace VRisingServerManager
             set => SetField(ref _lastUpdateTime, value);
         }
 
-        private string _version = "1.3.3";
+        private string _version = "1.3.4";
         public string Version
         {
             get => _version;
@@ -308,6 +308,12 @@ namespace VRisingServerManager
         {
             get => _enableModSupport;
             set => SetField(ref _enableModSupport, value);
+        }
+        private bool _saveLogWhenCrash = false;
+        public bool SaveLogWhenCrash
+        {
+            get => _saveLogWhenCrash;
+            set => SetField(ref _saveLogWhenCrash, value);
         }
         private int _closeExecuteSelect;
         public int CloseExecuteSelect

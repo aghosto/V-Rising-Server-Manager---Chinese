@@ -22,7 +22,7 @@
     "TombLimit": 8,
     "HeartLimits": {
       "Level1": {
-        "ServantLimit": 2
+        "ServantLimit": 1
       },
       "Level2": {
         "ServantLimit": 3
@@ -37,7 +37,8 @@
         "ServantLimit": 5
       }
     },
-    "CastleLimit": 1
+    "CastleLimit": 1,
+    "CastleHeartLimitType": 1
   },
   "WarEventGameSettings": {
     "WeekdayTime": {

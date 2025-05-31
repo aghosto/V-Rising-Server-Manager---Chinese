@@ -31,6 +31,7 @@
                                 <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="应用程序是否应在黑暗模式下运行。" FontSize="18"/>
                                 <CheckBox Content="自动加载设置文件" IsChecked="{Binding AppSettings.AutoLoadEditor, Mode=TwoWay}" ToolTip="游戏和服务器设置编辑器是否自动尝试加载选定的服务器文件。" FontSize="18"/>
                                 <CheckBox Content="启用MOD支持" Name="ModSupportCheckBox" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用试验性MOD支持。" Click="ModSupportCheckBox_Click" FontSize="18"/>
+                                <CheckBox Content="服务器崩溃重启时保存Log备份" Name="SaveLogWhenCrashCheckBox" IsChecked="{Binding AppSettings.SaveLogWhenCrash}" ToolTip="启用试验性MOD支持。" FontSize="18"/>
                                 <DockPanel>
                                     <StackPanel>
                                         <TextBlock Text="当关闭按钮按下时系统选择（未完善，请忽略）" FontSize="18" Margin="5, 15, 0, 0"/>
@@ -118,9 +119,7 @@
                                 <TextBlock Text="选择要自定义的服务器：" VerticalAlignment="Center" Margin="0,0,20,0"/>
                                 <ComboBox Name="ServerCombo2" ItemsSource="{Binding Servers}" DisplayMemberPath="Name" Width="250"/>
                             </DockPanel>
-
                             <Separator Margin="0,10,0,10"/>
-
                             <GroupBox Header="RCON">
                                 <StackPanel>
                                     <CheckBox Name="RCONCheck" Content="自动消息" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding RconServerSettings.Enabled}" ToolTip="是否启用自动RCON功能，例如在关闭服务器进行更新之前发送消息，要求使用正确的设置填写下面的字段。（似乎未完善）"/>

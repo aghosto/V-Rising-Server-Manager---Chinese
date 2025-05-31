@@ -116,11 +116,11 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "食人魔骇爪              ",  UnitId = -1347412392,   UnitLevel = 76, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "太阳使者阿扎瑞尔        ",  UnitId = 114912615,     UnitLevel = 79, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "能源主管沃尔塔蒂亚      ",  UnitId = 2054432370,    UnitLevel = 79, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "吸血鬼猎人西蒙·贝尔蒙特",  UnitId = 2054432370,    UnitLevel = 80, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "吸血鬼猎人西蒙·贝尔蒙特",  UnitId = 336560131,     UnitLevel = 80, DefaultUnlocked = false });
             //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "锻造者丹特斯            ",  UnitId = 173259239,     UnitLevel = 82, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "领主冥河-暗夜勇士       ",  UnitId = 1112948824,    UnitLevel = 84, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "巨兽戈雷库什            ",  UnitId = -1936575244,   UnitLevel = 84, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者瓦伦西亚将军      ",  UnitId = 2054432370,    UnitLevel = 84, DefaultUnlocked = false });
+            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者瓦伦西亚将军      ",  UnitId = 495971434,    UnitLevel = 84, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "无瑕者索拉鲁斯          ",  UnitId = -740796338,    UnitLevel = 86, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "恐怖翼兽塔尔祖尔        ",  UnitId = -393555055,    UnitLevel = 86, DefaultUnlocked = false });
             //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毒蛇女王梅加拉          ",  UnitId = 591725925,     UnitLevel = 88, DefaultUnlocked = false });
@@ -147,7 +147,7 @@ namespace VRisingServerManager
             fakeAchievements.Add(new Achievement() { ID = 134993992,    Name = "传送门            ",  Count = 13, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 606418711,    Name = "古堡领主          ",  Count = 15, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "仆从              ",  Count = 16, Unlocked = false });
-            //fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "仆从              ",  Count = 16, Unlocked = false });
+            //fakeAchievements.Add(new Achievement() { ID = -892747762,   Name = "宝藏室              ",  Count = 16, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -437605270,   Name = "黑暗军团          ",  Count = 17, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = -1472413073,  Name = "拓展视野          ",  Count = 16, Unlocked = false });
             fakeAchievements.Add(new Achievement() { ID = 1248242594,   Name = "流出鲜血的龙头    ",  Count = 16, Unlocked = false });
@@ -187,15 +187,6 @@ namespace VRisingServerManager
             {
                 if (research.Unlocked == true)
                     gameSettings.UnlockedResearchs.Add(research.ID);
-            }
-            switch (CastleHeartLimitTypeCombo.SelectedIndex)
-            {
-                case 0:
-                    gameSettings.CastleStatModifiers_Global.CastleHeartLimitType = "User";
-                    break;
-                case 1:
-                    gameSettings.CastleStatModifiers_Global.CastleHeartLimitType = "Clan";
-                    break;
             }
             switch (StarterEquipmentCombo.SelectedIndex)
             {
@@ -648,15 +639,21 @@ namespace VRisingServerManager
                 {
                     LoadedSettings.WarEventGameSettings.MajorDuration = MajorDurationValue;
                 }
-                switch (LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType)
+                if (!int.TryParse(LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType.ToString(), out int CastleHeartLimitTypeValue))
                 {
-                    case "User":
-                        CastleHeartLimitTypeCombo.SelectedIndex = 0;
-                        break;
-                    case "Clan":
-                        CastleHeartLimitTypeCombo.SelectedIndex = 1;
-                        break;
-
+                    switch (LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType.ToString())
+                    {
+                        case "User":
+                            LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType = "User";
+                            break;
+                        case "Clan":
+                            LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType = "Clan";
+                            break;
+                    }
+                }
+                else
+                {
+                    LoadedSettings.CastleStatModifiers_Global.CastleHeartLimitType = CastleHeartLimitTypeValue;
                 }
                 switch (LoadedSettings.StarterEquipmentId)
                 {

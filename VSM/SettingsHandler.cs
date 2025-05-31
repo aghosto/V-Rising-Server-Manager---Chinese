@@ -27,7 +27,7 @@ namespace VRisingServerManager
         public int CastleLimit { get; set; } = 2;
         public int NetherGateLimit { get; set; } = 1;
         public int ThroneOfDarknessLimit {  get; set; } = 1;
-        public string CastleHeartLimitType { get; set; } = "Clan";
+        public dynamic CastleHeartLimitType { get; set; } = "Clan";
 
     }
 
@@ -291,6 +291,7 @@ namespace VRisingServerManager
         public bool Enabled { get; set; } = false;
         public string Password { get; set; } = "输入密码";
         public int Port { get; set; } = 25575;
+        //public string CommandCurrent { get; set; } = "";
     }
 
     public class API
@@ -424,6 +425,20 @@ namespace VRisingServerManager
         public int VOIPConversationalDistance { get; set; } = 14;
         public int VOIPAudibleDistance { get; set; } = 40;
         public double VOIPConversationalSpeed { get; set; } = 2.0;
+    }
+    public class ServerSpecSettings
+    {
+        public bool ServerAutoRestartEnable { get; set; } = false;
+        public int AutoRestart_Day { get; set; } = 0;
+        public int AutoRestart_Hour { get; set; } = 0;
+        public int AutoRestart_Min { get; set; } = 0;
+    }
+    public class ChangeServerSaveSettings
+    {
+        public string NowServerName { get; set; } = "";
+        public string NowServerDescription { get; set; } = "";
+        public string ReadyServerName { get; set; } = "";
+        public string ReadyServerDescription { get; set; } = "";
     }
     public class Achievement
     {

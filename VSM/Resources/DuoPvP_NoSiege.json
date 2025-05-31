@@ -18,9 +18,9 @@
   "BloodDrainModifier": 1.25,
 
   "CastleStatModifiers_Global": {
-      "HeartLimits": {
+    "HeartLimits": {
       "Level1": {
-        "ServantLimit": 2
+        "ServantLimit": 1
       },
       "Level2": {
         "ServantLimit": 3
@@ -35,7 +35,8 @@
         "ServantLimit": 5
       }
     },
-    "CastleLimit": 2
+    "CastleLimit": 1,
+    "CastleHeartLimitType": 1
   },
   "WarEventGameSettings": {
     "WeekdayTime": {

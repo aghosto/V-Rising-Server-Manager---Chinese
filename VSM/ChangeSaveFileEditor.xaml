@@ -1,0 +1,91 @@
+﻿<Window x:Class="VRisingServerManager.ChangeSaveFileEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VRisingServerManager"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        ui:WindowHelper.UseModernWindowStyle="True"
+        mc:Ignorable="d"
+        Title="存档更换编辑器" Height="450" Width="800">
+    
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" MinHeight="5"/>
+            <RowDefinition Height="Auto" MinHeight="96.4"/>
+            <RowDefinition/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}">
+            <TabControl.ItemTemplate>
+                <DataTemplate>
+                    <DockPanel>
+                        <TextBlock Text="{Binding vsmServerName}" Grid.Column="0"/>
+                    </DockPanel>
+                </DataTemplate>
+            </TabControl.ItemTemplate>
+            <TabControl.ContentTemplate>
+                <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                    </Grid>
+                </DataTemplate>
+            </TabControl.ContentTemplate>
+        </TabControl>
+        <Separator Grid.Row="1" Margin="0,2,0,2"/>
+        <GroupBox Header="服务器存档替换" Margin="5,0,5,0" Grid.Row="2">
+            <StackPanel Grid.Row="2" Orientation="Horizontal">
+                <ui:CommandBar>
+                    <ui:CommandBar.Content>
+                        <DockPanel>
+                            <TextBlock Text="服务器：" VerticalAlignment="Center" Padding="10,0,0,0"/>
+                            <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
+                            <TextBlock VerticalAlignment="Center" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BepInExInstalled}" Value="True">
+                                                <Setter Property="Text" Value="BepInEx：已安装，版本："/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding BepInExInstalled}" Value="False">
+                                                <Setter Property="Text" Value="BepInEx：未安装"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                            <TextBlock Text="{Binding BepInExVersion}" VerticalAlignment="Center" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding BepInExInstalled}" Value="False">
+                                                <Setter Property="Visibility" Value="Hidden"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding BepInExInstalled}" Value="True">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </DockPanel>
+                    </ui:CommandBar.Content>
+                </ui:CommandBar>
+                <TextBlock Text="当前所选服务器：" VerticalAlignment="Center" Padding="10,0,0,0"/>
+                <!--<TextBlock Text="{Binding Servers, Mode=TwoWay}"/>-->
+                <!--<ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="SelectComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>-->
+            </StackPanel>
+        </GroupBox>
+        
+        <!--<Grid Grid.Row="2" Margin="0,96,0,37" Grid.RowSpan="3">
+            <RichTextBox x:Name="MainMenuConsole" Grid.Row="2" Background="Black" Foreground="Lime" Grid.ColumnSpan="2" Margin="5" IsReadOnly="True"/>
+        </Grid>-->
+    </Grid>
+
+</Window>

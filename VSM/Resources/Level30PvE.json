@@ -13,6 +13,7 @@
   "StarterResourcesId": 1982471388,
   "StartingProgressionLevel": 30,
   "CastleStatModifiers_Global": {
-    "CastleLimit": 1
+    "CastleLimit": 1,
+    "CastleHeartLimitType": 1
   }
 }

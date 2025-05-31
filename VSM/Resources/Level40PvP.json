@@ -22,7 +22,8 @@
   "StarterResourcesId": 1504234317,
   "StartingProgressionLevel": 40,
   "CastleStatModifiers_Global": {
-    "CastleLimit": 1
+    "CastleLimit": 2,
+    "CastleHeartLimitType": 1
   },
   "WarEventGameSettings": {
     "WeekdayTime": {
