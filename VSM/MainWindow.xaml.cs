@@ -72,9 +72,17 @@ namespace VRisingServerManager
             ScanForServers();
             SetupTimer();
 
+            if (File.Exists("VSMUpdater.exe") && File.Exists("VSMUpdater.deps.json") && File.Exists("VSMUpdater.dll") && File.Exists("VSMUpdater.runtimeconfig.json"))
+            {
+                File.Delete("VSMUpdater.exe");
+                File.Delete("VSMUpdater.dll");
+                File.Delete("VSMUpdater.deps.json");
+                File.Delete("VSMUpdater.runtimeconfig.json");
+            }
+
             if (VsmSettings.AppSettings.AutoUpdateApp == true)
                 LookForUpdate();
-            //File.Exists("")
+
         }
 
         private async void LookForUpdate()
@@ -92,7 +100,7 @@ namespace VRisingServerManager
                 };
                 if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
                 {
-                    Process.Start("VSMUpdater.exe");
+                    Process.Start("Update.exe");
                     Application.Current.MainWindow.Close();
                 }
                 else

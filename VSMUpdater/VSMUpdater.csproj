@@ -5,6 +5,7 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
@@ -16,7 +17,6 @@
   </PropertyGroup>
 
   <Target Name="PostPublish" AfterTargets="Publish">
-    <Exec Command="xcopy &quot;$(MSBuildProjectDirectory)\bin\Release\net6.0\publish\win-x64\*&quot; &quot;$(SolutionDir)Release&quot; /s /i /Y" />
   </Target>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">
