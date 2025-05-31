@@ -26,7 +26,7 @@ if (!File.Exists(workingDir + @"\VRisingServerManager.exe"))
 Console.WriteLine("正在开始更新VSM。");
 Console.WriteLine("正在下载文件...");
 
-byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://gh-proxy.com/github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
+byte[] fileBytes = await httpClient.GetByteArrayAsync(@"https://github.com/aghosto/V-Rising-Server-Manager---Chinese/releases/latest/download/VSM-Ch.zip");
 
 Console.WriteLine("下载成功。");
 
@@ -39,7 +39,7 @@ await File.WriteAllBytesAsync(workingDir + @"\temp\VSM.zip", fileBytes);
 
 Console.WriteLine();
 
-Console.WriteLine("正在创建设置的备份。");
+Console.WriteLine("正在创建设置备份。");
 if (!Directory.Exists(workingDir + @"\Backups"))
     Directory.CreateDirectory(workingDir + @"\Backups");
 
@@ -56,9 +56,9 @@ string[] files = Directory.GetFiles(workingDir + @"\temp");
 foreach (string file in files)
 {
     string fileName = Path.GetFileName(file);    
-    if (fileName != "VSMUpdater.exe" && fileName != "VSM.zip" && fileName != "VSMUpdater.dll" && fileName != "VSMUpdater.runtimeconfig.json" && fileName != "VSMUpdater.deps.json")
+    if (fileName != "VSMUpdater.exe" && fileName != "VSM.zip" && fileName != "VSMUpdater.dll" && fileName != "VSMUpdater.runtimeconfig.json" && fileName != "VSMUpdater.deps.json" && fileName != "VSMUpdate.exe")
     {
-        Console.WriteLine("正在复制: " + fileName);
+        Console.WriteLine("正在复制/替换: " + fileName);
         File.Copy(file, workingDir + fileName, true);
     }
 }
@@ -67,7 +67,7 @@ if (Directory.Exists(workingDir + @"\temp"))
     Directory.Delete(workingDir + @"\temp", true);
 
 Console.WriteLine();
-Console.WriteLine(@"更新完成。VMS设置的备份可以在\Backups文件夹中找到。");
+Console.WriteLine(@"更新完成。VSM设置的备份可以在\Backups文件夹中找到。");
 Console.WriteLine("按任意键关闭窗口并启动软件...");
 Console.ReadKey();
 

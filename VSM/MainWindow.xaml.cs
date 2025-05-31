@@ -94,7 +94,7 @@ namespace VRisingServerManager
             {
                 ContentDialog yesNoDialog = new()
                 {
-                    Content = $"软件有新版本可用于下载，需要更新吗？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}",
+                    Content = $"软件有新版本可用于下载，需要关闭软件进行更新，是否更新？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}",
                     PrimaryButtonText = "是",
                     SecondaryButtonText = "否"
                 };
@@ -104,7 +104,7 @@ namespace VRisingServerManager
                     Application.Current.MainWindow.Close();
                 }
                 else
-                    LogToConsole("用户取消了本次软件更新。");
+                    LogToConsole($"[{DateTime.Now}]  用户取消了本次软件更新。");
             }
             else
             {
