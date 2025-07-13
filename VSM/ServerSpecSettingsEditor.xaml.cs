@@ -61,54 +61,19 @@ namespace VRisingServerManager
                 DataContext = specServicesSettings;
             }
         }
-
-        private void FileMenuLoad_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                string? FileToLoad = "temp";
-                OpenFileDialog OpenSettingsDialog = new OpenFileDialog
-                {
-                    Filter = "\"JSON files\"|*.json",
-                    DefaultExt = "json",
-                    FileName = "ServerSpecSettings.json",
-                    InitialDirectory = Directory.GetCurrentDirectory()
-                };
-                if (OpenSettingsDialog.ShowDialog() == true && FileToLoad != null)
-                {
-                    FileToLoad = OpenSettingsDialog.FileName;
-                }
-                else
-                {
-                    return;
-                }
-                using (StreamReader reader = new StreamReader(FileToLoad))
-                {
-                    string LoadedJSON = reader.ReadToEnd();
-                    ServerSpecSettings LoadedSettings = System.Text.Json.JsonSerializer.Deserialize<ServerSpecSettings>(LoadedJSON);
-                    specServicesSettings = LoadedSettings;
-                    DataContext = specServicesSettings;
-                }
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-        }
-
-        private async void FileMenuSave_Click(object sender, RoutedEventArgs e)
+        private async void SpecSaveButton_Click(object sender, RoutedEventArgs e)
         {
             if (servers.Count > 0)
             {
-                ContentDialog yesNoDialog = new()
-                {
-                    Content = "是否自动保存到服务器？如果原始文件存在，将创建其备份。",
-                    PrimaryButtonText = "是",
-                    SecondaryButtonText = "否"
-                };
+                //ContentDialog yesNoDialog = new()
+                //{
+                //    Content = "是否保存到服务器？如果原始文件存在，将创建其备份。",
+                //    PrimaryButtonText = "是",
+                //    SecondaryButtonText = "否"
+                //};
 
-                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
-                {
+                //if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                //{
                     EditorSaveDialog dialog = new(servers)
                     {
                         PrimaryButtonText = "保存",
@@ -147,7 +112,7 @@ namespace VRisingServerManager
                     {
                         return;
                     }
-                }
+                //}
             }
 
             try

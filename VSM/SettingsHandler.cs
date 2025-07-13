@@ -429,9 +429,10 @@ namespace VRisingServerManager
     public class ServerSpecSettings
     {
         public bool ServerAutoRestartEnable { get; set; } = false;
-        public int AutoRestart_Day { get; set; } = 0;
+        //public int AutoRestart_Day { get; set; } = 0;
         public int AutoRestart_Hour { get; set; } = 0;
         public int AutoRestart_Min { get; set; } = 0;
+        public int AutoRestart_Sec { get; set; } = 0;
     }
     public class ChangeServerSaveSettings
     {

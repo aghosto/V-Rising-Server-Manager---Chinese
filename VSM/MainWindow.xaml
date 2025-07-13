@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:tb="http://www.hardcodet.net/taskbar"
         ui:WindowHelper.UseModernWindowStyle="True"
-        WindowStartupLocation="CenterScreen"
+        WindowStartupLocation="CenterScreen" 
         mc:Ignorable="d"
         Title="夜族崛起服务端管理器（V Rising Server Manager）" Height="650" Width="800" ResizeMode="CanMinimize">
 
@@ -20,11 +20,11 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
 
-        <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}">
+        <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}" Background="LightGray">
             <TabControl.ItemTemplate>
                 <DataTemplate>
                     <DockPanel>
-                        <TextBlock Text="{Binding vsmServerName}" Grid.Column="0"/>
+                        <TextBlock Text="{Binding vsmServerName}" Grid.Column="0" FontWeight="UltraBold"/>
 
                         <Image Grid.Column="1" Stretch="None" Margin="2,0,0,0">
                             <Image.Style>
@@ -47,7 +47,7 @@
                             </Image.Style>
                         </Image>
 
-                        <Button Grid.Column="1" Click="RemoveServerButton_Click">
+                        <Button Grid.Column="1" Click="RemoveServerButton_Click" HorizontalAlignment="Right">
                             <Button.Template>
                                 <ControlTemplate TargetType="Button">
                                     <Path Data="M0,0 L8,8 M8,0 L0,8" StrokeThickness="3" VerticalAlignment="Center" Margin="5,4,0,2" ToolTip="移除该服务器">
@@ -55,7 +55,7 @@
                                             <Style TargetType="{x:Type Path}">
                                                 <Style.Triggers>
                                                     <Trigger Property="IsMouseOver" Value="False">
-                                                        <Setter Property="Stroke" Value="Red" />
+                                                        <Setter Property="Stroke" Value="Red"/>
                                                     </Trigger>
                                                     <Trigger Property="IsMouseOver" Value="True">
                                                         <Setter Property="Stroke" Value="DarkRed" />

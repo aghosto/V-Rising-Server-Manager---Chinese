@@ -260,13 +260,13 @@ namespace VRisingServerManager
             get => _autoUpdateApp;
             set => SetField(ref _autoUpdateApp, value);
         }
-        private int _autoUpdateInterval = 60;
         private bool _showSteamWindow = true;
         public bool ShowSteamWindow
         {
             get => _showSteamWindow;
             set => SetField(ref _showSteamWindow, value);
         }
+        private int _autoUpdateInterval = 60;
         public int AutoUpdateInterval
         {
             get => _autoUpdateInterval;
@@ -315,11 +315,41 @@ namespace VRisingServerManager
             get => _saveLogWhenCrash;
             set => SetField(ref _saveLogWhenCrash, value);
         }
+        private bool _enableAutoRestart = false;
+        public bool EnableAutoRestart
+        {
+            get => _enableAutoRestart;
+            set => SetField(ref _enableAutoRestart, value);
+        }
+        private int _autoRestartHour = 00;
+        public int AutoRestartHour
+        {
+            get => _autoRestartHour;
+            set => SetField(ref _autoRestartHour, value);
+        }
+        private int _autoRestartMin = 00;
+        public int AutoRestartMin
+        {
+            get => _autoRestartMin;
+            set => SetField(ref _autoRestartMin, value);
+        }
+        private int _autoRestartSec = 00;
+        public int AutoRestartSec
+        {
+            get => _autoRestartSec;
+            set => SetField(ref _autoRestartSec, value);
+        }
         private int _closeExecuteSelect;
         public int CloseExecuteSelect
         {
             get => _closeExecuteSelect;
             set => SetField(ref _closeExecuteSelect, value);
+        }
+        private bool _managerSettingsClose;
+        public bool ManagerSettingsClose
+        {
+            get => _managerSettingsClose;
+            set => SetField(ref _managerSettingsClose, value);
         }
     }
 }

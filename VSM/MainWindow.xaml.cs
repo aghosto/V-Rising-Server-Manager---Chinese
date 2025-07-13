@@ -27,6 +27,7 @@ using Microsoft.Win32;
 using System.Timers;
 using System.Security.AccessControl;
 using Newtonsoft.Json.Converters;
+using System.Configuration;
 
 
 
@@ -42,6 +43,7 @@ namespace VRisingServerManager
         private static HttpClient HttpClient = new();
         private VoiceServicesSettings VoiceServicesSettings = new();
         private PeriodicTimer? AutoUpdateTimer;
+        private PeriodicTimer? AutoRestartTimer;
         private RemoteConClient RCONClient;
         private ServerSpecSettings ServerSpecSettings = new();
         //private ChangeSaveFileEditor changeSaveFileEditor = new();
@@ -67,10 +69,11 @@ namespace VRisingServerManager
 
             VsmSettings.AppSettings.Version = new AppSettings().Version;
 
-            LogToConsole($"[{DateTime.Now}]  夜族崛起服务端管理器(VSM)启动成功。" + ((VsmSettings.Servers.Count > 0) ? $"\r[{DateTime.Now}]  " + VsmSettings.Servers.Count.ToString() + " 个服务器从设置中加载成功。" : "\r未找到服务器，请点击“添加服务器”以开始使用。"));
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  夜族崛起服务端管理器(VSM)启动成功。" + ((VsmSettings.Servers.Count > 0) ? $"\r[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  " + VsmSettings.Servers.Count.ToString() + " 个服务器从设置中加载成功。" : $"\r[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  未找到服务器，请点击“添加服务器”以开始使用。"));
 
             ScanForServers();
             SetupTimer();
+            SetAutoRestartTimer();
 
             if (File.Exists("VSMUpdater.exe") && File.Exists("VSMUpdater.deps.json") && File.Exists("VSMUpdater.dll") && File.Exists("VSMUpdater.runtimeconfig.json"))
             {
@@ -82,40 +85,47 @@ namespace VRisingServerManager
 
             if (VsmSettings.AppSettings.AutoUpdateApp == true)
                 LookForUpdate();
-
         }
+        
 
         private async void LookForUpdate()
         {
-            string latestVersion = await HttpClient.GetStringAsync("https://gitee.com/aGHOSToZero/V-Rising-Server-Manager---Chinese/raw/master/VERSION");
-            latestVersion = latestVersion.Trim();
-
-            if (latestVersion != VsmSettings.AppSettings.Version)
+            try
             {
-                ContentDialog yesNoDialog = new()
+                string latestVersion = await HttpClient.GetStringAsync("https://gitee.com/aGHOSToZero/V-Rising-Server-Manager---Chinese/raw/master/VERSION");
+                latestVersion = latestVersion.Trim();
+
+                if (latestVersion != VsmSettings.AppSettings.Version)
                 {
-                    Content = $"软件有新版本可用于下载，需要关闭软件进行更新，是否更新？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}",
-                    PrimaryButtonText = "是",
-                    SecondaryButtonText = "否"
-                };
-                if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
-                {
-                    Process.Start("Update.exe");
-                    Application.Current.MainWindow.Close();
+                    ContentDialog yesNoDialog = new()
+                    {
+                        Content = $"软件有新版本可用于下载，需要关闭软件进行更新，是否更新？\r\r当前版本：{VsmSettings.AppSettings.Version}\r最新版本：{latestVersion}",
+                        PrimaryButtonText = "是",
+                        SecondaryButtonText = "否"
+                    };
+                    if (await yesNoDialog.ShowAsync() is ContentDialogResult.Primary)
+                    {
+                        Process.Start("Update.exe");
+                        Application.Current.MainWindow.Close();
+                    }
+                    else
+                        LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  用户取消了本次软件更新。");
                 }
                 else
-                    LogToConsole($"[{DateTime.Now}]  用户取消了本次软件更新。");
+                {
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在运行最新的版本：{latestVersion}");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                LogToConsole($"[{DateTime.Now}]  正在运行最新的版本：{latestVersion}");
+                LogToConsole($"搜索软件更新错误：{ex.ToString()}");
             }
         }
 
         /// <summary>
         /// Sets up the timer for AutoUpdates
         /// </summary>
-        private void SetupTimer()
+        public void SetupTimer()
         {
             if (VsmSettings.AppSettings.AutoUpdate == true)
             {
@@ -128,6 +138,35 @@ namespace VRisingServerManager
             }
         }
 
+
+        public void SetAutoRestartTimer()
+        {
+            if (VsmSettings.AppSettings.EnableAutoRestart == true)
+            {
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  自动重启已启动，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。");
+                AutoRestartTimer = new PeriodicTimer(TimeSpan.FromSeconds(1));
+                AutoRestartLoop();
+            }
+        }
+
+        private async void AutoRestartLoop()
+        {
+            while (await AutoRestartTimer.WaitForNextTickAsync())
+            {
+                if (VsmSettings.AppSettings.ManagerSettingsClose)
+                {
+                    if (VsmSettings.AppSettings.EnableAutoRestart)
+                    {
+                        LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  重载自动重启时间，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。");
+                        VsmSettings.AppSettings.ManagerSettingsClose = false;
+                    }
+                    bool timetoRestart = await CheckForRestart();
+                    if (timetoRestart == true && VsmSettings.Servers.Count > 0)
+                        AutoRestart();
+                }
+            }
+        }
+
         private async void AutoUpdateLoop()
         {
             while (await AutoUpdateTimer.WaitForNextTickAsync())
@@ -136,6 +175,52 @@ namespace VRisingServerManager
                 if (foundUpdate == true && VsmSettings.Servers.Count > 0)
                     AutoUpdate();
             }
+        }
+
+        private async Task<bool> CheckForRestart()
+        {
+            bool timetoRestart = false;
+            if (DateTime.Now.Hour == VsmSettings.AppSettings.AutoRestartHour && 
+                    DateTime.Now.Minute == VsmSettings.AppSettings.AutoRestartMin && 
+                        DateTime.Now.Second == VsmSettings.AppSettings.AutoRestartSec)
+                AutoRestart();
+            return timetoRestart;
+        }
+
+        private async void AutoRestart()
+        {
+
+            List<Task> serverTasks = new List<Task>();
+            List<Server> runningServers = new List<Server>();
+
+            foreach (Server server in VsmSettings.Servers)
+            {
+                if (server.Runtime.State == ServerRuntime.ServerState.Running)
+                {
+                    server.Runtime.UserStopped = true;
+
+                    runningServers.Add(server);
+                }
+            }
+
+            if (runningServers.Count > 0)
+            {
+                //SendDiscordMessage(VsmSettings.WebhookSettings.UpdateWait);
+                await Task.Delay(TimeSpan.FromSeconds(0));
+            }
+            else
+            {
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  当前无正在运行的服务器，自动重启未生效。\r");
+                return;
+            }
+
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在自动重启 {runningServers.Count} 个服务器。" + ((runningServers.Count > 0) ? $"，在此之前即将关闭 {runningServers.Count} 个服务器。" : ""));
+            foreach (Server server in runningServers)
+            {
+                await RestartServer(server);
+            }
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  自动重启完成。");
+
         }
 
         private void LogToConsole(string logMessage)
@@ -215,8 +300,8 @@ namespace VRisingServerManager
             }
 
             string workingDir = Directory.GetCurrentDirectory();
-            LogToConsole($"\r[{DateTime.Now}]  正在更新/下载游戏服务器：" + server.vsmServerName + "，在完成前请勿关闭窗口或对软件进行其他操作。");
-            LogToConsole($"[{DateTime.Now}]  若显示更新成功但启动失败，请到软件设置中把 “显示SteamCMD窗口” 选项打开\r");
+            LogToConsole($"\r[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在更新/下载游戏服务器：" + server.vsmServerName + "，在完成前请勿关闭窗口或对软件进行其他操作。");
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  若显示更新成功但启动失败，请到软件设置中把 “显示SteamCMD窗口” 选项打开\r");
             string[] installScript = { "force_install_dir \"" + server.Path + "\"", "login anonymous", (VsmSettings.AppSettings.VerifyUpdates) ? "app_update 1829350 validate" : "app_update 1829350", "quit" };
             if (File.Exists(server.Path + @"\steamcmd.txt"))
                 File.Delete(server.Path + @"\steamcmd.txt");
@@ -236,7 +321,7 @@ namespace VRisingServerManager
             steamcmd.Start();
             await steamcmd.WaitForExitAsync();
 
-            LogToConsole($"[{DateTime.Now}]  更新/下载游戏服务器成功：" + server.vsmServerName);
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  更新/下载游戏服务器成功：" + server.vsmServerName);
             server.Runtime.State = ServerRuntime.ServerState.Stopped;
 
 
@@ -247,7 +332,7 @@ namespace VRisingServerManager
         {
             if (server.Runtime.Process != null)
             {
-                LogToConsole($"[{DateTime.Now}]  错误：{server.vsmServerName} 已在运行中");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  错误：{server.vsmServerName} 已在运行中");
                 return false;
             }
             
@@ -260,7 +345,7 @@ namespace VRisingServerManager
                 Directory.CreateDirectory(server.Path + @"\SaveData\Settings");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerHostSettings.json", server.Path + @"\SaveData\Settings\ServerHostSettings.json");
                 File.Copy(server.Path + @"\VRisingServer_Data\StreamingAssets\Settings\ServerGameSettings.json", server.Path + @"\SaveData\Settings\ServerGameSettings.json");
-                LogToConsole($"[{DateTime.Now}]  已完成创建SaveData文件夹存放自定义设置文件。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已完成创建SaveData文件夹存放自定义设置文件。");
             }
             else
             {
@@ -276,12 +361,12 @@ namespace VRisingServerManager
                 jsonString = reader.ReadToEnd();
             }
             ServerSettings jsonObject = JsonConvert.DeserializeObject<ServerSettings>(jsonString);
-            LogToConsole($"\r[{DateTime.Now}]  当前目标服务器：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称：" + server.LaunchSettings.DisplayName);
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  启动服务器：" + jsonObject.Name + " | VSM内名称：" + server.vsmServerName + " | VSM展示名称：" + server.LaunchSettings.DisplayName);
             await Task.Delay(5000);
 
             if (File.Exists(server.Path + @"\VRisingServer.exe"))
             {
-                LogToConsole($"[{DateTime.Now}]  启动服务器：" + server.vsmServerName + "......" + (server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3." : ""));
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  启动服务器：" + server.vsmServerName + "......" + (server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3." : ""));
                 if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.StartServer) && server.WebhookMessages.Enabled == true)
                     SendDiscordMessage(server.WebhookMessages.StartServer);
                 string parameters = $@"-persistentDataPath ""{server.Path + @"\SaveData"}"" -serverName ""{jsonObject.Name}"" -saveName ""{server.LaunchSettings.WorldName}"" -logFile ""{server.Path + @"\logs\VRisingServer.log"}""{(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
@@ -296,19 +381,19 @@ namespace VRisingServerManager
                     },
                     EnableRaisingEvents = true
                 };
-                LogToConsole($"[{DateTime.Now}]  正在载入配置文件...");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在载入配置文件...");
                 serverProcess.Exited += new EventHandler((sender, e) => ServerProcessExited(sender, e, server));
                 serverProcess.Start();
                 server.Runtime.State = ServerRuntime.ServerState.Running;
                 server.Runtime.UserStopped = false;
                 server.Runtime.Process = serverProcess;
-                LogToConsole($"[{DateTime.Now}]  启动服务器完成：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称" + server.LaunchSettings.DisplayName);
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  启动服务器完成：" + jsonObject.Name + " | VSM抬头名称：" + server.vsmServerName + " | VSM展示名称：" + server.LaunchSettings.DisplayName);
                 return true;
             }
 
             else
             {
-                LogToConsole($"[{DateTime.Now}]  服务器启动程序(VRisingServer.exe)未找到，请确认服务器已正确安装。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  服务器启动程序(VRisingServer.exe)未找到，请确认服务器已正确安装。");
                 return false;
             }
         }
@@ -376,7 +461,7 @@ namespace VRisingServerManager
 
             if (foundServers > 0)
             {
-                LogToConsole($"[{DateTime.Now}]  已找到 {foundServers} 个服务器正在运行。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已找到 {foundServers} 个服务器正在运行。");
             }
         }
 
@@ -423,7 +508,7 @@ namespace VRisingServerManager
                 serverTasks.Add(StopServer(server));
             }
 
-            LogToConsole($"[{DateTime.Now}]  正在自动更新 {VsmSettings.Servers.Count} 个服务器。" + ((runningServers.Count > 0) ? $"\r在此之前即将关闭 {runningServers.Count} 个服务器。" : ""));
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在自动更新 {VsmSettings.Servers.Count} 个服务器。" + ((runningServers.Count > 0) ? $"在此之前即将关闭 {runningServers.Count} 个服务器。" : ""));
 
             await Task.WhenAll(serverTasks.ToArray());
             serverTasks.Clear();
@@ -439,7 +524,7 @@ namespace VRisingServerManager
             }
 
             await Task.WhenAll(serverTasks.ToArray());
-            LogToConsole($"[{DateTime.Now}]  自动更新完成。");
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  自动更新完成。");
         }
 
         private async Task<bool> StopServer(Server server)
@@ -517,7 +602,7 @@ namespace VRisingServerManager
         private async Task<bool> CheckForUpdate()
         {
             bool foundUpdate = false;
-            LogToConsole($"[{DateTime.Now}]  正在查询服务器更新...");
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在查询服务器更新...");
             string json = await HttpClient.GetStringAsync("https://api.steamcmd.net/v1/info/1829350");
             JsonNode jsonNode = JsonNode.Parse(json);
 
@@ -531,7 +616,7 @@ namespace VRisingServerManager
                     VsmSettings.AppSettings.LastUpdateTime = "服务器最近更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
 
                 MainSettings.Save(VsmSettings);
-                LogToConsole($"[{DateTime.Now}]  当前游戏服务器已是最新版本。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  当前游戏服务器已是最新版本。");
                 return foundUpdate;
             }
 
@@ -617,14 +702,14 @@ namespace VRisingServerManager
         private async void ServerProcessExited(object sender, EventArgs e, Server server)
         {
             server.Runtime.State = ServerRuntime.ServerState.Stopped;
-
+            
             switch (server.Runtime.Process.ExitCode)
             {
                 case 1:
-                    LogToConsole($"[{DateTime.Now}]  {server.vsmServerName} 崩溃了。");
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  {server.vsmServerName} 崩溃了。");
                     break;
                 case -2147483645:
-                    LogToConsole($"[{DateTime.Now}]  {server.vsmServerName} 已中断，代码为‘-2147483645’，端口无法打开时可能会发生这种情况。确保没有其他服务器正在使用相同的端口。");
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  {server.vsmServerName} 已中断，代码为‘-2147483645’，端口无法打开时可能会发生这种情况。确保没有其他服务器正在使用相同的端口。");
                     break;
             }
 
@@ -632,7 +717,7 @@ namespace VRisingServerManager
 
             if (server.Runtime.RestartAttempts >= 3)
             {
-                LogToConsole($"[{DateTime.Now}]  服务器 '{server.vsmServerName}' 已尝试重新启动3次未成功，正在禁用自动重启功能。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  服务器 '{server.vsmServerName}' 已尝试重新启动3次未成功，正在禁用自动重启功能。");
                 if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.AttemptStart3) && server.WebhookMessages.Enabled == true)
                     SendDiscordMessage(server.WebhookMessages.AttemptStart3);
                 server.Runtime.RestartAttempts = 0;
@@ -640,7 +725,14 @@ namespace VRisingServerManager
                 if(VsmSettings.AppSettings.SaveLogWhenCrash)
                 {
                     if (WriteServerCrashLog(server))
-                        LogToConsole($@"[{DateTime.Now}]  已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。");
+                        LogToConsole($@"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。");
+                }
+                LogToConsole($@"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  崩溃后自动重启3次失败重新启动服务器中。");
+                await Task.Delay(5);
+                if (await StartServer(server))
+                {
+                    LogToConsole($@"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  崩溃后重启服务器成功，重新启用自动重启功能。");
+                    server.AutoRestart = true;
                 }
                 return;
             }
@@ -653,7 +745,7 @@ namespace VRisingServerManager
                 if (VsmSettings.AppSettings.SaveLogWhenCrash)
                 {
                     if (WriteServerCrashLog(server))
-                        LogToConsole($@"[{DateTime.Now}]  已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。");
+                        LogToConsole($@"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。");
                 }
                 await StartServer(server);
             }
@@ -743,41 +835,59 @@ namespace VRisingServerManager
         private async void StopServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
-            LogToConsole($"[{DateTime.Now}]  正在停止服务器：" + server.vsmServerName);
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在停止服务器：" + server.vsmServerName);
             bool success = await StopServer(server);
+            WriteServerCrashLog(server);
             if (success)
             {
-                LogToConsole($"[{DateTime.Now}]  已成功停止服务器：" + server.vsmServerName);
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已成功停止服务器：" + server.vsmServerName);
             }
             else
             {
-                LogToConsole($"[{DateTime.Now}]  无法停止服务器：" + server.vsmServerName);
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  无法停止服务器：" + server.vsmServerName);
             }
         }
         private async void RestartServerButton_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
-            LogToConsole($"\r[{DateTime.Now}]  正在重启服务器：" + server.vsmServerName + "......");
+            if (VsmSettings.AppSettings.SaveLogWhenCrash)
+            {
+                WriteServerCrashLog(server);
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已备份 {server.vsmServerName} 服务器日志");
+            }
+            await RestartServer(server);
+        }
+
+        private async Task<bool> RestartServer(Server server)
+        {
+            
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在重启服务器：" + server.vsmServerName);
             bool success = await StopServer(server);
 
             if (success)
-                LogToConsole($"[{DateTime.Now}]  已成功停止服务器：" + server.vsmServerName);
+            {
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已成功停止服务器：" + server.vsmServerName);
+                WriteServerCrashLog(server);
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已备份 {server.vsmServerName} 服务器日志");
+
+            }
             else
             {
-                LogToConsole($"[{DateTime.Now}]  无法停止服务器：" + server.vsmServerName);
-                return;
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  无法停止服务器：" + server.vsmServerName);
+                return false;
             }
-            await Task.Delay(3000);
-            LogToConsole($"[{DateTime.Now}]  正在启动服务器：" + server.vsmServerName + "......");
+            await Task.Delay(2000);
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在启动服务器：" + server.vsmServerName);
             bool started = false;
             MainSettings.Save(VsmSettings);
             if (File.Exists(server.Path + @"\start_server_example.bat"))
                 started = await StartServer(server);
             else
-                await Task.Delay(3000);
+                await Task.Delay(2000);
 
             if (started == true && VsmSettings.WebhookSettings.Enabled)
                 ReadLog(server);
+            return true;
         }
 
         private void ThemeSelect_Click(object sender, RoutedEventArgs e)
@@ -838,12 +948,12 @@ namespace VRisingServerManager
 
             if (server == null)
             {
-                LogToConsole($"[{DateTime.Now}]  <color=red>错误：找不到要删除的选定服务器");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  <color=red>错误：找不到要删除的选定服务器");
                 return;
             }
             bool success = await RemoveServer(server);
             if (!success)
-                LogToConsole($"[{DateTime.Now}]  删除服务器时出错，或操作已中止。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  删除服务器时出错，或操作已中止。");
             else
                 MainSettings.Save(VsmSettings);
         }
@@ -861,6 +971,23 @@ namespace VRisingServerManager
                 {
                     ServerSettingsEditor sSettingsEditor = new(VsmSettings.Servers);
                     sSettingsEditor.Show();
+                }
+            }
+        }
+
+        private void GameSettingsEditor_Click(object sender, RoutedEventArgs e)
+        {
+            if (!Application.Current.Windows.OfType<GameSettingsEditor>().Any())
+            {
+                if (VsmSettings.AppSettings.AutoLoadEditor == true && !(ServerTabControl.SelectedIndex == -1))
+                {
+                    GameSettingsEditor gSettingsEditor = new(VsmSettings.Servers, true, ServerTabControl.SelectedIndex);
+                    gSettingsEditor.Show();
+                }
+                else
+                {
+                    GameSettingsEditor gSettingsEditor = new(VsmSettings.Servers);
+                    gSettingsEditor.Show();
                 }
             }
         }
@@ -938,30 +1065,19 @@ namespace VRisingServerManager
             }
         }
 
-        private void GameSettingsEditor_Click(object sender, RoutedEventArgs e)
-        {
-            if (!Application.Current.Windows.OfType<GameSettingsEditor>().Any())
-            {
-                if (VsmSettings.AppSettings.AutoLoadEditor == true && !(ServerTabControl.SelectedIndex == -1))
-                {
-                    GameSettingsEditor gSettingsEditor = new(VsmSettings.Servers, true, ServerTabControl.SelectedIndex);
-                    gSettingsEditor.Show();
-                }
-                else
-                {
-                    GameSettingsEditor gSettingsEditor = new(VsmSettings.Servers);
-                    gSettingsEditor.Show();
-                }
-            }
-        }
-
         private void ManagerSettingsButton_Click(object sender, RoutedEventArgs e)
         {
             if (!Application.Current.Windows.OfType<ManagerSettings>().Any())
             {
                 ManagerSettings mSettings = new(VsmSettings);
+                //mSettings.Closed += ManagerSettings_Closed;
                 mSettings.Show();
             }
+        }
+        private void ManagerSettings_Closed(object sender, EventArgs e)
+        {
+            //SetAutoRestartTimer();
+            //LogToConsole("子窗口已关闭");
         }
 
         private void VersionButton_Click(object sender, RoutedEventArgs e)
@@ -982,7 +1098,6 @@ namespace VRisingServerManager
 
         private void TaskIcon_Click(object sender, RoutedEventArgs e)
         {
-
             MainWindow mainWindow = new MainWindow();
             mainWindow.Show();
         }       
@@ -1017,33 +1132,33 @@ namespace VRisingServerManager
                     store.Add(caCert);
                     store.Close();
 
-                    LogToConsole($"[{DateTime.Now}]  证书安装成功。");
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  证书安装成功。\r");
                 }
                 else
                 {
-                    LogToConsole($"[{DateTime.Now}]  用户取消了安装证书，退出此次修复。\r");
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  用户取消了安装证书，退出此次修复。\r");
                     return;
                 }
             }
             else
-                LogToConsole($"[{DateTime.Now}]  AmazonRootCA1 证书已存在于你的电脑中。\r");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  AmazonRootCA1 证书已存在于你的电脑中。\r");
 
             //检查VC++ runtime
-            LogToConsole($"[{DateTime.Now}]  检测是否已安装VC++ runtime。");
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  检测是否已安装VC++ runtime。");
             RegistryKey key = Registry.LocalMachine.OpenSubKey(registryPath, true);
 
             if (key == null)
             {
                 if (!File.Exists(workingDir + @"\vc_redist.x64.exe"))
                 {
-                    LogToConsole($"[{DateTime.Now}]  VC++ runtime 不存在，正在下载发行包...");
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  VC++ runtime 不存在，正在下载发行包...\r");
                     byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://aka.ms/vs/17/release/vc_redist.x64.exe");
                     await File.WriteAllBytesAsync(workingDir + @"\vc_redist.x64.exe", fileBytes);
                 }
 
                 if (File.Exists(workingDir + @"\vc_redist.x64.exe"))
                 {
-                    LogToConsole($"[{DateTime.Now}]  正在安装VC++ runtime。");
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在安装VC++ runtime。\r");
                     Process process = new Process();
                     process.StartInfo.FileName = "vc_redist.x64.exe";
                     process.StartInfo.UseShellExecute = false;
@@ -1054,9 +1169,9 @@ namespace VRisingServerManager
             }
             else
             {
-                LogToConsole($"[{DateTime.Now}]  已存在VC++ runtime，跳过本次安装。\r");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已存在VC++ runtime，跳过本次安装。\r");
             }
-            LogToConsole($"[{DateTime.Now}]  安装完成。\r");
+            LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  安装完成。\r");
 
             //检查DirectX
             if (OSVersion.Version.Major >= 6)
@@ -1071,17 +1186,17 @@ namespace VRisingServerManager
                 }
             }
             if (11 == directxMajorVersion)
-                LogToConsole($"[{DateTime.Now}]  本机Directx版本信息正常，可尝试进入游戏查看。\r");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  本机Directx版本信息正常，可尝试进入游戏查看。\r");
             else
             {
-                LogToConsole($"[{DateTime.Now}]  本机 Directx 版本信息错误，即将下载运行时，请稍等。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  本机 Directx 版本信息错误，即将下载运行时，请稍等。\r");
                 if (!File.Exists(workingDir + @"directx_Jun2010_redist.exe"))
                 {
                     byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://download.microsoft.com/download/8/4/a/84a35bf1-dafe-4ae8-82af-ad2ae20b6b14/directx_Jun2010_redist.exe");
                     await File.WriteAllBytesAsync(workingDir + @"\directx_Jun2010_redist.exe", fileBytes);
                     if (!Directory.Exists(workingDir + @"\directx_Jun2010_redist"))
                     {
-                        LogToConsole($"[{DateTime.Now}]  文件解压中");
+                        LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  文件解压中\r");
                         Directory.CreateDirectory(workingDir + @"\directx_Jun2010_redist");
                         Process process = new Process();
                         process.StartInfo.FileName = "directx_Jun2010_redist.exe";
@@ -1089,7 +1204,7 @@ namespace VRisingServerManager
                         process.StartInfo.Arguments = "/q /T:" + workingDir + "directx_Jun2010_redist' -Wait";
                         process.Start();
                         await Task.Delay(5000);
-                        LogToConsole($"[{DateTime.Now}]  解压完毕");
+                        LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  解压完毕");
                         File.Delete(workingDir + @"\directx_Jun2010_redist.exe");
                     }
 
@@ -1100,7 +1215,7 @@ namespace VRisingServerManager
                         process.StartInfo.UseShellExecute = false;
                         process.StartInfo.Arguments = "/silent";
                         process.Start();
-                        LogToConsole($"[{DateTime.Now}]  正在安装 DirectX, 大概需要30秒时间...");
+                        LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  正在安装 DirectX, 大概需要30秒时间...\r");
                     }
                 }
             }
@@ -1110,6 +1225,15 @@ namespace VRisingServerManager
         private async void ServerSpecSettingsEditor_Click(object sender, RoutedEventArgs e)
         {
             Server server = ((Button)sender).DataContext as Server;
+            if (server != null && !Directory.Exists(server.Path + @"\SaveData\Settings"))
+            {
+                ContentDialog yesNoDialog = new ContentDialog()
+                {
+                    Content = "未存在服务器配置文件夹，请至少启动一次服务器！！",
+                    PrimaryButtonText = "是",
+                };
+                await yesNoDialog.ShowAsync();
+            }
 
             if (!File.Exists(server.Path + @"\SaveData\Settings\ServerSpecSettings.json"))
             {
@@ -1158,31 +1282,51 @@ namespace VRisingServerManager
             if (VsmSettings.AppSettings.SaveLogWhenCrash)
             {
                 if (WriteServerCrashLog(server))
-                    LogToConsole($@"[{DateTime.Now}]  已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。");
+                    LogToConsole($@"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。\r");
             }
         }
+
+        /// <summary>
+        /// 备份服务器重启、崩溃日志
+        /// </summary>
+        /// <param name="server"></param>
+        /// <returns></returns>
         private bool WriteServerCrashLog(Server server)
         {
             DateTime Today = DateTime.Today;
             DateTime Now = DateTime.Now;
 
             string NowToday = Today.ToString("yyyy-MM-dd");
-            string NowNow = Now.ToString("hh-mm-ss");
+            string NowNow = Now.ToString("HH-mm-ss");
 
             if (!Directory.Exists(server.Path + @"\CrashLog"))
             {
                 Directory.CreateDirectory(server.Path + @"\CrashLog");
-                LogToConsole($"[{DateTime.Now}] 无崩溃日志文件夹，正在创建。");
+                LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}] 无崩溃日志文件夹，正在创建。\r");
             }
+            //每日日志文件夹，每日唯一
             if (!Directory.Exists(server.Path + $@"\CrashLog\{NowToday}"))
                 Directory.CreateDirectory(server.Path + $@"\CrashLog\{NowToday}");
-            Directory.CreateDirectory(server.Path + $@"\CrashLog\{NowToday}\{NowNow}");
 
+            //每次重启、崩溃日志文件夹，根据时间每次生成
+            Directory.CreateDirectory(server.Path + $@"\CrashLog\{NowToday}\{NowNow}");
+            
+            //特殊检查是否为mod服务器
             if (Directory.Exists(server.Path + @"\BepinEx"))
             {
-                File.Copy(server.Path + @"\BepinEx\ErrorLog.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\BepinExErrorLog.log");
-                File.Copy(server.Path + @"\BepinEx\LogOutput.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\BepinExLogOutput.log");
+                //尝试复制mod服务器的两个日志文件
+                try
+                {
+                    File.Copy(server.Path + @"\BepinEx\ErrorLog.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\BepinExErrorLog.log");
+                    File.Copy(server.Path + @"\BepinEx\LogOutput.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\BepinExLogOutput.log");
+                }
+                catch (Exception ex)
+                {
+                    LogToConsole($"[{DateTime.Now.ToString("yyyy/MM/dd HH:mm:ss")}]  创建BepInEx服务器日志错误：" + ex.Message);
+                }
             }
+
+            //固定位置原版服务器Log文件
             File.Copy(server.Path + $@"\logs\VRisingServer.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\VRisingServer.log");
             return true;
         }

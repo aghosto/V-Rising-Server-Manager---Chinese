@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019" xmlns:local1="clr-namespace:VRisingServerManager.Controls"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="ServerSpecSettingsEditor" Height="210" Width="450">
+        Title="ServerSpecSettingsEditor" Height="210" Width="375">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -18,8 +18,8 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <Menu Grid.ColumnSpan="1">
-            <MenuItem Header="文件" Width="168" VerticalContentAlignment="Center" TextElement.FontSize="20" TextBlock.TextAlignment="Center">
+        <!--<Menu Grid.ColumnSpan="1">
+            <MenuItem Header="保存" Width="374" VerticalContentAlignment="Center" HorizontalAlignment="Center" TextElement.FontSize="20" TextBlock.TextAlignment="Center">
                 <MenuItem x:Name="FileMenuLoad" Header="导入" Click="FileMenuLoad_Click">
                     <MenuItem.Icon>
                         <ui:SymbolIcon Symbol="OpenFile"/>
@@ -37,8 +37,8 @@
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
-        </Menu>
-        <StackPanel Grid.Row="1" Margin="5, 0, 0, 0">
+        </Menu>-->
+        <StackPanel Grid.Row="0" Margin="5, 0, 0, 0">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
@@ -48,21 +48,26 @@
                     <DockPanel>
                         <CheckBox Content="启用服务器自动重启" Height="20" IsChecked="{Binding ServerAutoRestartEnable, Mode=TwoWay}" FontSize="18"/>
                     </DockPanel>
-                    <DockPanel Margin="0,5,0,0">
+                    <!--<DockPanel Margin="0,5,0,0">
                         <TextBlock Text="自动重启时间 - 日" Height="20" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="0 0 5 0"/>
                         <TextBox Text="{Binding AutoRestart_Day, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器在多少天后自动重启。"/>
-                    </DockPanel>
+                    </DockPanel>-->
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="自动重启时间 - 时" Height="20"/>
-                        <TextBox Text="{Binding AutoRestart_Hour, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器在重启日期的某个小时。"/>
+                        <TextBox Text="{Binding AutoRestart_Hour, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器在重启日期的某时。" Margin="10 0 0 0"/>
                     </DockPanel>
                     <DockPanel Margin="0,5,0,0">
                         <TextBlock Text="自动重启时间 - 分" Height="20"/>
-                        <ui:NumberBox Value="{Binding AutoRestart_Min, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器在重启日期的某个小时的分钟。"/>
+                        <ui:NumberBox Value="{Binding AutoRestart_Min, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器在重启日期的某分。" Margin="10 0 0 0"/>
+                    </DockPanel>
+                    <DockPanel Margin="0,5,0,0">
+                        <TextBlock Text="自动重启时间 - 秒" Height="20"/>
+                        <ui:NumberBox Value="{Binding AutoRestart_Sec, Mode=TwoWay}" HorizontalAlignment="Right" Width="250" ToolTip="设置服务器在重启日期的某秒。" Margin="10 0 0 0"/>
                     </DockPanel>
                     
                 </StackPanel>
             </Grid>
         </StackPanel>
+        <Button x:Name="SpecSaveButton" Grid.Row="1" Content="保存" HorizontalAlignment="Center" Click="SpecSaveButton_Click"/>
     </Grid>
 </Window>

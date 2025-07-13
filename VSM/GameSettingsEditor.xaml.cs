@@ -110,8 +110,8 @@ namespace VRisingServerManager
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "元素法师梅尔文          ",  UnitId = -2013903325,   UnitLevel = 70, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "亨利·布莱克布鲁博士    ",  UnitId = 814083983,     UnitLevel = 74, DefaultUnlocked = false });
             //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "暗影女猎手贾奇拉        ",  UnitId = -1383529374,   UnitLevel = 75, DefaultUnlocked = false });
-            //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "雕刻师斯塔夫罗斯        ",  UnitId = -1669199769,   UnitLevel = 75, DefaultUnlocked = false });
-            //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毒炼金术士露西尔        ",  UnitId = 1295855316,    UnitLevel = 76, DefaultUnlocked = false });
+            //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "雕刻师斯塔夫罗斯        ", UnitId = -1669199769,    UnitLevel = 75, DefaultUnlocked = false });
+            //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毒炼金术士露西尔        ", UnitId = 1295855316,     UnitLevel = 76, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "编咒师玛特卡            ",  UnitId = -910296704,    UnitLevel = 76, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "食人魔骇爪              ",  UnitId = -1347412392,   UnitLevel = 76, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "太阳使者阿扎瑞尔        ",  UnitId = 114912615,     UnitLevel = 79, DefaultUnlocked = false });
@@ -120,7 +120,7 @@ namespace VRisingServerManager
             //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "锻造者丹特斯            ",  UnitId = 173259239,     UnitLevel = 82, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "领主冥河-暗夜勇士       ",  UnitId = 1112948824,    UnitLevel = 84, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "巨兽戈雷库什            ",  UnitId = -1936575244,   UnitLevel = 84, DefaultUnlocked = false });
-            fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者瓦伦西亚将军      ",  UnitId = 495971434,    UnitLevel = 84, DefaultUnlocked = false });
+            //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "堕落者瓦伦西亚将军      ",  UnitId = 495971434,     UnitLevel = 84, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "无瑕者索拉鲁斯          ",  UnitId = -740796338,    UnitLevel = 86, DefaultUnlocked = false });
             fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "恐怖翼兽塔尔祖尔        ",  UnitId = -393555055,    UnitLevel = 86, DefaultUnlocked = false });
             //fakeVBloodUnits.Add(new VBloodUnitSetting() { Name = "毒蛇女王梅加拉          ",  UnitId = 591725925,     UnitLevel = 88, DefaultUnlocked = false });

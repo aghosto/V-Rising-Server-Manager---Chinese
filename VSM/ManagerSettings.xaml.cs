@@ -1,4 +1,7 @@
 ﻿using ModernWpf.Controls;
+using Newtonsoft.Json.Linq;
+using System;
+using System.Security.Cryptography.Pkcs;
 using System.Windows;
 
 namespace VRisingServerManager
@@ -9,6 +12,8 @@ namespace VRisingServerManager
     public partial class ManagerSettings : Window
     {
         MainSettings localMainSettings;
+        MainWindow MainWindow = new();
+        //public bool managerSettingsClose { get; set; } = false;
         public ManagerSettings(MainSettings mainSettings)
         {
             localMainSettings = mainSettings;
@@ -26,6 +31,15 @@ namespace VRisingServerManager
                 ServerCombo2.IsEnabled = false;
                 ResetServerButton.IsEnabled = false;
             }
+        }
+
+        private void LogToConsole(string logMessage)
+        {
+            Dispatcher.Invoke(new Action(() =>
+            {
+                MainWindow.MainMenuConsole.AppendText(logMessage + "\r");
+                MainWindow.MainMenuConsole.ScrollToEnd();
+            }));
         }
 
         private async void ModSupportCheckBox_Click(object sender, RoutedEventArgs e)
@@ -53,22 +67,9 @@ namespace VRisingServerManager
 
         private void SaveButton_Click(object sender, RoutedEventArgs e)
         {
-            //Do Nothing TODO
-            //switch (ColseExecuteSelectCombo.SelectedIndex)
-            //{
-            //    case 0:
-            //        localMainSettings.AppSettings.CloseExecuteSelect = 1;
-            //        break;
-            //    case 1:
-            //        localMainSettings.AppSettings.CloseExecuteSelect = 2;
-            //        break;
-            //    case 2:
-            //        localMainSettings.AppSettings.CloseExecuteSelect = 3;
-            //        break;
-            //}
-
             MainSettings.Save(localMainSettings);
-            Close();
+            localMainSettings.AppSettings.ManagerSettingsClose = true;
+            this.Close();
         }
 
         private void ResetServerButton_Click(object sender, RoutedEventArgs e)

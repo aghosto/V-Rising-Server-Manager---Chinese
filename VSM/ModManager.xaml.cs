@@ -33,6 +33,7 @@ namespace VRisingServerManager
         };
         ModsList Mods = new();
         MainSettings VsmSettings = new();
+        MainWindow MainWindow = new ();
         private bool DownloadInProgress = false;
 
         public ModManager(MainSettings mainSettings)
@@ -102,6 +103,15 @@ namespace VRisingServerManager
                     mod.Installed = false;
             }            
         }
+
+        //private void LogToConsole(string logMessage)
+        //{
+        //    Dispatcher.Invoke(new Action(() =>
+        //    {
+        //        MainWindow.MainMenuConsole.AppendText(logMessage + "\r");
+        //        MainWindow.MainMenuConsole.ScrollToEnd();
+        //    }));
+        //}
 
         private async Task InstallBepInEx(Server server)
         {
@@ -362,20 +372,33 @@ namespace VRisingServerManager
 
             foreach (Mod downloadedMod in VsmSettings.DownloadedMods)
             {
-                if (downloadedMod.Uuid4 == mod.Uuid4)
+                try
                 {
-                    downloadedMod.Downloaded = true;
-                    downloadedMod.ArchiveName = mod.Versions[0].Full_Name + ".zip";
+                    if (downloadedMod.Uuid4 == mod.Uuid4)
+                    {
+                        downloadedMod.Downloaded = true;
+                        downloadedMod.ArchiveName = mod.Versions[0].Full_Name + ".zip";
 
-                    Mods.ModList[modIndex].Downloaded = true;
+                        Mods.ModList[modIndex].Downloaded = true;
 
-                    DownloadInProgress = false;
-                    DownloadProgressBar.Visibility = Visibility.Hidden;
-                    DownloadProgressText.Text = "";
+                        DownloadInProgress = false;
+                        DownloadProgressBar.Visibility = Visibility.Hidden;
+                        DownloadProgressText.Text = "";
 
-                    MainSettings.Save(VsmSettings);
+                        MainSettings.Save(VsmSettings);
 
-                    return true;
+                        return true;
+                    }
+                }
+                catch(Exception ex)
+                {
+                    ContentDialog yesDialog = new()
+                    {
+                        Content = $"下载出错：{ex.ToString()}",
+                        PrimaryButtonText = "是",
+                    };
+                    await yesDialog.ShowAsync();
+                    throw new Exception(ex.ToString());
                 }
             }
 

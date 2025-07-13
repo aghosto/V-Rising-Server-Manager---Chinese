@@ -455,23 +455,23 @@
                                 <StackPanel>
                                     <DockPanel>
                                         <TextBlock Text="生命值倍率" Width="175" VerticalAlignment="Center"/>
-                                        <ui:NumberBox Value="{Binding VampireStatModifiers.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家的最大生命值倍数。" Maximum="1010" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家的最大生命值倍数。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="物理攻击力倍率" Width="175" VerticalAlignment="Center"/>
-                                        <ui:NumberBox Value="{Binding VampireStatModifiers.PhysicalPowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家的物理攻击力，此数值会影响玩家使用武器攻击和武器技能时造成的伤害值。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.PhysicalPowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家的物理攻击力，此数值会影响玩家使用武器攻击和武器技能时造成的伤害值。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="法术攻击力倍率" Width="175" VerticalAlignment="Center"/>
-                                        <ui:NumberBox Value="{Binding VampireStatModifiers.SpellPowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家的法术攻击力，此数值会影响玩家使用法术时造成的伤害值和回复值。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.SpellPowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家的法术攻击力，此数值会影响玩家使用法术时造成的伤害值和回复值。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="对资源物体的攻击力倍率" Width="175" VerticalAlignment="Center"/>
-                                        <ui:NumberBox Value="{Binding VampireStatModifiers.ResourcePowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家对资源物体造成的伤害。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.ResourcePowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整玩家对资源物体造成的伤害。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="所受伤害倍率" Width="175" VerticalAlignment="Center"/>
-                                        <ui:NumberBox Value="{Binding VampireStatModifiers.DamageReceivedModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整受到的各类伤害。" Maximum="10" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                        <ui:NumberBox Value="{Binding VampireStatModifiers.DamageReceivedModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整受到的各类伤害。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                     </DockPanel>
                                     <DockPanel>
                                         <TextBlock Text="放弃治疗时长" Width="175" VerticalAlignment="Center"/>
@@ -481,27 +481,27 @@
                                         <StackPanel>
                                             <DockPanel>
                                                 <TextBlock Text="生命值倍率 - 全局" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整敌方标准单位的最大生命值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整敌方标准单位的最大生命值。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="伤害倍率 - 全局" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.PowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整敌方标准单位的攻击伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.PowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整敌方标准单位的攻击伤害值。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="等级提升 - 全局" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.LevelIncrease, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方标准单位的等级。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_Global.LevelIncrease, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方标准单位的等级。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="生命值倍率 - V型血" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整V型血单位的最大生命值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.MaxHealthModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整V型血单位的最大生命值。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="伤害倍率 - V型血" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.PowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整V型血单位的攻击伤害值。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.PowerModifier, Mode=TwoWay}" SmallChange="0.25" ToolTip="调整V型血单位的攻击伤害值。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <DockPanel>
                                                 <TextBlock Text="等级提升 - V型血" Width="200" VerticalAlignment="Center"/>
-                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.LevelIncrease, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方V型血单位的等级。" Maximum="5" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
+                                                <ui:NumberBox Value="{Binding UnitStatModifiers_VBlood.LevelIncrease, Mode=TwoWay}" SmallChange="1" ToolTip="调整敌方V型血单位的等级。" Maximum="50" Minimum="0.1" NumberFormatter="{StaticResource DecimalFormatter}" SpinButtonPlacementMode="Compact"/>
                                             </DockPanel>
                                             <StackPanel/>
                                             <StackPanel Grid.Column="1"/>
