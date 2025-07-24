@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using static System.Windows.Forms.DataFormats;
 
@@ -385,6 +386,7 @@ namespace VRisingServerManager
         public WarEventGameSettings WarEventGameSettings { get; set;} = new WarEventGameSettings();
     }
 
+    [Serializable]
     public class ServerSettings
     {
         public string Name { get; set; } = "My V Rising Server";

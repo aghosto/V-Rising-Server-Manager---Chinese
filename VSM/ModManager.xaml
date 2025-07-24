@@ -8,6 +8,13 @@
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
         Title="Mod管理器" Height="710" Width="1100" ResizeMode="NoResize">
+
+    <Window.Resources>
+        <local:VersionToolTipConverter x:Key="VersionToolTipConverter"/>
+        <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <local:StringToVisibilityConverter x:Key="StringToVisibilityConverter"/>
+    </Window.Resources>
+
     <StackPanel Orientation="Vertical">
         <ui:CommandBar>
             <ui:AppBarButton Label="刷新Mod列表" Icon="Refresh" Click="RefreshModlistButton_Click" ToolTip="刷新Mods列表。"/>
@@ -34,17 +41,17 @@
                     </Style>
                 </ui:AppBarButton.Style>
             </ui:AppBarButton>
-            
+
             <ui:CommandBar.Content>
                 <DockPanel>
                     <TextBlock Text="服务器：" VerticalAlignment="Center" Padding="10,0,0,0"/>
-                    <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" VerticalAlignment="Center" Width="300" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
+                    <ComboBox Name="ServerComboBox" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" VerticalAlignment="Center" Width="Auto" Margin="5" SelectionChanged="ServerComboBox_SelectionChanged" ToolTip="选择要管理的服务器。"/>
                     <TextBlock VerticalAlignment="Center" DataContext="{Binding SelectedItem, ElementName=ServerComboBox}">
                         <TextBlock.Style>
                             <Style TargetType="TextBlock">
                                 <Style.Triggers>
                                     <DataTrigger Binding="{Binding BepInExInstalled}" Value="True">
-                                        <Setter Property="Text" Value="BepInEx：已安装，版本："/>
+                                        <Setter Property="Text" Value="BepInEx：已安装："/>
                                     </DataTrigger>
                                     <DataTrigger Binding="{Binding BepInExInstalled}" Value="False">
                                         <Setter Property="Text" Value="BepInEx：未安装"/>
@@ -67,42 +74,132 @@
                             </Style>
                         </TextBlock.Style>
                     </TextBlock>
+
+                    <TextBlock Text="  搜索：" VerticalAlignment="Center" Margin="20,0,0,0"/>
+                    <TextBox x:Name="ModSearchBox" 
+                            Width="250" 
+                            VerticalAlignment="Center" 
+                            Margin="5,0,20,0"
+                            TextChanged="ModSearchBox_TextChanged"
+                            ToolTip="输入Mod名称搜索">
+                        <TextBox.Style>
+                            <Style TargetType="TextBox">
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="BorderBrush" Value="#FFCCCCCC"/>
+                                <Setter Property="BorderThickness" Value="2"/>
+                                <Setter Property="Background" Value="White"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="TextBox">
+                                            <Border Background="{TemplateBinding Background}" 
+                                                    BorderBrush="{TemplateBinding BorderBrush}" 
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="10">           
+                                                <DockPanel>
+                                                    <ui:SymbolIcon Symbol="Find" DockPanel.Dock="Right" Margin="0,0,10,0" VerticalAlignment="Center"/>
+                                                    <ScrollViewer x:Name="PART_ContentHost" 
+                                                                    Margin="5,0,5,0" 
+                                                                    VerticalAlignment="Center"/>
+                                                </DockPanel>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TextBox.Style>
+                    </TextBox>
                 </DockPanel>
             </ui:CommandBar.Content>
         </ui:CommandBar>
 
         <StackPanel Orientation="Horizontal" Width="Auto">
-            <DataGrid x:Name="ModsDataGrid" AutoGenerateColumns="False" CanUserAddRows="False" CanUserDeleteRows="False" CanUserReorderColumns="False" Width="600" Height="600" SelectionChanged="ModsDataGrid_SelectionChanged" SelectionMode="Single">
+            <DataGrid x:Name="ModsDataGrid" 
+                      Width="600" 
+                      Height="600"
+                      CanUserResizeColumns="False"
+                      CanUserResizeRows="False"
+                      AutoGenerateColumns="False" 
+                      CanUserAddRows="False" 
+                      CanUserDeleteRows="False" 
+                      CanUserReorderColumns="False" 
+                      SelectionChanged="ModsDataGrid_SelectionChanged" 
+                      SelectionMode="Single" 
+                      RowHeaderWidth="0">
                 <DataGrid.Resources>
                     <ContextMenu x:Key="myContextMenu">
                         <MenuItem Header="打开Mod设置文件" Click="ModFileEditor_Click"/>
                     </ContextMenu>
-                </DataGrid.Resources>
-                <!--<DataGrid.ColumnHeaderStyle>
-                    <Style TargetType="{x:Type DataGridColumnHeader}">
-                        <Setter Property="ContextMenu" Value="{StaticResource myContextMenu}"/>
+                    <Style TargetType="DataGridCell">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="Foreground" Value="Black"/>
+                                <Setter Property="BorderThickness" Value="0"/>
+                            </Trigger>
+                        </Style.Triggers>
                     </Style>
-                </DataGrid.ColumnHeaderStyle>-->
+                </DataGrid.Resources>
                 <DataGrid.Columns>
-                    <DataGridTextColumn Header="Mod名称" Width="*" Binding="{Binding Name}" IsReadOnly="True">
+                    <DataGridTextColumn Header="Mod名称" Width="313" Binding="{Binding Name}" IsReadOnly="True">
                         <DataGridTextColumn.ElementStyle>
                             <Style TargetType="{x:Type TextBlock}">
+                                <Setter Property="Padding" Value="5 5 0 0"/>
                                 <Setter Property="ContextMenu" Value="{StaticResource myContextMenu}"/>
+                                <Setter Property="ToolTip" Value="{Binding ToolTipText}"/>
                             </Style>
-                            <!--<Style TargetType="TextBlock">
-                                <Setter Property="ContextMenu">
-                                    <Setter.Value>
-                                        <ContextMenu>
-                                            <MenuItem Header="打开Mod设置文件" Command="{Binding DataContext.OpenCommand, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
-                                        </ContextMenu>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>-->
                         </DataGridTextColumn.ElementStyle>
                     </DataGridTextColumn>
-                    <DataGridTextColumn Header="最新版本" Binding="{Binding Versions[0].Version_Number}" IsReadOnly="True"/>
-                    <DataGridCheckBoxColumn Header="已下载" Binding="{Binding Downloaded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
-                    <DataGridCheckBoxColumn Header="已安装" Binding="{Binding Installed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True"/>
+                    
+                    <DataGridTemplateColumn Header="版本">
+                        <DataGridTemplateColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="{Binding Versions[0].Version_Number}" Margin="0,0,5,0" Padding="5 5 0 0"/>
+                                    <!--<TextBlock Text="{Binding LocalVersion}" Visibility="{Binding LocalVersion, Converter={StaticResource StringToVisibilityConverter}}" Foreground="Gray" FontSize="10" VerticalAlignment="Center"/>-->
+                                    <TextBlock Text="↑" Foreground="Red" Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}" ToolTip="有可用更新"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </DataGridTemplateColumn.CellTemplate>
+                    </DataGridTemplateColumn>
+
+                    <DataGridCheckBoxColumn Header="已下载" Width="85" Binding="{Binding Downloaded, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                        <DataGridCheckBoxColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridCheckBoxColumn.CellStyle>
+                    </DataGridCheckBoxColumn>
+                    <DataGridCheckBoxColumn Header="已安装" Width="85" Binding="{Binding Installed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="True">
+                        <DataGridCheckBoxColumn.CellStyle>
+                            <Style TargetType="DataGridCell">
+                                <Setter Property="HorizontalAlignment" Value="Center"/>
+                                <Style.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                    </Trigger>
+                                    <Trigger Property="IsSelected" Value="True">
+                                        <Setter Property="Background" Value="Transparent"/>
+                                        <Setter Property="Foreground" Value="Black"/>
+                                        <Setter Property="BorderThickness" Value="0"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </DataGridCheckBoxColumn.CellStyle>
+                    </DataGridCheckBoxColumn>
                 </DataGrid.Columns>
             </DataGrid>
 
@@ -113,22 +210,26 @@
                         <DockPanel>
                             <StackPanel>
                                 <DockPanel>
-                                    <TextBlock Text="作者:" FontWeight="Bold"/>
+                                    <TextBlock Text="作者：" FontWeight="Bold"/>
                                     <TextBlock Text="{Binding Owner}"/>
                                 </DockPanel>
                                 <DockPanel>
-                                    <TextBlock Text="Created: " FontWeight="Bold" Margin="0,10,0,0"/>
+                                    <TextBlock Text="创建日期：" FontWeight="Bold" Margin="0,10,0,0"/>
                                     <TextBlock Text="{Binding Date_Created}" Margin="0,10,0,0"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="最新更新：" FontWeight="Bold" Margin="0,10,0,0"/>
+                                    <TextBlock Text="{Binding Date_Updated}" Margin="0,10,0,0"/>
                                 </DockPanel>
                                 <DockPanel>
                                     <TextBlock Text="下载次数：" FontWeight="Bold" Margin="0,10,0,0"/>
                                     <TextBlock Name="DownloadsTextBlock" Margin="0,10,0,0"/>
                                 </DockPanel>
                                 <DockPanel>
-                                    <TextBlock Text="Mod页面" FontWeight="Bold" Margin="0,10,0,0"/>
+                                    <TextBlock Text="Mod下载页面：" FontWeight="Bold" Margin="0,10,0,0"/>
                                     <TextBlock Margin="0,10,0,0">
                                         <Hyperlink NavigateUri="{Binding Package_Url}" RequestNavigate="Hyperlink_RequestNavigate">
-                                            Link
+                                            点击跳转
                                         </Hyperlink>
                                     </TextBlock>
                                 </DockPanel>
@@ -139,18 +240,23 @@
                                     <TextBlock Text="{Binding Versions[0].Version_Number}"/>
                                 </DockPanel>
                                 <DockPanel>
-                                    <TextBlock Text="最后一次更新：" FontWeight="Bold" Margin="0,10,0,0"/>
-                                    <TextBlock Text="{Binding Date_Updated}" Margin="0,10,0,0"/>
+                                    <TextBlock Text="本地版本：" FontWeight="Bold" Margin="0,10,0,0"/>
+                                    <TextBlock Text="{Binding LocalVersion}" Margin="0,10,0,0"/>
+                                </DockPanel>
+                                <DockPanel>
+                                    <TextBlock Text="版本更新：" FontWeight="Bold" Margin="0,10,0,0"/>
+                                    <TextBlock Text="更新可用！" FontWeight="Bold" Foreground="Red" Margin="0,10,0,0" Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                    <!--<TextBlock Text="暂无更新" FontWeight="Bold" Foreground="Gray" Margin="0,10,0,0" Visibility="{Binding UpdateAvailable, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
                                 </DockPanel>
                                 <DockPanel>
                                     <TextBlock Text="文件大小：" FontWeight="Bold" Margin="0,10,0,0"/>
                                     <TextBlock Name="FileSizeTextBlock" Margin="0,10,0,0"/>
                                 </DockPanel>
                                 <DockPanel>
-                                    <TextBlock Text="Mod网站" FontWeight="Bold" Margin="0,10,0,0"/>
+                                    <TextBlock Text="Mod源码网站：" FontWeight="Bold" Margin="0,10,0,0"/>
                                     <TextBlock Margin="0,10,0,0">
                                         <Hyperlink NavigateUri="{Binding Versions[0].Website_Url}" RequestNavigate="Hyperlink_RequestNavigate">
-                                            Link
+                                            点击跳转
                                         </Hyperlink>
                                     </TextBlock>
                                 </DockPanel>
@@ -212,6 +318,25 @@
                                         <TextBlock Text="安装" Margin="5,0,0,0"/>
                                     </DockPanel>
                                 </Button>
+                                <Button Width="125" Margin="10,0,0,0" Click="UpdateModButton_Click" ToolTip="更新所选Mod">
+                                    <Button.Style>
+                                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding UpdateAvailable}" Value="True">
+                                                    <Setter Property="IsEnabled" Value="True"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding UpdateAvailable}" Value="False">
+                                                    <Setter Property="IsEnabled" Value="False"/>
+                                                    <Setter Property="Foreground" Value="Gray"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                    <DockPanel>
+                                        <ui:SymbolIcon Symbol="Add"/>
+                                        <TextBlock Text="更新" Margin="5,0,0,0"/>
+                                    </DockPanel>
+                                </Button>
                             </DockPanel>
                             <DockPanel Margin="0,10,0,10">
                                 <Button Width="125" Click="RemoveButton_Click" ToolTip="删除选定的Mod存档。">
@@ -260,11 +385,11 @@
         </StackPanel>
         <StatusBar>
             <StatusBarItem>
-                <ui:ProgressBar Name="DownloadProgressBar" IsIndeterminate="True" Height="10" Width="100" Visibility="Hidden" Margin="10,0,0,0"/>
+                <ui:ProgressBar Name="DownloadProgressBar" IsIndeterminate="True" Height="10" Width="800" Visibility="Hidden" Margin="10,0,0,0"/>
             </StatusBarItem>
             <StatusBarItem>
                 <TextBlock Name="DownloadProgressText" Margin="10,0,0,0"/>
             </StatusBarItem>
         </StatusBar>
     </StackPanel>
-</Window>
+</Window>    

@@ -6,402 +6,727 @@
         xmlns:local="clr-namespace:VRisingServerManager"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:tb="http://www.hardcodet.net/taskbar"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         ui:WindowHelper.UseModernWindowStyle="True"
         WindowStartupLocation="CenterScreen" 
         mc:Ignorable="d"
-        Title="夜族崛起服务端管理器（V Rising Server Manager）" Height="650" Width="800" ResizeMode="CanMinimize">
+        Title="夜族崛起服务端管理器（V Rising Server Manager）" Height="675" MinHeight="665" Width="1200" MinWidth="1200" ResizeMode="CanResize">
 
+
+    <!--<Window.Resources>
+        <Style TargetType="Button">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+
+        <Style TargetType="ui:ToggleSwitch">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+    </Window.Resources>-->
+    
+    
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto" MinHeight="5"/>
-            <RowDefinition Height="Auto" MinHeight="96.4"/>
-            <RowDefinition/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto" MinHeight="2"/>
         </Grid.RowDefinitions>
 
-        <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}" Background="LightGray">
-            <TabControl.ItemTemplate>
-                <DataTemplate>
-                    <DockPanel>
-                        <TextBlock Text="{Binding vsmServerName}" Grid.Column="0" FontWeight="UltraBold"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="450"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
 
-                        <Image Grid.Column="1" Stretch="None" Margin="2,0,0,0">
-                            <Image.Style>
-                                <Style TargetType="{x:Type Image}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                            <Setter Property="Source" Value="Resources\icon_StatusRunning.png"/>
-                                            <Setter Property="ToolTip" Value="运行中"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                            <Setter Property="Source" Value="Resources\icon_StatusStopped.png"/>
-                                            <Setter Property="ToolTip" Value="已停止"/>
-                                        </DataTrigger>
-                                        <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                            <Setter Property="Source" Value="Resources\icon_DownloadNoColor.png"/>
-                                            <Setter Property="ToolTip" Value="更新中"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Image.Style>
-                        </Image>
+            <Grid Grid.Row="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="5" />
+                    <RowDefinition Height="230"/>
+                    <RowDefinition Height="35"/>
+                    <RowDefinition Height="35"/>
+                </Grid.RowDefinitions>
 
-                        <Button Grid.Column="1" Click="RemoveServerButton_Click" HorizontalAlignment="Right">
-                            <Button.Template>
-                                <ControlTemplate TargetType="Button">
-                                    <Path Data="M0,0 L8,8 M8,0 L0,8" StrokeThickness="3" VerticalAlignment="Center" Margin="5,4,0,2" ToolTip="移除该服务器">
-                                        <Path.Style>
-                                            <Style TargetType="{x:Type Path}">
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="False">
-                                                        <Setter Property="Stroke" Value="Red"/>
-                                                    </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Stroke" Value="DarkRed" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Path.Style>
-                                    </Path>
-                                </ControlTemplate>
-                            </Button.Template>
-                        </Button>
+                <TabControl x:Name="ServerTabControl" Grid.Row="0" ItemsSource="{Binding Servers}" Background="LightGray">
+                    <TabControl.ItemTemplate>
+                        <DataTemplate>
+                            <DockPanel>
+                                <TextBlock Text="{Binding vsmServerName}" FontWeight="UltraBold"/>
+                                <Image Stretch="None" Margin="2,0,0,0">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                    <Setter Property="Source" Value="Resources\icon_StatusRunning.png"/>
+                                                    <Setter Property="ToolTip" Value="运行中"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                    <Setter Property="Source" Value="Resources\icon_StatusStopped.png"/>
+                                                    <Setter Property="ToolTip" Value="已停止"/>
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                    <Setter Property="Source" Value="Resources\icon_DownloadNoColor.png"/>
+                                                    <Setter Property="ToolTip" Value="更新中"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
 
-                    </DockPanel>
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-            <TabControl.ContentTemplate>
-                <DataTemplate>
+                                <Button Click="RemoveServerButton_Click" HorizontalAlignment="Right">
+                                    <Button.Template>
+                                        <ControlTemplate TargetType="Button">
+                                            <Path Data="M0,0 L8,8 M8,0 L0,8" StrokeThickness="3" VerticalAlignment="Center" Margin="5,4,0,2" ToolTip="移除该服务器">
+                                                <Path.Style>
+                                                    <Style TargetType="{x:Type Path}">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="False">
+                                                                <Setter Property="Stroke" Value="Red"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Stroke" Value="DarkRed" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Path.Style>
+                                            </Path>
+                                        </ControlTemplate>
+                                    </Button.Template>
+                                </Button>
+                            </DockPanel>
+                        </DataTemplate>
+                    </TabControl.ItemTemplate>
+
+                    <TabControl.ContentTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <GroupBox Grid.Row="0" Grid.Column="0" Header="服务器启动设置" Margin="5" MinHeight="225">
+                                    <StackPanel>
+                                        <DockPanel>
+                                            <TextBlock Text="服务器名称：" VerticalAlignment="Center" Width="90"/>
+                                            <TextBox Text="{Binding LaunchSettings.DisplayName, Mode=TwoWay}" Width="Auto" IsEnabled="True" ToolTip="服务器列表中显示的服务器的名称(仅在服务端管理器中显示)。"/>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,5,0,0">
+                                            <TextBlock Text="存档名称：" VerticalAlignment="Center" Width="90"/>
+                                            <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="Auto" IsEnabled="False" ToolTip="将保存世界的目录的名称。除非你知道自己在做什么，否则不需要更改。"/>
+                                        </DockPanel>
+                                        <DockPanel Margin="0,5,0,0">
+                                            <CheckBox x:Name="BindToIPCheck" Content="绑定到IP：" IsChecked="{Binding LaunchSettings.BindToIP}" ToolTip="服务器是否绑定到特定的IP地址。"/>
+                                            <TextBox Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="320" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
+                                        </DockPanel>
+                                        <DockPanel Margin="0 10 0 0" HorizontalAlignment="Center">
+                                            <Button Grid.Column="0" Margin="10" Click="GameSettingsEditor_Click" ToolTip="打开游戏设置编辑器。" Height="30" HorizontalAlignment="Stretch">
+                                                <DockPanel>
+                                                    <Image Source="Resources\icon_EditDocument.png"/>
+                                                    <TextBlock Text="游戏属性配置编辑器"/>
+                                                </DockPanel>
+                                            </Button>
+                                            <Button Grid.Column="1" Margin="10" Click="ServerSettingsEditorButton_Click" ToolTip="打开服务器设置编辑器。" Height="30" HorizontalAlignment="Stretch">
+                                                <DockPanel>
+                                                    <Image Source="Resources\icon_EditDocument.png"/>
+                                                    <TextBlock Text="服务器连接配置编辑器"/>
+                                                </DockPanel>
+                                            </Button>
+                                        </DockPanel>
+                                    </StackPanel>
+                                </GroupBox>
+                            </Grid>
+                        </DataTemplate>
+                    </TabControl.ContentTemplate>
+                </TabControl>
+
+                <Separator Grid.Row="1" Margin="0,2,0,2"/>
+
+                <GroupBox Header="服务器管理" Grid.Row="2" Margin="5 5 5 0" DataContext="{Binding ElementName=ServerTabControl, Path=SelectedItem}">
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
-                        <GroupBox Header="服务器启动设置" Margin="5" Grid.Column="0">
-                            <StackPanel>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+
+                        <ui:ToggleSwitch Header="自动重启" 
+                                         Grid.Row="0" 
+                                         Grid.Column="0" 
+                                         Margin="5" 
+                                         Width="100" 
+                                         HorizontalAlignment="Center" 
+                                         IsOn="{Binding AutoRestart, Mode=TwoWay}" 
+                                         ToolTip="服务器是否在意外崩溃后自动重启。"/>
+
+                        <DockPanel Grid.Column="1">
+                            <ui:ToggleSwitch Header="服务器状态" 
+                                             Grid.Row="0" 
+                                             Grid.Column="1" 
+                                             Margin="5" 
+                                             Width="110" 
+                                             HorizontalAlignment="Center" 
+                                             IsHitTestVisible="False">
+                                <ui:ToggleSwitch.Style>
+                                    <Style TargetType="{x:Type ui:ToggleSwitch}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                <Setter Property="IsOn" Value="True"/>
+                                                <Setter Property="OffContent" Value="关闭"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                <Setter Property="IsOn" Value="False"/>
+                                                <Setter Property="OffContent" Value="已关闭"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                <Setter Property="IsOn" Value="False"/>
+                                                <Setter Property="OffContent" Value="更新中"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:ToggleSwitch.Style>
+                            </ui:ToggleSwitch>
+                            <ui:ProgressRing>
+                                <ui:ProgressRing.Style>
+                                    <Style TargetType="{x:Type ui:ProgressRing}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                <Setter Property="IsActive" Value="False"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                <Setter Property="IsActive" Value="False"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                <Setter Property="IsActive" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ui:ProgressRing.Style>
+                            </ui:ProgressRing>
+                        </DockPanel>
+                        <ui:ToggleSwitch Header="无窗口运行" 
+                                         Grid.Row="0" 
+                                         Grid.Column="2" 
+                                         Margin="5" 
+                                         Width="100" 
+                                         HorizontalAlignment="Center" 
+                                         ToolTip="设定服务器是否以无窗口模式运行" 
+                                         IsOn="{Binding RunWithoutWindow, Mode=TwoWay}"/>
+
+                        <StackPanel Grid.Row="1" Grid.Column="0">
+                            <Button Margin="2" Click="StartServerButton_Click" ToolTip="启动游戏服务器。" HorizontalAlignment="Stretch">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
                                 <DockPanel>
-                                    <TextBlock Text="服务器名称：" VerticalAlignment="Center" Width="90"/>
-                                    <TextBox Text="{Binding LaunchSettings.DisplayName, Mode=TwoWay}" Width="250" IsEnabled="True" ToolTip="服务器列表中显示的服务器的名称(仅在服务端管理器中显示)。"/>
+                                    <Image Source="Resources\icon_Play.png" Margin="5,0,0,0" Stretch="None"/>
+                                    <TextBlock Text="启动服务器" Margin="5,0,5,0"/>
                                 </DockPanel>
-                                <DockPanel Margin="0,5,0,0">
-                                    <TextBlock Text="存档名称：" VerticalAlignment="Center" Width="90"/>
-                                    <TextBox Text="{Binding LaunchSettings.WorldName, Mode=TwoWay}" Width="250" IsEnabled="False" ToolTip="将保存世界的目录的名称。除非您知道自己在做什么，否则不需要更改。"/>
-                                </DockPanel>
-                                <!--<DockPanel Margin="0,5,0,0">
-                                    <TextBlock Text="服务器描述：" VerticalAlignment="Center" Width="90" Height="50"/>
-                                    <TextBox Text="{Binding ServerSettings.Description, Mode=TwoWay}" Width="250" IsEnabled="False" ToolTip="服务器中的描述"/>
-                                </DockPanel>-->
-                                <DockPanel Margin="0,5,0,0">
-                                    <CheckBox x:Name="BindToIPCheck" Content="绑定到IP：" IsChecked="{Binding LaunchSettings.BindToIP}" ToolTip="服务器是否绑定到特定的IP地址。"/>
-                                    <TextBox HorizontalAlignment="Right" Text="{Binding LaunchSettings.BindingIP, Mode=TwoWay}" Width="200" IsEnabled="{Binding IsChecked, ElementName=BindToIPCheck}" ToolTip="要将服务器绑定到的IP地址。"/>
-                                </DockPanel>
+                            </Button>
+
+                            <Button Margin="2" Click="UpdateServerButton_Click" ToolTip="更新游戏服务器。" HorizontalAlignment="Stretch">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
                                 <DockPanel>
-                                    <Button Margin="2 10 0 0" Click="ServerSpecSettingsEditor_Click" ToolTip="更改服务器特殊设置。" HorizontalAlignment="Stretch" IsEnabled="False">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>
-                                                <TextBlock Text="服务器特殊设置" Margin="5,0,5,0"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
-                                    <Button Margin="2 10 0 0" Click="ChangeSaveFile_Click" ToolTip="更改服务器存档。" HorizontalAlignment="Stretch" IsEnabled="False">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <ui:SymbolIcon Symbol="Folder"/>
-                                                <!--<Image Source="Resources\icon_develop.png" Margin="5,0,0,0" Stretch="None"/>-->
-                                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
+                                    <Image Source="Resources\icon_Download.png" Margin="5,0,0,0" Stretch="None"/>
+                                    <TextBlock x:Name="ButtonText" Text="更新服务器" Margin="5,0,5,0"/>
                                 </DockPanel>
-                            </StackPanel>
+                            </Button>
 
-                        </GroupBox>
-                        <GroupBox Header="服务器管理" Grid.Column="1" Margin="5">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <ui:ToggleSwitch Header="自动重启" Grid.Row="0" Margin="5" Width="100" Grid.Column="0" HorizontalAlignment="Center" IsOn="{Binding AutoRestart, Mode=TwoWay}" ToolTip="服务器是否在意外崩溃后自动重启。"/>
-                                <DockPanel Grid.Column="1">
-                                    <ui:ToggleSwitch Header="服务器状态" Grid.Row="0" Margin="5" Width="110" Grid.Column="1" HorizontalAlignment="Center" IsHitTestVisible="False">
-                                        <ui:ToggleSwitch.Style>
-                                            <Style TargetType="{x:Type ui:ToggleSwitch}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                                        <Setter Property="IsOn" Value="True"/>
-                                                        <Setter Property="OffContent" Value="关闭"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                                        <Setter Property="IsOn" Value="False"/>
-                                                        <Setter Property="OffContent" Value="已关闭"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                                        <Setter Property="IsOn" Value="False"/>
-                                                        <Setter Property="OffContent" Value="更新中"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ui:ToggleSwitch.Style>
-                                    </ui:ToggleSwitch>
-                                    <ui:ProgressRing>
-                                        <ui:ProgressRing.Style>
-                                            <Style TargetType="{x:Type ui:ProgressRing}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
-                                                        <Setter Property="IsActive" Value="False"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
-                                                        <Setter Property="IsActive" Value="False"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
-                                                        <Setter Property="IsActive" Value="True"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </ui:ProgressRing.Style>
-                                    </ui:ProgressRing>
+                            <Button Margin="2" ToolTip="打开选定服务器的RCON控制台。" Click="RconServerButton_Click" HorizontalAlignment="Stretch">
+                                <Button.Content>
+                                    <DockPanel>
+                                        <Image Source="Resources\icon_Console.png" Margin="5,0,0,0" Stretch="None"/>
+                                        <TextBlock Text="RCON远控" Margin="5,0,5,0"/>
+                                    </DockPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel Grid.Row="1" Grid.Column="1">
+                            <Button Margin="2" Click="StopServerButton_Click" ToolTip="停止游戏服务器。" HorizontalAlignment="Stretch">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <Image Source="Resources\icon_Stop.png" Margin="5,0,0,0" Stretch="None"/>
+                                    <TextBlock Text="停止服务器" Margin="5,0,5,0"/>
                                 </DockPanel>
-                                <ui:ToggleSwitch Header="开发中，占位" Grid.Row="0" Margin="5" Width="100" Grid.Column="2" HorizontalAlignment="Center" IsOn="{Binding UpdateAutoStart, Mode=TwoWay}" ToolTip="更新完毕后自行启动服务器。" IsEnabled="False"/>
-                                <StackPanel Grid.Column="0" Grid.Row="1">
+                            </Button>
 
-                                    <Button Margin="2" Click="StartServerButton_Click" ToolTip="启动游戏服务器。" HorizontalAlignment="Stretch">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <DockPanel>
-                                            <Image Source="Resources\icon_Play.png" Margin="5,0,0,0" Stretch="None"/>
-                                            <TextBlock Text="启动服务器" Margin="5,0,5,0"/>
-                                        </DockPanel>
-                                    </Button>
+                            <Button Margin="2" Click="ServerFolderButton_Click" ToolTip="打开游戏服务器文件夹。" HorizontalAlignment="Stretch">
+                                <Button.Content>
+                                    <DockPanel>
+                                        <Image Source="Resources\icon_FolderOpened.png" Margin="5,0,0,0" Stretch="None"/>
+                                        <TextBlock Text="服务器文件夹" Margin="5,0,5,0"/>
+                                    </DockPanel>
+                                </Button.Content>
+                            </Button>
 
-                                    <Button Margin="2" Click="UpdateServerButton_Click" ToolTip="更新游戏服务器。" HorizontalAlignment="Stretch">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <DockPanel>
-                                            <Image Source="Resources\icon_Download.png" Margin="5,0,0,0" Stretch="None"/>
-                                            <TextBlock Text="更新服务器" Margin="5,0,5,0"/>
-                                        </DockPanel>
-                                    </Button>
+                            <Button Margin="2" Click="ManageAdminsButton_Click" ToolTip="管理游戏服务器的管理员。" HorizontalAlignment="Stretch">
+                                <Button.Content>
+                                    <DockPanel>
+                                        <Image Source="Resources\icon_User.png" Stretch="None"/>
+                                        <TextBlock Text="GM管理" ClipToBounds="False"/>
+                                    </DockPanel>
+                                </Button.Content>
+                            </Button>
 
-                                    <Button Margin="2" ToolTip="打开选定服务器的RCON控制台。" Click="RconServerButton_Click" HorizontalAlignment="Stretch">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <Image Source="Resources\icon_Console.png" Margin="5,0,0,0" Stretch="None"/>
-                                                <TextBlock Text="远程控制(RCON)" Margin="5,0,5,0"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
+                        </StackPanel>
 
-                                </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2">
+                            <Button Margin="2" Click="RestartServerButton_Click" ToolTip="重启游戏服务器。" HorizontalAlignment="Stretch">
+                                <Button.Style>
+                                    <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
+                                                <Setter Property="IsEnabled" Value="True"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
+                                                <Setter Property="IsEnabled" Value="False"/>
+                                                <Setter Property="Foreground" Value="Gray"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <DockPanel>
+                                    <Image Source="Resources\icon_Refresh.png" Margin="5,0,0,0" Stretch="None"/>
+                                    <TextBlock Text="重启服务器" Margin="5,0,5,0"/>
+                                </DockPanel>
+                            </Button>
 
-                                <StackPanel Grid.Column="1" Grid.Row="1">
-
-                                    <Button Margin="2" Click="StopServerButton_Click" ToolTip="停止游戏服务器。" HorizontalAlignment="Stretch">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <DockPanel>
-                                            <Image Source="Resources\icon_Stop.png" Margin="5,0,0,0" Stretch="None"/>
-                                            <TextBlock Text="停止服务器" Margin="5,0,5,0"/>
-                                        </DockPanel>
-                                    </Button>
-
-                                    <Button Margin="2" Click="ServerFolderButton_Click" ToolTip="打开游戏服务器文件夹。" HorizontalAlignment="Stretch">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <Image Source="Resources\icon_FolderOpened.png" Margin="5,0,0,0" Stretch="None"/>
-                                                <TextBlock Text="服务器文件夹" Margin="5,0,5,0"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
-
-                                    <Button Margin="2" Click="ManageAdminsButton_Click" ToolTip="管理游戏服务器的管理员。" HorizontalAlignment="Stretch">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <Image Source="Resources\icon_User.png" Stretch="None"/>
-                                                <TextBlock Text="GM管理" ClipToBounds="False"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
-
-                                </StackPanel>
-                                <StackPanel Grid.Column="2" Grid.Row="1">
-
-                                    <Button Margin="2" Click="RestartServerButton_Click" ToolTip="重启游戏服务器。" HorizontalAlignment="Stretch">
-                                        <Button.Style>
-                                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Running">
-                                                        <Setter Property="IsEnabled" Value="True"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Stopped">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Runtime.State}" Value="Updating">
-                                                        <Setter Property="IsEnabled" Value="False"/>
-                                                        <Setter Property="Foreground" Value="Gray"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <DockPanel>
-                                            <Image Source="Resources\icon_Refresh.png" Margin="5,0,0,0" Stretch="None"/>
-                                            <TextBlock Text="重启服务器" Margin="5,0,5,0"/>
-                                        </DockPanel>
-                                    </Button>
-
-                                    <Button Margin="2" Click="ThemeSelect_Click" ToolTip="更改软件主题，暂未开发完成." HorizontalAlignment="Stretch">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <Image Source="Resources\icon_ThemeSelect.png" Margin="5,0,0,0" Stretch="None"/>
-                                                <TextBlock Text="更改主题" Margin="5,0,5,0"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
-                                    <Button Margin="2" Click="VoiceServices_Click" ToolTip="点击可为服务器安装语音功能，需要自行到官网注册获取Token。">
-                                        <Button.Content>
-                                            <DockPanel>
-                                                <Image Source="Resources\icon_Develop.png" Margin="0, 0, 5, 0"/>
-                                                <TextBlock Text="近场语音配置"/>
-                                            </DockPanel>
-                                        </Button.Content>
-                                    </Button>
-                                </StackPanel>
-                            </Grid>
-                        </GroupBox>
+                            <Button Margin="2" Click="ThemeSelect_Click" ToolTip="点击更改软件主题，未开发完整." HorizontalAlignment="Stretch">
+                                <Button.Content>
+                                    <DockPanel>
+                                        <Image Source="Resources\icon_ThemeSelect.png" Margin="5,0,0,0" Stretch="None"/>
+                                        <TextBlock Text="更改主题" Margin="5,0,5,0"/>
+                                    </DockPanel>
+                                </Button.Content>
+                            </Button>
+                            <Button Margin="2" Click="VoiceServices_Click" ToolTip="点击可为服务器安装语音功能，需要自行到官网注册获取Token。" HorizontalAlignment="Stretch" Height="30">
+                                <Button.Content>
+                                    <DockPanel>
+                                        <ui:SymbolIcon Symbol="Volume" Margin="0, 0, 5, 0"/>
+                                        <TextBlock Text="近场语音配置"/>
+                                    </DockPanel>
+                                </Button.Content>
+                            </Button>
+                        </StackPanel>
                     </Grid>
-                </DataTemplate>
-            </TabControl.ContentTemplate>
-        </TabControl>
-        <Separator Grid.Row="1" Margin="0,2,0,2"/>
-        <GroupBox Header="编辑器和软件设置" Margin="5,0,5,0" Grid.Row="2">
-            <StackPanel Grid.Row="2" Orientation="Horizontal">
-                <Button Margin="5,0,5,0" Padding="5" Click="GameSettingsEditor_Click" ToolTip="打开游戏设置编辑器。">
-                    <DockPanel>
-                        <Image Source="Resources\icon_EditDocument.png" Margin="0,0,5,0"/>
-                        <TextBlock Text="游戏属性配置编辑器"/>
-                    </DockPanel>
-                </Button>
-                <Button Margin="5,0,5,0" Padding="5" Click="ServerSettingsEditorButton_Click" ToolTip="打开服务器设置编辑器。">
-                    <DockPanel>
-                        <Image Source="Resources\icon_EditDocument.png" Margin="0,0,5,0"/>
-                        <TextBlock Text="服务器连接配置编辑器"/>
-                    </DockPanel>
-                </Button>
-                
-                <Button Margin="5,0,5,0" Click="ManagerSettingsButton_Click" Padding="5" ToolTip="打开VSM软件设置。">
-                    <DockPanel>
-                        <Image Source="Resources\icon_Settings.png" Margin="0,0,5,0"/>
-                        <TextBlock Text="软件设置"/>
-                    </DockPanel>
-                </Button>
-                <Button Margin="5,0,5,0" Click="AddServerButton_Click" Padding="5" ToolTip="添加新的游戏服务器。">
-                    <DockPanel>
-                        <Image Source="Resources\icon_Add.png" Margin="0,0,5,0"/>
-                        <TextBlock Text="添加服务器"/>
-                    </DockPanel>
-                </Button>
-                <Button Margin="5,0,5,0" Click="ManageModsButton_Click" Padding="5" ToolTipService.ShowOnDisabled="True">
-                    <Button.Style>
-                        <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="True">
-                                    <Setter Property="IsEnabled" Value="True"/>
-                                    <Setter Property="ToolTip" Value="管理游戏模组。"/>
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="False">
-                                    <Setter Property="IsEnabled" Value="False"/>
-                                    <Setter Property="Foreground" Value="Gray"/>
-                                    <Setter Property="ToolTip" Value="在设置中启用MOD支持。"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
-                    <DockPanel>
-                        <ui:SymbolIcon Symbol="Manage" Margin="0,0,5,0"/>
-                        <TextBlock Text="管理模组"/>
-                    </DockPanel>
-                </Button>
-                <Button Click="FixTools_Click" ToolTip="打开VSM软件设置。"  HorizontalAlignment="Stretch">
-                    <DockPanel>
-                        <ui:SymbolIcon Symbol="Pin" Margin="5,0,0,0" />
-                        <TextBlock Text="修复工具" Margin="5,0,5,0"/>
-                    </DockPanel>
-                </Button>
-            </StackPanel>
-        </GroupBox>
-        <Grid Grid.Row="2" Margin="0,96,0,37" Grid.RowSpan="3">
-            <RichTextBox x:Name="MainMenuConsole" Grid.Row="2" Background="Black" Foreground="Lime" Grid.ColumnSpan="2" Margin="5" IsReadOnly="True"/>
-        </Grid>
-        <DockPanel Grid.Row="4">
-            <StatusBar>
-                <StatusBarItem HorizontalAlignment="Left">
-                    <Button ToolTip="单击以搜索新的更新。" Click="VersionButton_Click">
-                        <Button.Content>
-                            <TextBlock>                                                            
-                                <Run Text="软件版本："/>
-                                <Run Text="{Binding AppSettings.Version}"/>
-                            </TextBlock>
-                        </Button.Content>
+                </GroupBox>
 
+                <Grid Grid.Row="3" Grid.Column="0" Margin="0 5 5 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Margin="5 0 0 0" Click="AddServerButton_Click" Padding="5" ToolTip="添加新的游戏服务器。" VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="30">
+                        <DockPanel>
+                            <Image Source="Resources\icon_Add.png" Margin="0,0,5,0"/>
+                            <TextBlock Text="添加服务器"/>
+                        </DockPanel>
                     </Button>
-                </StatusBarItem>
-                <StatusBarItem HorizontalAlignment="Right">
-                    <TextBlock Text="{Binding AppSettings.LastUpdateTime}" HorizontalAlignment="Right" Padding="5,1,5,1"/>
-                </StatusBarItem>
-            </StatusBar>
-        </DockPanel>
-    </Grid>
+                    <Button Grid.Column="1" Margin="5 0 0 0" Click="ChangeSaveFile_Click" Padding="5" ToolTip="更改服务器存档。" VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="30" IsEnabled="False">
+                        <Button.Content>
+                            <DockPanel>
+                                <Image Source="Resources\icon_develop.png" Margin="5,0,0,0"/>
+                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0"/>
+                            </DockPanel>
+                        </Button.Content>
+                    </Button>
+                </Grid>
 
+                <Grid Grid.Row="4" Grid.Column="0" Margin="0 5 5 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Margin="5 0 0 0" Click="ManagerSettingsButton_Click" Padding="5" ToolTip="打开VSM软件设置。" Height="30" HorizontalAlignment="Stretch">
+                        <DockPanel>
+                            <Image Source="Resources\icon_Settings.png" Margin="0,0,5,0"/>
+                            <TextBlock Text="软件设置"/>
+                        </DockPanel>
+                    </Button>
+                    <Button Grid.Column="1" Margin="5 0 0 0" Click="ManageModsButton_Click" Padding="5" ToolTipService.ShowOnDisabled="True" Height="30" HorizontalAlignment="Stretch">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource {x:Type Button}}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="True">
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                        <Setter Property="ToolTip" Value="管理游戏模组。"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding AppSettings.EnableModSupport}" Value="False">
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                        <Setter Property="Foreground" Value="Gray"/>
+                                        <Setter Property="ToolTip" Value="在设置中启用MOD支持。"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                        <DockPanel>
+                            <ui:SymbolIcon Symbol="Manage" Margin="5 0 0 0"/>
+                            <TextBlock Text="管理模组"/>
+                        </DockPanel>
+                    </Button>
+                    <Button Grid.Column="2" Margin="5 0 0 0" Click="FixTools_Click" ToolTip="修复工具" Padding="5" HorizontalAlignment="Stretch" Height="30">
+                        <DockPanel>
+                            <ui:SymbolIcon Symbol="Pin" Margin="0,0,5,0" />
+                            <TextBlock Text="修复工具"/>
+                        </DockPanel>
+                    </Button>
+                </Grid>
+            </Grid>
+
+            <TabControl x:Name="LogTabControl" Grid.Row="0" Grid.Column="1" Margin="5,0,5,0" SelectionChanged="LogTabControl_SelectionChanged" Background="LightGray" TextBlock.FontWeight="UltraBlack">
+                <TabItem Header="软件控制台输出" Tag="MainConsole">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" MinHeight="510"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="5,5,5,0" Grid.Row="0">
+                            <Button Click="RefreshLogButton_Click" Tag="MainConsole" Margin="0,0,5,0" ToolTip="刷新日志">
+                                <ui:SymbolIcon Symbol="Refresh"/>
+                            </Button>
+                            <Button Click="ClearLogButton_Click" Tag="MainConsole" Margin="0,0,5,0" ToolTip="清空日志">
+                                <ui:SymbolIcon Symbol="Clear"/>
+                            </Button>
+                            <Button Click="SaveLogButton_Click" Tag="MainConsole" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="Save"/>
+                            </Button>
+                            <CheckBox x:Name="AutoScrollMainConsole" Content="自动滚动" IsChecked="True" Margin="10,0,0,0"/>
+                            <Grid HorizontalAlignment="Center" Height="30" Width="500" Visibility="Hidden">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition/>
+                                    <ColumnDefinition/>
+                                </Grid.ColumnDefinitions>
+                                <ProgressBar x:Name="ServerProgressBar" 
+                                                Grid.Column="0"
+                                                Height="10" 
+                                                Minimum="0" 
+                                                Maximum="100" 
+                                                Value="100" 
+                                                Margin="10"
+                                                IsIndeterminate="False"/>
+
+                                <TextBlock x:Name="ServerTextBox" 
+                                            Grid.Column="1"
+                                            HorizontalAlignment="Stretch" 
+                                            VerticalAlignment="Stretch"
+                                            Margin="0 5 0 0" 
+                                            TextWrapping="Wrap" 
+                                            FontSize="10"
+                                            Text="重启中"/>
+                            </Grid>
+                        </StackPanel>
+
+                        <RichTextBox x:Name="MainMenuConsoleTextBox" 
+                                     Grid.Row="1"
+                                     Background="Black" 
+                                     Foreground="Lime" 
+                                     IsReadOnly="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="VRisingServer.log" Tag="VRising">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" MinHeight="510"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="5,5,5,0" Grid.Row="0">
+                            <Button Click="RefreshLogButton_Click" Tag="VRising" Margin="0,0,5,0" ToolTip="刷新日志">
+                                <ui:SymbolIcon Symbol="Refresh"/>
+                            </Button>
+                            <Button Click="ClearLogButton_Click" Tag="VRising" Margin="0,0,5,0" ToolTip="清空日志">
+                                <ui:SymbolIcon Symbol="Clear"/>
+                            </Button>
+                            <Button Click="SaveLogButton_Click" Tag="VRising" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="Save"/>
+                            </Button>
+                            <Button Click="OpenLogButton_Click" Tag="VRising" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="OpenFile"/>
+                            </Button>
+                            <CheckBox x:Name="AutoScrollVRisingLog" Content="自动滚动" IsChecked="True" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <RichTextBox x:Name="VRisingLogTextBox" 
+                                     Grid.Row="1"
+                                     Background="Black" 
+                                     Foreground="White" 
+                                     IsReadOnly="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="BepinEx LogOutput.log" Tag="BepinExOutput">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" MinHeight="510"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="5,5,5,0" Grid.Row="0">
+                            <Button Click="RefreshLogButton_Click" Tag="BepinExOutput" Margin="0,0,5,0" ToolTip="刷新日志">
+                                <ui:SymbolIcon Symbol="Refresh"/>
+                            </Button>
+                            <Button Click="ClearLogButton_Click" Tag="BepinExOutput" Margin="0,0,5,0" ToolTip="清空日志">
+                                <ui:SymbolIcon Symbol="Clear"/>
+                            </Button>
+                            <Button Click="SaveLogButton_Click" Tag="BepinExOutput" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="Save"/>
+                            </Button>
+                            <Button Click="OpenLogButton_Click" Tag="BepinExOutput" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="OpenFile"/>
+                            </Button>
+                            <CheckBox x:Name="AutoScrollBepinExOutputLog" Content="自动滚动" IsChecked="True" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <RichTextBox x:Name="BepinExOutputLogTextBox" 
+                                     Grid.Row="1"
+                                     Background="Black" 
+                                     Foreground="White" 
+                                     IsReadOnly="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="BepinEx ErrorLog.log" Tag="BepinExError">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*" MinHeight="510"/>
+                        </Grid.RowDefinitions>
+
+                        <StackPanel Orientation="Horizontal" Margin="5,5,5,0" Grid.Row="0">
+                            <Button Click="RefreshLogButton_Click" Tag="BepinExError" Margin="0,0,5,0" ToolTip="刷新日志">
+                                <ui:SymbolIcon Symbol="Refresh"/>
+                            </Button>
+                            <Button Click="ClearLogButton_Click" Tag="BepinExError" Margin="0,0,5,0" ToolTip="清空日志">
+                                <ui:SymbolIcon Symbol="Clear"/>
+                            </Button>
+                            <Button Click="SaveLogButton_Click" Tag="BepinExError" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="Save"/>
+                            </Button>
+                            <Button Click="OpenLogButton_Click" Tag="BepinExError" Margin="0,0,5,0" ToolTip="保存日志">
+                                <ui:SymbolIcon Symbol="OpenFile"/>
+                            </Button>
+                            <CheckBox x:Name="AutoScrollBepinExErrorLog" Content="自动滚动" IsChecked="True" Margin="10,0,0,0"/>
+                        </StackPanel>
+
+                        <RichTextBox x:Name="BepinExErrorLogTextBox" 
+                                     Grid.Row="1"
+                                     Background="Black" 
+                                     Foreground="White" 
+                                     IsReadOnly="True"
+                                     VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto"
+                                     Margin="5"/>
+                    </Grid>
+                </TabItem>
+
+                <TabItem Header="服务器状态" IsEnabled="True">
+                    <StackPanel Orientation="Vertical">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="400"/>
+                                <ColumnDefinition Width="150"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Text="服务器名称:" FontWeight="Bold" Margin="5"/>
+                            <TextBlock x:Name="ServerNameText" Grid.Column="0" Margin="85 5 0 5" HorizontalAlignment="Left"/>
+
+                            <TextBlock Text="在线人数:" Grid.Column="1" FontWeight="Bold" Grid.Row="1" Margin="5"/>
+                            <TextBlock x:Name="PlayerCountText" Grid.Column="1" Margin="85 5 0 5" HorizontalAlignment="Left"/>
+
+                            <TextBlock Text="服务器状态:" Grid.Column="2" FontWeight="Bold" Grid.Row="2" Margin="5"/>
+                            <TextBlock x:Name="ServerStatusText" Grid.Column="2" Margin="85 5 0 5" Foreground="Red" HorizontalAlignment="Left"/>
+                            
+                            
+
+                        </Grid>
+
+                        <DataGrid x:Name="PlayerDataGrid" 
+                                  Height="475"
+                                  AutoGenerateColumns="False" 
+                                  Margin="10" 
+                                  Visibility="Visible" 
+                                  HeadersVisibility="Column"
+                                  IsReadOnly="True">
+
+                            <DataGrid.Resources>
+                                <Style TargetType="DataGridCell">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsMouseOver" Value="True">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                        </Trigger>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.Resources>
+                            
+                            <DataGrid.ContextMenu>
+                                <ContextMenu>
+                                    <MenuItem Header="添加为管理员" Click="AddAsAdminMenuItem_Click" ToolTip="将选中玩家添加到管理员列表">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Add"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="移除管理员权限" Click="RemoveAdminMenuItem_Click" ToolTip="从管理员列表中移除选中玩家">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Remove"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator/>
+                                    <MenuItem Header="刷新玩家列表" Click="RefreshPlayerListMenuItem_Click"/>
+                                </ContextMenu>
+                            </DataGrid.ContextMenu>
+                            
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="角色名称" Binding="{Binding CharacterName}" Width="*"/>
+                                <DataGridTextColumn Header="SteamID" Binding="{Binding SteamId}" Width="170"/>
+                                <DataGridCheckBoxColumn Header="管理员" Binding="{Binding IsAdmin}" Width="70" />
+                                <DataGridCheckBoxColumn Header="在线" Binding="{Binding IsOnline}" Width="50" />
+                                <DataGridTextColumn Header="在线时长" 
+                                                    Binding="{Binding TotalPlayTime, StringFormat=\{0:hh\\:mm\\:ss\}}" 
+                                                    Width="80"/>
+                                <DataGridTextColumn Header="上次在线" 
+                                                    Binding="{Binding LastStatusTime, StringFormat=\{0:HH:mm:ss\}}" 
+                                                    Width="80"/>
+                            </DataGrid.Columns>
+                        </DataGrid>
+                        <TextBlock x:Name="LastUpdatedText" TextAlignment="Right" 
+                       Foreground="Gray" FontSize="12" Margin="5"/>
+                    </StackPanel>
+                </TabItem>
+            </TabControl>
+        </Grid>
+
+        <StatusBar Grid.Row="1" Height="Auto" VerticalAlignment="Bottom">
+            <StatusBarItem HorizontalAlignment="Left">
+                <Button ToolTip="单击以获取最新更新。" Click="VersionButton_Click" Height="30" Margin="5 0 0 0">
+                    <Button.Content>
+                        <TextBlock>                                                            
+                            <Run Text="软件版本："/>
+                            <Run Text="{Binding AppSettings.Version}"/>
+                        </TextBlock>
+                    </Button.Content>
+                </Button>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button Grid.Column="2" Content="刷新状态" Click="RefreshServerStatus_Click" Margin="5"/>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Grid HorizontalAlignment="Center" Height="25" Width="650">
+                    <ProgressBar x:Name="InstallationProgressBar" 
+                                 Height="10" 
+                                 Minimum="0" 
+                                 Maximum="100" 
+                                 Value="0" 
+                                 Margin="10"
+                                 Visibility="Collapsed"
+                                 IsIndeterminate="False"/>
+
+                    <TextBox x:Name="LogTextBox" 
+                            HorizontalAlignment="Stretch" 
+                            VerticalAlignment="Stretch"
+                            Margin="10,10,10,40" 
+                            TextWrapping="Wrap" 
+                            AcceptsReturn="True" 
+                            IsReadOnly="True"
+                             FontSize="10"/>
+                </Grid>
+            </StatusBarItem>
+            <StatusBarItem HorizontalAlignment="Right">
+                <TextBlock Text="{Binding AppSettings.LastUpdateTime}" HorizontalAlignment="Right" Padding="5,1,5,1"/>
+            </StatusBarItem>
+        </StatusBar>
+
+        <!-- 托盘图标控件 -->
+        <tb:TaskbarIcon 
+            x:Name="TrayIcon"
+            Visibility="Visible"
+            IconSource="Resources\logo.ico"
+            ToolTipText="VSM"
+            TrayLeftMouseDown="TrayIcon_Click" Margin="0,0,0,18" RenderTransformOrigin="0.5,0.5" Grid.Row="1">
+            <tb:TaskbarIcon.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform ScaleY="-1"/>
+                    <SkewTransform/>
+                    <RotateTransform/>
+                    <TranslateTransform/>
+                </TransformGroup>
+            </tb:TaskbarIcon.RenderTransform>
+
+            <!-- 右键菜单 -->
+            <tb:TaskbarIcon.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="显示窗口" Click="TrayIcon_ShowWindow"/>
+                    <MenuItem Header="退出" Click="TrayIcon_Exit"/>
+                </ContextMenu>
+            </tb:TaskbarIcon.ContextMenu>
+        </tb:TaskbarIcon>
+    </Grid>
 </Window>

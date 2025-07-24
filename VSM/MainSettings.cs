@@ -8,405 +8,447 @@ using System.Windows;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using ModernWpf.Controls;
+using System.Text.Encodings.Web;
 
-namespace VRisingServerManager
+namespace VRisingServerManager;
+public class MainSettings : PropertyChangedBase
 {
-    public class MainSettings : PropertyChangedBase
+    private static readonly JsonSerializerOptions _jsonOptions = new()
     {
-        private ObservableCollection<Server> _servers = new();
-        public ObservableCollection<Server> Servers
-        {
-            get => _servers;
-            set => SetField(ref _servers, value);
-        }
-        public AppSettings AppSettings { get; set; } = new AppSettings();
-        public Webhook WebhookSettings { get; set; } = new Webhook();
-        public List<Mod> DownloadedMods { get; set; } = new List<Mod>();
+        WriteIndented = true,
+        IncludeFields = true,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping,
+    };
 
-        /// <summary>
-        /// Saves the specified <see cref="MainSettings"/> object.
-        /// </summary>
-        /// <param name="settings">The <see cref="MainSettings"/> object to save.</param>
-        public static void Save(MainSettings settings)
-        {
-            string dir = Directory.GetCurrentDirectory() + @"\VSMSettings.json";
-            JsonSerializerOptions jsonOptions = new() { WriteIndented = true };
-            string SettingsJSON = JsonSerializer.Serialize(settings, jsonOptions);
-            File.WriteAllText(dir, SettingsJSON);
-        }
+    private ObservableCollection<Server> _servers = new();
+    public ObservableCollection<Server> Servers
+    {
+        get => _servers;
+        set => SetField(ref _servers, value);
+    }
+    public AppSettings AppSettings { get; set; } = new AppSettings();
+    public Webhook WebhookSettings { get; set; } = new Webhook();
+    public List<Mod> DownloadedMods { get; set; } = new List<Mod>();
 
-        /// <summary>
-        /// Loads a <see cref="MainSettings"/> object from rootdirectory and returns it.
-        /// </summary>
-        /// <returns>The loaded <see cref="MainSettings"/> object.</returns>
-        public static MainSettings Load()
+    /// <summary>
+    /// Saves the specified <see cref="MainSettings"/> object.
+    /// </summary>
+    /// <param name="settings">The <see cref="MainSettings"/> object to save.</param>
+    public static void Save(MainSettings settings)
+    {
+        string dir = Directory.GetCurrentDirectory() + @"\VSMSettings.json";
+        string SettingsJSON = JsonSerializer.Serialize(settings, _jsonOptions);
+        File.WriteAllText(dir, SettingsJSON);
+    }
+
+    /// <summary>
+    /// Loads a <see cref="MainSettings"/> object from rootdirectory and returns it.
+    /// </summary>
+    /// <returns>The loaded <see cref="MainSettings"/> object.</returns>
+    public static MainSettings LoadManagerSettings()
+    {
+        string dir = Directory.GetCurrentDirectory() + @"\VSMSettings.json";
+        if (File.Exists(dir))
         {
-            string dir = Directory.GetCurrentDirectory() + @"\VSMSettings.json";
-            if (File.Exists(dir))
+            using (StreamReader sr = new(dir, false))
             {
-                using (StreamReader sr = new(dir, false))
-                {
-                    string SettingsJSON = sr.ReadToEnd();
-                    MainSettings LoadedSettings = JsonSerializer.Deserialize<MainSettings>(SettingsJSON);
-                    return LoadedSettings;
-                }
+                string SettingsJSON = sr.ReadToEnd();
+                MainSettings LoadedSettings = JsonSerializer.Deserialize<MainSettings>(SettingsJSON);
+                return LoadedSettings;
             }
-            else
+        }
+        else
+        {
+            ContentDialog yesDialog = new()
             {
-                ContentDialog yesDialog = new()
-                {
-                    Content = $"未找到管理器配置文件(VSMSettings.json)，设置未能导入。",
-                    PrimaryButtonText = "是",
-                };
-                yesDialog.ShowAsync();
-                //MessageBox.Show("未找到管理器配置文件(VSMSettings.json)，设置未能导入。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
-                MainSettings DefaultSettings = new MainSettings();
-                return DefaultSettings;
-            }
+                Content = $"未找到管理器配置文件(VSMSettings.json)，设置未能导入。",
+                PrimaryButtonText = "是",
+            };
+            yesDialog.ShowAsync();
+            MainSettings DefaultSettings = new MainSettings();
+            return DefaultSettings;
+        }
             
-        }
+    }
+}
+
+/// <summary>
+/// Object containing information about a <see cref="Server"/>.
+/// </summary>
+public class Server : PropertyChangedBase
+{
+    public string vsmServerName { get; set; } = "夜族崛起服务器";
+    private string _path = Directory.GetCurrentDirectory() + @"\Server1";
+    public string Path
+    {
+        get => _path;
+        set => SetField(ref _path, value);
+    }
+    public LaunchSettings LaunchSettings { get; set; } = new LaunchSettings();
+    public RCONServerSettings RconServerSettings { get; set; } = new RCONServerSettings();
+    private bool _autoRestart = false;
+    public bool AutoRestart
+    {
+        get => _autoRestart;
+        set => SetField(ref _autoRestart, value);
+    }
+    private bool _autoStart = false;
+    public bool AutoStart
+    {
+        get => _autoStart;
+        set => SetField(ref _autoStart, value);
+    }
+    private ServerWebhook _webhookMessages = new();
+    public ServerWebhook WebhookMessages
+    {
+        get => _webhookMessages;
+        set => SetField(ref _webhookMessages, value);
+    }
+    [JsonIgnore]
+    public ServerRuntime Runtime { get; set; } = new ServerRuntime();
+    private bool _bepInExInstalled = false;
+    public bool BepInExInstalled
+    {
+        get => _bepInExInstalled;
+        set => SetField(ref _bepInExInstalled, value);
+    }
+    private string _bepInExVersion = "";
+    public string BepInExVersion
+    {
+        get => _bepInExVersion;
+        set => SetField(ref _bepInExVersion, value);
+    }
+    private List<string> _installedMods = new();
+    public List<string> InstalledMods
+    {
+        get => _installedMods;
+        set => SetField(ref _installedMods, value);
+    }
+    private bool _logFileExists = false;
+    public bool LogFileExists
+    {
+        get => _logFileExists;
+        set => SetField(ref _logFileExists, value);
+    }
+    private bool _runWithoutWindow = false;
+    public bool RunWithoutWindow
+    {
+        get => _runWithoutWindow;
+        set => SetField(ref _runWithoutWindow, value);
+    }
+    // 新增：记录每个安装的Mod的版本
+    public Dictionary<string, string> InstalledModVersions { get; set; } = new();
+}
+
+public class ServerWebhook : PropertyChangedBase
+{
+    private bool _enabled = false;
+    public bool Enabled
+    {
+        get => _enabled;
+        set => SetField(ref _enabled, value);
+    }
+    private string _startServer = "正在启动服务器。";
+    public string StartServer
+    {
+        get => _startServer;
+        set => SetField(ref _startServer, value);
+    }
+    private string _stopServer = "正在关闭服务器。";
+    public string StopServer
+    {
+        get => _stopServer;
+        set => SetField(ref _stopServer, value);
+    }
+    private string _serverReady = "服务器启动成功。";
+    public string ServerReady
+    {
+        get => _serverReady;
+        set => SetField(ref _serverReady, value);
+    }
+    private string _attemptStart3 = "服务器尝试重新启动3次未成功，正在禁用自动重新启动。";
+    public string AttemptStart3
+    {
+        get => _attemptStart3;
+        set => SetField(ref _attemptStart3, value);
+    }
+    private string _serverCrash = "服务器意外停止，正在重新启动。";
+    public string ServerCrash
+    {
+        get => _serverCrash;
+        set => SetField(ref _serverCrash, value);
+    }
+    private bool _broadcastIP = false;
+    public bool BroadcastIP
+    {
+        get => _broadcastIP;
+        set => SetField(ref _broadcastIP, value);
+    }
+    private bool _broadcastSteamID = false;
+    public bool BroadcastSteamID
+    {
+        get => _broadcastSteamID;
+        set => SetField(ref _broadcastSteamID, value);
+    }
+}
+
+/// <summary>
+/// Property of <see cref="Server"/> used to track runtime.
+/// </summary>
+public class ServerRuntime : PropertyChangedBase
+{
+    public Process? Process { get; set; }
+    public bool UserStopped { get; set; } = false;
+    public int RestartAttempts { get; set; } = 0;
+    public enum ServerState
+    {
+        已停止,
+        运行中,
+        更新中
+    }
+    private ServerState _state = ServerState.已停止;
+    public ServerState State
+    {
+        get => _state;
+        set => SetField(ref _state, value);
+    }
+}
+
+/// <summary>
+/// Property of <see cref="Server"/> used to fetch RCON Settings.
+/// </summary>
+public class RCONServerSettings : PropertyChangedBase
+{
+    private bool _enabled = false;
+    public bool Enabled
+    {
+        get => _enabled;
+        set => SetField(ref _enabled, value);
+    }
+    private string _ipAddress = "127.0.0.1";
+    public string IPAddress
+    {
+        get => _ipAddress;
+        set => SetField(ref _ipAddress, value);
+    }
+    private string _port = "25575";
+    public string Port
+    {
+        get => _port;
+        set => SetField(ref _port, value);
+    }
+    private string _password = "";
+    public string Password
+    {
+        get => _password;
+        set => SetField(ref _password, value);
+    }
+}
+
+/// <summary>
+/// Property of <see cref="Server"/> used to fetch Launch Settings.
+/// </summary>
+public class LaunchSettings
+{
+    public string DisplayName { get; set; } = "可在此处填写展示名称";
+    public string WorldName { get; set; } = "world1";
+    public bool BindToIP { get; set; } = false;
+    public string BindingIP { get; set; } = "127.0.0.1";
+}
+
+/// <summary>
+/// Property of <see cref="MainSettings"/> used to for application settings.
+/// </summary>
+public class AppSettings : PropertyChangedBase
+{
+    private bool _verifyUpdates = false;
+    public bool VerifyUpdates
+    {
+        get => _verifyUpdates;
+        set => SetField(ref _verifyUpdates, value);
+    }
+    private bool _autoUpdate = false;
+    public bool AutoUpdate
+    {
+        get => _autoUpdate;
+        set => SetField(ref _autoUpdate, value);
+    }
+    private bool _autoUpdateApp = true;
+    public bool AutoUpdateApp
+    {
+        get => _autoUpdateApp;
+        set => SetField(ref _autoUpdateApp, value);
+    }
+    private bool _showSteamWindow = true;
+    public bool ShowSteamWindow
+    {
+        get => _showSteamWindow;
+        set => SetField(ref _showSteamWindow, value);
+    }
+    private int _autoUpdateInterval = 60;
+    public int AutoUpdateInterval
+    {
+        get => _autoUpdateInterval;
+        set => SetField(ref _autoUpdateInterval, value);
+    }
+    private string _lastUpdateTimeUNIX = "";
+    public string LastUpdateTimeUNIX
+    {
+        get => _lastUpdateTimeUNIX;
+        set => SetField(ref _lastUpdateTimeUNIX, value);
+    }
+    private string _lastUpdateTime = "服务端上次更新：未知";
+    public string LastUpdateTime
+    {
+        get => _lastUpdateTime;
+        set => SetField(ref _lastUpdateTime, value);
     }
 
-    /// <summary>
-    /// Object containing information about a <see cref="Server"/>.
-    /// </summary>
-    public class Server : PropertyChangedBase
+    private string _version = "1.3.3";
+    public string Version
     {
-        public string vsmServerName { get; set; } = "夜族崛起服务器";
-        private string _path = Directory.GetCurrentDirectory() + @"\Server1";
-        public string Path
-        {
-            get => _path;
-            set => SetField(ref _path, value);
-        }
-        public LaunchSettings LaunchSettings { get; set; } = new LaunchSettings();
-        public RCONServerSettings RconServerSettings { get; set; } = new RCONServerSettings();
-        private bool _autoRestart = false;
-        public bool AutoRestart
-        {
-            get => _autoRestart;
-            set => SetField(ref _autoRestart, value);
-        }
-        private bool _autoStart = false;
-        public bool AutoStart
-        {
-            get => _autoStart;
-            set => SetField(ref _autoStart, value);
-        }
-        private ServerWebhook _webhookMessages = new();
-        public ServerWebhook WebhookMessages
-        {
-            get => _webhookMessages;
-            set => SetField(ref _webhookMessages, value);
-        }
-        [JsonIgnore]
-        public ServerRuntime Runtime { get; set; } = new ServerRuntime();
-        private bool _bepInExInstalled = false;
-        public bool BepInExInstalled
-        {
-            get => _bepInExInstalled;
-            set => SetField(ref _bepInExInstalled, value);
-        }
-        private string _bepInExVersion = "";
-        public string BepInExVersion
-        {
-            get => _bepInExVersion;
-            set => SetField(ref _bepInExVersion, value);
-        }
-        private List<string> _installedMods = new();
-        public List<string> InstalledMods
-        {
-            get => _installedMods;
-            set => SetField(ref _installedMods, value);
-        }
+        get => _version;
+        set => SetField(ref _version, value);
     }
-
-    public class ServerWebhook : PropertyChangedBase
+    private string _newversion = "";
+    public string NewVersion
     {
-        private bool _enabled = false;
-        public bool Enabled
-        {
-            get => _enabled;
-            set => SetField(ref _enabled, value);
-        }
-        private string _startServer = "正在启动服务器。";
-        public string StartServer
-        {
-            get => _startServer;
-            set => SetField(ref _startServer, value);
-        }
-        private string _stopServer = "正在关闭服务器。";
-        public string StopServer
-        {
-            get => _stopServer;
-            set => SetField(ref _stopServer, value);
-        }
-        private string _serverReady = "服务器启动成功。";
-        public string ServerReady
-        {
-            get => _serverReady;
-            set => SetField(ref _serverReady, value);
-        }
-        private string _attemptStart3 = "服务器尝试重新启动3次未成功，正在禁用自动重新启动。";
-        public string AttemptStart3
-        {
-            get => _attemptStart3;
-            set => SetField(ref _attemptStart3, value);
-        }
-        private string _serverCrash = "服务器意外停止，正在重新启动。";
-        public string ServerCrash
-        {
-            get => _serverCrash;
-            set => SetField(ref _serverCrash, value);
-        }
-        private bool _broadcastIP = false;
-        public bool BroadcastIP
-        {
-            get => _broadcastIP;
-            set => SetField(ref _broadcastIP, value);
-        }
-        private bool _broadcastSteamID = false;
-        public bool BroadcastSteamID
-        {
-            get => _broadcastSteamID;
-            set => SetField(ref _broadcastSteamID, value);
-        }
+        get => _newversion;
+        set => SetField(ref _newversion, value);
     }
-
-    /// <summary>
-    /// Property of <see cref="Server"/> used to track runtime.
-    /// </summary>
-    public class ServerRuntime : PropertyChangedBase
+    private bool _darkMode = false;
+    public bool DarkMode
     {
-        public Process? Process { get; set; }
-        public bool UserStopped { get; set; } = false;
-        public int RestartAttempts { get; set; } = 0;
-        public enum ServerState
-        {
-            Stopped,
-            Running,
-            Updating
-        }
-        private ServerState _state = ServerState.Stopped;
-        public ServerState State
-        {
-            get => _state;
-            set => SetField(ref _state, value);
-        }
+        get => _darkMode;
+        set => SetField(ref _darkMode, value);
     }
-
-    /// <summary>
-    /// Property of <see cref="Server"/> used to fetch RCON Settings.
-    /// </summary>
-    public class RCONServerSettings : PropertyChangedBase
+    private bool _autoLoadEditor = true;
+    public bool AutoLoadEditor
     {
-        private bool _enabled = false;
-        public bool Enabled
-        {
-            get => _enabled;
-            set => SetField(ref _enabled, value);
-        }
-        private string _ipAddress = "127.0.0.1";
-        public string IPAddress
-        {
-            get => _ipAddress;
-            set => SetField(ref _ipAddress, value);
-        }
-        private string _port = "25575";
-        public string Port
-        {
-            get => _port;
-            set => SetField(ref _port, value);
-        }
-        private string _password = "";
-        public string Password
-        {
-            get => _password;
-            set => SetField(ref _password, value);
-        }
+        get => _autoLoadEditor;
+        set => SetField(ref _autoLoadEditor, value);
     }
-
-    /// <summary>
-    /// Property of <see cref="Server"/> used to fetch Launch Settings.
-    /// </summary>
-    public class LaunchSettings
+    private bool _enableModSupport = false;
+    public bool EnableModSupport
     {
-        public string DisplayName { get; set; } = "展示名称，非游戏内名称";
-        public string WorldName { get; set; } = "world1";
-        public bool BindToIP { get; set; } = false;
-        public string BindingIP { get; set; } = "127.0.0.1";
+        get => _enableModSupport;
+        set => SetField(ref _enableModSupport, value);
     }
-
-    /// <summary>
-    /// Property of <see cref="MainSettings"/> used to for application settings.
-    /// </summary>
-    public class AppSettings : PropertyChangedBase
+    private bool _saveLogWhenCrash = false;
+    public bool SaveLogWhenCrash
     {
-        private bool _verifyUpdates = false;
-        public bool VerifyUpdates
+        get => _saveLogWhenCrash;
+        set => SetField(ref _saveLogWhenCrash, value);
+    }
+    private bool _enableAutoRestart = false;
+    public bool EnableAutoRestart
+    {
+        get => _enableAutoRestart;
+        set => SetField(ref _enableAutoRestart, value);
+    }
+    private int _autoRestartHour = 00;
+    public int AutoRestartHour
+    {
+        get => _autoRestartHour;
+        set => SetField(ref _autoRestartHour, value);
+    }
+    private int _autoRestartMin = 00;
+    public int AutoRestartMin
+    {
+        get => _autoRestartMin;
+        set => SetField(ref _autoRestartMin, value);
+    }
+    private int _autoRestartSec = 00;
+    public int AutoRestartSec
+    {
+        get => _autoRestartSec;
+        set => SetField(ref _autoRestartSec, value);
+    }
+    private int _closeExecuteSelect = 0; // 默认：直接退出
+    public int CloseExecuteSelect
+    {
+        get => _closeExecuteSelect;
+        set => SetField(ref _closeExecuteSelect, value);
+    }
+    private bool _managerSettingsClose;
+    public bool ManagerSettingsClose
+    {
+        get => _managerSettingsClose;
+        set => SetField(ref _managerSettingsClose, value);
+    }
+    private bool _hasNewVersion;
+    public bool HasNewVersion
+    {
+        get => _hasNewVersion;
+        set
         {
-            get => _verifyUpdates;
-            set => SetField(ref _verifyUpdates, value);
-        }
-        private bool _autoUpdate = false;
-        public bool AutoUpdate
-        {
-            get => _autoUpdate;
-            set => SetField(ref _autoUpdate, value);
-        }
-        private bool _autoUpdateApp = true;
-        public bool AutoUpdateApp
-        {
-            get => _autoUpdateApp;
-            set => SetField(ref _autoUpdateApp, value);
-        }
-        private bool _showSteamWindow = true;
-        public bool ShowSteamWindow
-        {
-            get => _showSteamWindow;
-            set => SetField(ref _showSteamWindow, value);
-        }
-        private int _autoUpdateInterval = 60;
-        public int AutoUpdateInterval
-        {
-            get => _autoUpdateInterval;
-            set => SetField(ref _autoUpdateInterval, value);
-        }
-        private string _lastUpdateTimeUNIX = "";
-        public string LastUpdateTimeUNIX
-        {
-            get => _lastUpdateTimeUNIX;
-            set => SetField(ref _lastUpdateTimeUNIX, value);
-        }
-        private string _lastUpdateTime = "服务端上次更新：未知";
-        public string LastUpdateTime
-        {
-            get => _lastUpdateTime;
-            set => SetField(ref _lastUpdateTime, value);
-        }
-
-        private string _version = "1.3.4";
-        public string Version
-        {
-            get => _version;
-            set => SetField(ref _version, value);
-        }
-        private bool _darkMode = false;
-        public bool DarkMode
-        {
-            get => _darkMode;
-            set => SetField(ref _darkMode, value);
-        }
-        private bool _autoLoadEditor = true;
-        public bool AutoLoadEditor
-        {
-            get => _autoLoadEditor;
-            set => SetField(ref _autoLoadEditor, value);
-        }
-        private bool _enableModSupport = false;
-        public bool EnableModSupport
-        {
-            get => _enableModSupport;
-            set => SetField(ref _enableModSupport, value);
-        }
-        private bool _saveLogWhenCrash = false;
-        public bool SaveLogWhenCrash
-        {
-            get => _saveLogWhenCrash;
-            set => SetField(ref _saveLogWhenCrash, value);
-        }
-        private bool _enableAutoRestart = false;
-        public bool EnableAutoRestart
-        {
-            get => _enableAutoRestart;
-            set => SetField(ref _enableAutoRestart, value);
-        }
-        private int _autoRestartHour = 00;
-        public int AutoRestartHour
-        {
-            get => _autoRestartHour;
-            set => SetField(ref _autoRestartHour, value);
-        }
-        private int _autoRestartMin = 00;
-        public int AutoRestartMin
-        {
-            get => _autoRestartMin;
-            set => SetField(ref _autoRestartMin, value);
-        }
-        private int _autoRestartSec = 00;
-        public int AutoRestartSec
-        {
-            get => _autoRestartSec;
-            set => SetField(ref _autoRestartSec, value);
-        }
-        private int _closeExecuteSelect;
-        public int CloseExecuteSelect
-        {
-            get => _closeExecuteSelect;
-            set => SetField(ref _closeExecuteSelect, value);
-        }
-        private bool _managerSettingsClose;
-        public bool ManagerSettingsClose
-        {
-            get => _managerSettingsClose;
-            set => SetField(ref _managerSettingsClose, value);
+            _hasNewVersion = value;
+            // 通知UI更新（如果使用INotifyPropertyChanged）
+            OnPropertyChanged(nameof(HasNewVersion));
         }
     }
 }
 
-    /// <summary>
-    /// Property of <see cref="MainSettings"/> used for webhook settings.
-    /// </summary>
-    public class Webhook : PropertyChangedBase
+/// <summary>
+/// Property of <see cref="MainSettings"/> used for webhook settings.
+/// </summary>
+public class Webhook : PropertyChangedBase
+{
+    private bool _enabled = false;
+    public bool Enabled
     {
-        private bool _enabled = false;
-        public bool Enabled
-        {
-            get => _enabled;
-            set => SetField(ref _enabled, value);
-        }
-        public string URL { get; set; } = "";
-        private string _updateFound = "该游戏有更新，正在开始自动更新。";
-        public string UpdateFound
-        {
-            get => _updateFound;
-            set => SetField(ref _updateFound, value);
-        }
-        private string _updateWait = "5分钟后服务器关闭(用于更新)。";
-        public string UpdateWait
-        {
-            get => _updateWait;
-            set => SetField(ref _updateWait, value);
-        }
+        get => _enabled;
+        set => SetField(ref _enabled, value);
+    }
+    public string URL { get; set; } = "";
+    private string _updateFound = "该游戏有更新，正在开始自动更新。";
+    public string UpdateFound
+    {
+        get => _updateFound;
+        set => SetField(ref _updateFound, value);
+    }
+    private string _updateWait = "5分钟后服务器关闭(用于更新)。";
+    public string UpdateWait
+    {
+        get => _updateWait;
+        set => SetField(ref _updateWait, value);
+    }
+}
+
+public class Mod : PropertyChangedBase
+{
+    private bool _downloaded = false;
+    public bool Downloaded
+    {
+        get => _downloaded;
+        set => SetField(ref _downloaded, value);
+    }
+    private string _uuid4 = "";
+    public string Uuid4
+    {
+        get => _uuid4;
+        set => SetField(ref _uuid4, value);
+    }
+    private string _archiveName = "";
+    public string ArchiveName
+    {
+        get => _archiveName;
+        set => SetField(ref _archiveName, value);
+    }
+    private List<string> _fileNames = new();
+    public List<string> FileNames
+    {
+        get => _fileNames;
+        set => SetField(ref _fileNames, value);
+    }
+    private string _localVersion = "";
+    public string LocalVersion
+    {
+        get => _localVersion;
+        set => SetField(ref _localVersion, value);
     }
 
-    public class Mod : PropertyChangedBase
-    {
-        private bool _downloaded = false;
-        public bool Downloaded
-        {
-            get => _downloaded;
-            set => SetField(ref _downloaded, value);
-        }
-        private string _uuid4 = "";
-        public string Uuid4
-        {
-            get => _uuid4;
-            set => SetField(ref _uuid4, value);
-        }
-        private string _archiveName = "";
-        public string ArchiveName
-        {
-            get => _archiveName;
-            set => SetField(ref _archiveName, value);
-        }
-        private List<string> _fileNames = new();
-        public List<string> FileNames
-        {
-            get => _fileNames;
-            set => SetField(ref _fileNames, value);
-        }
-    }
+}
 
 /// <summary>
 /// Class to implement INotifyPropertyChanged easily

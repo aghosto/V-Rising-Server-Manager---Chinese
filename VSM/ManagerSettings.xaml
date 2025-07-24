@@ -17,8 +17,8 @@
             <DockPanel>
                 <TabControl Padding="10" DockPanel.Dock="Top">
                     <TabItem Header="主要设置" RenderTransformOrigin="1.786,0.684">
-                        <StackPanel>
-                            <GroupBox Header="主要设置">
+                        <StackPanel >
+                            <GroupBox Header="主要设置" >
                                 <DockPanel>
                                     <StackPanel RenderTransformOrigin="0.5,0.5" HorizontalAlignment="Left">
                                         <StackPanel.RenderTransform>
@@ -29,26 +29,32 @@
                                                 <TranslateTransform X="-1.009"/>
                                             </TransformGroup>
                                         </StackPanel.RenderTransform>
-                                        <CheckBox Content="搜索应用程序更新" IsChecked="{Binding AppSettings.AutoUpdateApp, Mode=TwoWay}" ToolTip="VSM是否应在启动时查找新版本。" FontSize="18"/>
-                                        <CheckBox Content="验证更新" IsChecked="{Binding AppSettings.VerifyUpdates, Mode=TwoWay}" ToolTip="SteamCMD是否应在更新游戏服务器后验证更新。建议启用。" FontSize="18"/>
-                                        <CheckBox Content="自动更新服务器" IsChecked="{Binding AppSettings.AutoUpdate, Mode=TwoWay}" ToolTip="VSM是否应自动查找游戏服务器的更新。" FontSize="18" Margin="0, 10, 0, 0"/>
+                                        <CheckBox Content="搜索应用程序更新" IsChecked="{Binding AppSettings.AutoUpdateApp, Mode=TwoWay}" ToolTip="VSM是否在启动时检查自身新版本" FontSize="18"/>
+                                        <CheckBox Content="验证更新" IsChecked="{Binding AppSettings.VerifyUpdates, Mode=TwoWay}" ToolTip="SteamCMD更新服务器后是否验证游戏文件完整性，建议启用以修复损坏文件" FontSize="18"/>
+                                        <CheckBox Content="自动更新服务器" IsChecked="{Binding AppSettings.AutoUpdate, Mode=TwoWay}" ToolTip="VSM是否自动检查并更新游戏服务器" FontSize="18" Margin="0, 10, 0, 0"/>
                                         <DockPanel Width="140" HorizontalAlignment="Left">
                                             <TextBlock Text="间隔：" VerticalAlignment="Center" FontSize="18"/>
-                                            <ui:NumberBox Value="{Binding AppSettings.AutoUpdateInterval}" Maximum="1440" Minimum="1" SpinButtonPlacementMode="Hidden" Margin="10,0,0,0" IsEnabled="{Binding AppSettings.AutoUpdate}" ToolTip="搜索更新的频率，单位为分，暂未确定是否稳定。"/>
+                                            <ui:NumberBox Value="{Binding AppSettings.AutoUpdateInterval}" Maximum="1440" Minimum="1" SpinButtonPlacementMode="Hidden" Margin="10,0,0,0" IsEnabled="{Binding AppSettings.AutoUpdate}" ToolTip="自动检查更新的时间间隔（单位：分钟）"/>
                                         </DockPanel>
-                                        <CheckBox Content="显示SteamCMD窗口" IsChecked="{Binding AppSettings.ShowSteamWindow, Mode=TwoWay}" ToolTip="在更新期间是否应显示SteamCMD窗口，在故障排除时很有用。" FontSize="18" Margin="0, 10, 0, 0"/>
-                                        <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="应用程序是否应在黑暗模式下运行。" FontSize="18"/>
-                                        <CheckBox Content="自动加载设置文件" IsChecked="{Binding AppSettings.AutoLoadEditor, Mode=TwoWay}" ToolTip="游戏和服务器设置编辑器是否自动尝试加载选定的服务器文件。" FontSize="18"/>
-                                        <CheckBox Content="启用MOD支持" Name="ModSupportCheckBox" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用试验性MOD支持。" Click="ModSupportCheckBox_Click" FontSize="18"/>
-                                        <CheckBox Content="服务器崩溃重启时保存Log备份" Name="SaveLogWhenCrashCheckBox" IsChecked="{Binding AppSettings.SaveLogWhenCrash}" ToolTip="启用试验性MOD支持。" FontSize="18"/>
-                                        <DockPanel>
+                                        <CheckBox Content="显示SteamCMD窗口" IsChecked="{Binding AppSettings.ShowSteamWindow, Mode=TwoWay}" ToolTip="更新服务器时是否显示SteamCMD命令窗口，用于排查更新失败问题" FontSize="18" Margin="0, 10, 0, 0"/>
+                                        <CheckBox Content="启用黑暗模式" IsChecked="{Binding AppSettings.DarkMode, Mode=TwoWay}" ToolTip="切换应用程序的明暗主题" FontSize="18"/>
+                                        <CheckBox Content="自动加载设置文件" IsChecked="{Binding AppSettings.AutoLoadEditor, Mode=TwoWay}" ToolTip="设置编辑器是否自动加载当前选中服务器的配置文件" FontSize="18"/>
+                                        <CheckBox Content="启用MOD支持" Name="ModSupportCheckBox" IsChecked="{Binding AppSettings.EnableModSupport}" ToolTip="启用对游戏模组（BepInEx）的支持功能" Click="ModSupportCheckBox_Click" FontSize="18"/>
+                                        <CheckBox Content="服务器崩溃重启时保存Log备份" Name="SaveLogWhenCrashCheckBox" IsChecked="{Binding AppSettings.SaveLogWhenCrash}" ToolTip="服务器崩溃或重启时自动备份日志文件到CrashLog目录" FontSize="18"/>
+                                        <DockPanel Margin="0,15,0,0">
                                             <StackPanel>
-                                                <TextBlock Text="当关闭按钮按下时系统选择（未完善，请忽略）" FontSize="18" Margin="5, 15, 0, 0"/>
-                                                <ComboBox x:Name="ColseExecuteSelectCombo" VerticalAlignment="Top" Width="300" Margin="5,0,5,0" OverridesDefaultStyle="True">
-                                                    <ComboBoxItem Content="直接退出程序（软件）"/>
-                                                    <ComboBoxItem Content="关闭服务器并退出程序"/>
-                                                    <ComboBoxItem Content="最小化程序"/>
+                                                <TextBlock Text="关闭按钮行为：" FontSize="18" Margin="5,0,0,5" FontWeight="Medium"/>
+                                                <ComboBox 
+                                                        x:Name="CloseExecuteSelectCombo" 
+                                                        VerticalAlignment="Top" 
+                                                        Width="300" 
+                                                        Margin="5,0,5,0" 
+                                                        OverridesDefaultStyle="True"
+                                                        SelectedIndex="{Binding AppSettings.CloseExecuteSelect, Mode=TwoWay}">
+                                                    <ComboBoxItem Content="直接退出程序"/>
+                                                    <ComboBoxItem Content="最小化到托盘"/>
                                                 </ComboBox>
+                                                <TextBlock Text="设置点击窗口关闭按钮后的行为" FontSize="12" Margin="5,5,0,0" Foreground="Gray"/>
                                             </StackPanel>
                                         </DockPanel>
                                     </StackPanel>
@@ -61,7 +67,7 @@
                                                 <TranslateTransform X="-1.009"/>
                                             </TransformGroup>
                                         </StackPanel.RenderTransform>
-                                        <CheckBox Content="启用自动重启功能" IsChecked="{Binding AppSettings.EnableAutoRestart, Mode=TwoWay}" FontSize="18" Margin="0 0 0 10" ToolTip="启用每日特定时间重启所有服务器功能。"/>
+                                        <CheckBox Content="启用自动重启功能" IsChecked="{Binding AppSettings.EnableAutoRestart, Mode=TwoWay}" FontSize="18" Margin="0 0 0 10" ToolTip="启用每日固定时间自动重启所有运行中的服务器"/>
                                         <StackPanel Orientation="Horizontal">
                                             <ui:NumberBox Value="{Binding AppSettings.AutoRestartHour}" IsEnabled="{Binding AppSettings.EnableAutoRestart}" PlaceholderText="00" TextAlignment="Center"/>
                                             <TextBlock Text="时" FontSize="18" VerticalAlignment="Center"/>
@@ -70,12 +76,6 @@
                                             <ui:NumberBox Value="{Binding AppSettings.AutoRestartSec}"  IsEnabled="{Binding AppSettings.EnableAutoRestart}" PlaceholderText="00" TextAlignment="Center"/>
                                             <TextBlock Text="秒" FontSize="18" VerticalAlignment="Center"/>
                                         </StackPanel>
-                                        <!--<ui:NumberBox IsEnabled="{Binding CheckAutoRestartEnable}" Margin="0 0 0 10" />
-                                        <TextBlock Text="重启时间 - 分" IsEnabled="{Binding AppSettings.AutoRes_Min}" FontSize="18" Margin="0 0 0 10"/>
-                                        <ui:NumberBox IsEnabled="{Binding CheckAutoRestartEnable}" Margin="0 0 0 10" />
-                                        <TextBlock Text="重启时间 - 秒" IsEnabled="{Binding AppSettings.AutoRes_Sec}" FontSize="18" Margin="0 0 0 10"/>
-                                        <ui:NumberBox IsEnabled="{Binding CheckAutoRestartEnable}" Margin="0 0 0 10" />-->
-                                        
                                     </StackPanel>
                                 </DockPanel>
                             </GroupBox>
@@ -85,28 +85,28 @@
                     <TabItem Header="Webhook设置">
                         <GroupBox Header="Webhook设置">
                             <StackPanel>
-                                <CheckBox Name="WebhookCheck" Content="启动" IsChecked="{Binding WebhookSettings.Enabled}" ToolTip="VSM是否应该使用Webhook来发送Discord的消息。"/>
+                                <CheckBox Name="WebhookCheck" Content="启动" IsChecked="{Binding WebhookSettings.Enabled}" ToolTip="启用通过Discord Webhook发送通知消息"/>
                                 <DockPanel Margin="0,5,0,0">
                                     <TextBlock Width="75" Text="URL:" VerticalAlignment="Center"/>
-                                    <TextBox IsEnabled="{Binding WebhookSettings.Enabled}" Text="{Binding WebhookSettings.URL, Mode=TwoWay}" ToolTip="你的Discord频道的Wenhook URL。"/>
+                                    <TextBox IsEnabled="{Binding WebhookSettings.Enabled}" Text="{Binding WebhookSettings.URL, Mode=TwoWay}" ToolTip="Discord频道的Webhook URL（在频道设置中创建）"/>
                                 </DockPanel>
                                 <TextBlock Text="信息" Margin="0,10,0,0" FontSize="20"/>
                                 <DockPanel Margin="0,5,0,0">
                                     <TextBlock Width="100" Text="已找到更新：" VerticalAlignment="Center"/>
-                                    <TextBox IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookSettings.UpdateFound, Mode=TwoWay}" ToolTip="在找到游戏更新时发送，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                    <TextBox IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookSettings.UpdateFound, Mode=TwoWay}" ToolTip="检测到游戏服务器更新时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                 </DockPanel>
                                 <DockPanel Margin="0,5,0,0">
                                     <TextBlock Width="100" Text="更新等待时间：" VerticalAlignment="Center"/>
-                                    <TextBox IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookSettings.UpdateWait, Mode=TwoWay}" ToolTip="提前5分钟时发送当服务器在关闭以进行更新，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                    <TextBox IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookSettings.UpdateWait, Mode=TwoWay}" ToolTip="服务器将在5分钟后关闭更新时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                 </DockPanel>
-                                <Button Content="重置" Width="100" HorizontalAlignment="Left" Margin="0,10,0,0" Click="ResetButton_Click" ToolTip="将所有消息重置为默认值。"/>
+                                <Button Content="重置" Width="100" HorizontalAlignment="Left" Margin="0,10,0,0" Click="ResetButton_Click" ToolTip="将所有Webhook消息恢复为默认文本"/>
                                 <Separator Margin="0,10,0,10"/>
-                                <GroupBox Header="自定义服务器消息">
+                                <GroupBox Header="自定义服务器消息" DataContext="{Binding ElementName=ServerTabControl, Path=SelectedItem}">
                                     <StackPanel>
                                         <DockPanel>
                                             <TextBlock Text="选择要自定义的服务器：" VerticalAlignment="Center" Margin="0,0,20,0"/>
-                                            <ComboBox Name="ServerCombo" ItemsSource="{Binding Servers}" DisplayMemberPath="Name" Width="250"/>
-                                            <Button Content="重置" Name="ResetServerButton" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0" Click="ResetServerButton_Click" ToolTip="将所有消息重置为默认值。"/>
+                                            <ComboBox Name="ServerCombo" ItemsSource="{Binding Servers}" DisplayMemberPath="vsmServerName" Width="250"/>
+                                            <Button Content="重置" Name="ResetServerButton" Width="100" HorizontalAlignment="Left" Margin="10,0,0,0" Click="ResetServerButton_Click" ToolTip="将当前服务器的消息恢复为默认文本"/>
                                         </DockPanel>
                                         <StackPanel Margin="0,10,0,0">
                                             <StackPanel.Style>
@@ -119,29 +119,29 @@
                                                     </Style.Triggers>
                                                 </Style>
                                             </StackPanel.Style>
-                                            <CheckBox Content="启用" DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsChecked="{Binding WebhookMessages.Enabled}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" ToolTip="启用或禁用此服务器的Webhook。" ToolTipService.ShowOnDisabled="True"/>
+                                            <CheckBox Content="启用" DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsChecked="{Binding WebhookMessages.Enabled}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" ToolTip="启用当前服务器的Webhook通知" ToolTipService.ShowOnDisabled="True"/>
                                             <DockPanel Margin="0,5,0,0">
                                                 <TextBlock Text="服务器正在启动：" Width="150" VerticalAlignment="Center"/>
-                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.StartServer}" ToolTip="在服务器启动时发送，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.StartServer}" ToolTip="服务器启动时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                             </DockPanel>
                                             <DockPanel Margin="0,5,0,0">
                                                 <TextBlock Text="服务器正在停止：" Width="150" VerticalAlignment="Center"/>
-                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.StopServer}" ToolTip="在服务器停止时发送，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.StopServer}" ToolTip="服务器停止时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                             </DockPanel>
                                             <DockPanel Margin="0,5,0,0">
                                                 <TextBlock Text="服务器就绪：" Width="150" VerticalAlignment="Center"/>
-                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.ServerReady}" ToolTip="在服务器就绪时发送，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.ServerReady}" ToolTip="服务器启动完成时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                             </DockPanel>
                                             <DockPanel Margin="0,5,0,0">
                                                 <TextBlock Text="3次启动尝试：" Width="150" VerticalAlignment="Center"/>
-                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.AttemptStart3, Mode=OneWay}" ToolTip="当服务器在自动重启的情况下无法启动3次时发送，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.AttemptStart3, Mode=OneWay}" ToolTip="服务器连续3次启动失败时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                             </DockPanel>
                                             <DockPanel Margin="0,5,0,0">
                                                 <TextBlock Text="服务器崩溃：" Width="150" VerticalAlignment="Center"/>
-                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.ServerCrash}" ToolTip="在服务器崩溃时发送，保留为空即为禁用。" ToolTipService.ShowOnDisabled="True"/>
+                                                <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" Text="{Binding WebhookMessages.ServerCrash}" ToolTip="服务器崩溃时发送的通知（留空禁用）" ToolTipService.ShowOnDisabled="True"/>
                                             </DockPanel>
-                                            <CheckBox Content="播送IP" DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" IsChecked="{Binding WebhookMessages.BroadcastIP}" ToolTip="是否应在服务器就绪时发送IP。" ToolTipService.ShowOnDisabled="True"/>
-                                            <CheckBox Content="播送SteamID" DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" IsChecked="{Binding WebhookMessages.BroadcastSteamID}" ToolTip="是否应在服务器准备好时发送SteamID。" ToolTipService.ShowOnDisabled="True"/>
+                                            <CheckBox Content="播送IP" DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" IsChecked="{Binding WebhookMessages.BroadcastIP}" ToolTip="服务器就绪通知中是否包含服务器IP地址" ToolTipService.ShowOnDisabled="True"/>
+                                            <CheckBox Content="播送SteamID" DataContext="{Binding SelectedItem, ElementName=ServerCombo}" IsEnabled="{Binding IsChecked, ElementName=WebhookCheck}" IsChecked="{Binding WebhookMessages.BroadcastSteamID}" ToolTip="服务器就绪通知中是否包含服务器SteamID" ToolTipService.ShowOnDisabled="True"/>
                                         </StackPanel>
                                     </StackPanel>
                                 </GroupBox>
@@ -158,25 +158,25 @@
                             <Separator Margin="0,10,0,10"/>
                             <GroupBox Header="RCON">
                                 <StackPanel>
-                                    <CheckBox Name="RCONCheck" Content="自动消息" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding RconServerSettings.Enabled}" ToolTip="是否启用自动RCON功能，例如在关闭服务器进行更新之前发送消息，要求使用正确的设置填写下面的字段。（似乎未完善）"/>
+                                    <CheckBox Name="RCONCheck" Content="自动消息" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding RconServerSettings.Enabled}" ToolTip="启用RCON远程控制台功能，用于发送命令（如重启通知）"/>
 
                                     <DockPanel Margin="0,5,0,0">
                                         <TextBlock Text="IP地址：" Width="150" VerticalAlignment="Center"/>
-                                        <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsEnabled="{Binding IsChecked, ElementName=RCONCheck}" Text="{Binding RconServerSettings.IPAddress}" ToolTip="要连接到的IP地址。"/>
+                                        <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsEnabled="{Binding IsChecked, ElementName=RCONCheck}" Text="{Binding RconServerSettings.IPAddress}" ToolTip="服务器的RCON监听IP（通常为127.0.0.1或服务器IP）"/>
                                     </DockPanel>
                                     <DockPanel Margin="0,5,0,0">
                                         <TextBlock Text="端口：" Width="150" VerticalAlignment="Center"/>
-                                        <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsEnabled="{Binding IsChecked, ElementName=RCONCheck}" Text="{Binding RconServerSettings.Port}" ToolTip="要连接到的IP地址。"/>
+                                        <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsEnabled="{Binding IsChecked, ElementName=RCONCheck}" Text="{Binding RconServerSettings.Port}" ToolTip="服务器的RCON端口（默认25575，需与服务器配置一致）"/>
                                     </DockPanel>
                                     <DockPanel Margin="0,5,0,0">
                                         <TextBlock Text="密码：" Width="150" VerticalAlignment="Center"/>
-                                        <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsEnabled="{Binding IsChecked, ElementName=RCONCheck}" Text="{Binding RconServerSettings.Password}" ToolTip="用于连接的密码。"/>
+                                        <TextBox DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsEnabled="{Binding IsChecked, ElementName=RCONCheck}" Text="{Binding RconServerSettings.Password}" ToolTip="RCON连接密码（需与服务器配置一致）"/>
                                     </DockPanel>
                                 </StackPanel>
                             </GroupBox>
                             <GroupBox Header="其余">
                                 <StackPanel>
-                                    <CheckBox x:Name="AutoStartCheck" Content="自动启动" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding AutoStart}" ToolTip="服务器是否应在打开应用程序时自动启动该功能 。"/>
+                                    <CheckBox x:Name="AutoStartCheck" Content="自动启动" DataContext="{Binding SelectedItem, ElementName=ServerCombo2}" IsChecked="{Binding AutoStart}" ToolTip="VSM启动时是否自动启动该服务器"/>
                                 </StackPanel>
                             </GroupBox>
                         </StackPanel>
