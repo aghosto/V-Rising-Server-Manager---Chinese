@@ -123,6 +123,13 @@ public class PlayerDataManager
                 Save(); // 调用Save()生成空文件
                 _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建新的玩家数据文件：{_dataFilePath}", Brushes.Orange);
             }
+            // 加载完成后触发UI更新
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                // 直接调用字典实例的OnCollectionChanged方法
+                (Players as ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>)
+                    ?.OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            });
         }
         catch (JsonException ex)
         {
@@ -414,13 +421,12 @@ public class PlayerDataManager
     public class ObservableConcurrentDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>,
         INotifyCollectionChanged, INotifyPropertyChanged
     {
-
         public ObservableConcurrentDictionary() { }
 
         public ObservableConcurrentDictionary(IDictionary<TKey, TValue> dictionary)
-            : base(dictionary) 
+            : base(dictionary)
         {
-            RaiseCollectionChanged(NotifyCollectionChangedAction.Reset);
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
         }
 
         public event NotifyCollectionChangedEventHandler CollectionChanged;
@@ -434,30 +440,12 @@ public class PlayerDataManager
 
             OnCollectionChanged(
                 isAdd ? NotifyCollectionChangedAction.Add : NotifyCollectionChangedAction.Replace,
-                newValue,
-                oldValue
+                new KeyValuePair<TKey, TValue>(key, newValue),
+                isAdd ? null : new KeyValuePair<TKey, TValue>(key, oldValue)
             );
 
             OnPropertyChanged(nameof(Count));
             return newValue;
-        }
-
-        private void RaiseCollectionChanged(NotifyCollectionChangedAction action, object item = null, object oldItem = null)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                CollectionChanged?.Invoke(this, oldItem != null
-                    ? new NotifyCollectionChangedEventArgs(action, item, oldItem)
-                    : new NotifyCollectionChangedEventArgs(action, item));
-            });
-        }
-
-        private void RaisePropertyChanged(string propertyName)
-        {
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            });
         }
 
         // 重写TryAdd方法，触发集合变更事件
@@ -465,7 +453,7 @@ public class PlayerDataManager
         {
             if (base.TryAdd(key, value))
             {
-                OnCollectionChanged(NotifyCollectionChangedAction.Add, value);
+                OnCollectionChanged(NotifyCollectionChangedAction.Add, new KeyValuePair<TKey, TValue>(key, value));
                 OnPropertyChanged(nameof(Count));
                 return true;
             }
@@ -477,34 +465,64 @@ public class PlayerDataManager
         {
             if (base.TryRemove(key, out value))
             {
-                OnCollectionChanged(NotifyCollectionChangedAction.Remove, value);
+                OnCollectionChanged(NotifyCollectionChangedAction.Remove, new KeyValuePair<TKey, TValue>(key, value));
                 OnPropertyChanged(nameof(Count));
                 return true;
             }
             return false;
         }
 
+        // 批量添加项
+        public void AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException(nameof(items));
+
+            // 批量添加
+            foreach (var item in items)
+            {
+                base.AddOrUpdate(item.Key, item.Value, (k, v) => item.Value);
+            }
+
+            // 触发重置事件，而不是为每个项触发单独的事件
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            OnPropertyChanged(nameof(Count));
+        }
+
+        // 清空集合
+        public new void Clear()
+        {
+            base.Clear();
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+            OnPropertyChanged(nameof(Count));
+        }
+
         // 触发集合变更事件的辅助方法
+        public virtual void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        {
+            // 使用BeginInvoke而非Invoke，避免可能的死锁
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                CollectionChanged?.Invoke(this, e);
+            }));
+        }
+
+        // 触发集合变更事件的辅助方法（重载）
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, object oldItem = null)
         {
-            // 确保在UI线程触发事件（WPF要求）
-            Application.Current.Dispatcher.Invoke(() =>
-            {
-                CollectionChanged?.Invoke(this,
-                    oldItem != null
-                        ? new NotifyCollectionChangedEventArgs(action, item, oldItem)
-                        : new NotifyCollectionChangedEventArgs(action, item)
-                );
-            });
+            OnCollectionChanged(oldItem != null
+                ? new NotifyCollectionChangedEventArgs(action, item, oldItem)
+                : new NotifyCollectionChangedEventArgs(action, item));
         }
 
         // 触发属性变更事件的辅助方法
-        private void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            // 使用BeginInvoke而非Invoke，避免可能的死锁
+            Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
                 PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-            });
+            }));
         }
     }
 

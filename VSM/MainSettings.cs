@@ -124,6 +124,7 @@ public class Server : PropertyChangedBase
         get => _installedMods;
         set => SetField(ref _installedMods, value);
     }
+    public Dictionary<string, string> InstalledModVersions { get; set; } = new();
     private bool _logFileExists = false;
     public bool LogFileExists
     {
@@ -136,8 +137,6 @@ public class Server : PropertyChangedBase
         get => _runWithoutWindow;
         set => SetField(ref _runWithoutWindow, value);
     }
-    // 新增：记录每个安装的Mod的版本
-    public Dictionary<string, string> InstalledModVersions { get; set; } = new();
 }
 
 public class ServerWebhook : PropertyChangedBase

@@ -142,12 +142,6 @@ public partial class MainWindow : Window
         _logUpdateTimer.Tick += LogUpdateTimer_Tick;
         _logUpdateTimer.Start();
 
-        // 初始化日志定时器时调整间隔
-        _logUpdateTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromMilliseconds(1000)
-        };
-
         // 绑定自动滚动复选框事件
         AutoScrollVRisingLog.Checked += AutoScrollCheckBox_CheckedChanged;
         AutoScrollVRisingLog.Unchecked += AutoScrollCheckBox_CheckedChanged;
