@@ -8,7 +8,7 @@ namespace SteamServices;
 
 public class SteamUserService
 {
-    private readonly string _apiKey = "239B25802271A2936AC757B2D1E75217"; // 你的Steam API密钥
+    private readonly string _apiKey = ""; // Steam API密钥
     private readonly HttpClient _httpClient;
     private readonly string _saveDirectory; // 保存JSON文件的目录
 
