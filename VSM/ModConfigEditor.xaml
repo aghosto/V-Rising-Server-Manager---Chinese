@@ -1,0 +1,86 @@
+﻿<Window x:Class="VRisingServerManager.ModConfigEditor"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.modernwpf.com/2019"
+        Title="Mod配置文件编辑器" Height="600" Width="800" WindowStartupLocation="CenterScreen">
+
+    <Window.Resources>
+        <Style x:Key="CommentStyle" TargetType="Run">
+            <Setter Property="Foreground" Value="#FF888888"/>
+            <Setter Property="FontStyle" Value="Italic"/>
+        </Style>
+        <Style x:Key="GroupStyle" TargetType="Run">
+            <Setter Property="Foreground" Value="#FF007ACC"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+        <Style x:Key="KeyStyle" TargetType="Run">
+            <Setter Property="Foreground" Value="#FF2D7D42"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+        </Style>
+        <Style x:Key="ValueStyle" TargetType="Run">
+            <Setter Property="Foreground" Value="#FFBA55D3"/>
+        </Style>
+        <Style x:Key="DefaultValueStyle" TargetType="Run">
+            <Setter Property="Foreground" Value="#FFFFA500"/>
+        </Style>
+
+        <Style x:Key="AutoCompleteItemStyle" TargetType="ListBoxItem">
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Foreground" Value="Black"/>
+            <Style.Triggers>
+                <Trigger Property="IsSelected" Value="True">
+                    <Setter Property="Background" Value="#FF007ACC"/>
+                    <Setter Property="Foreground" Value="White"/>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FFE6F7FF"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <RichTextBox x:Name="ConfigRichTextBox" 
+             Grid.Row="0"
+             VerticalScrollBarVisibility="Auto"
+             HorizontalScrollBarVisibility="Auto"
+             Margin="0,0,0,10"
+             AcceptsTab="True"
+             TextChanged="ConfigRichTextBox_TextChanged" 
+             PreviewKeyDown="ConfigRichTextBox_PreviewKeyDown">
+                <FlowDocument/>
+            </RichTextBox>
+
+            <Popup x:Name="AutoCompletePopup" AllowsTransparency="True" Placement="Relative" StaysOpen="False">
+                <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="3" Padding="2">
+                    <ListBox x:Name="SuggestionsListBox" 
+                 Width="150" 
+                 MaxHeight="150"
+                 PreviewMouseLeftButtonUp="SuggestionsListBox_PreviewMouseLeftButtonUp"
+                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="ListBoxItem">
+                                <Setter Property="Padding" Value="5,2"/>
+                                <Setter Property="Background" Value="Transparent"/>
+                                <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+                                <Setter Property="IsSelected" Value="False"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                    </ListBox>
+                </Border>
+            </Popup>
+        </Grid>
+
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button x:Name="SaveButton" Content="保存" Click="SaveButton_Click" Width="80" Margin="0,0,10,0"/>
+            <Button x:Name="CancelButton" Content="取消" Click="CancelButton_Click" Width="80"/>
+        </StackPanel>
+    </Grid>
+</Window>

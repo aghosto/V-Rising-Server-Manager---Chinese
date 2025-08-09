@@ -7,7 +7,7 @@
         xmlns:ui="http://schemas.modernwpf.com/2019"
         ui:WindowHelper.UseModernWindowStyle="True"
         mc:Ignorable="d"
-        Title="RCON终端" Height="675" Width="800" MaxWidth="800" Icon="/Resources/logo.ico" ResizeMode="CanMinimize">
+        Title="RCON终端" Height="Auto" Width="800" Icon="/Resources/logo.ico" ResizeMode="CanResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -57,6 +57,7 @@
                         <ListBoxItem Content="name" ToolTip="查看服务器名称信息。"/>
                         <ListBoxItem Content="description" ToolTip="查看服务器描述信息。"/>
                         <ListBoxItem Content="password" ToolTip="查看服务器密码信息。后面加数字即可修改服务器密码，后面跟[--clear]即可删除服务器密码，更改需要一段时间生效。"/>
+                        <ListBoxItem Content="runcommand" ToolTip="发送服务器指令"/>
                     </ListBox>
                     <!--<Border BorderBrush="LightSlateGray" BorderThickness="1">
                         <TextBlock x:Name="CommandInfoTextbox" TextWrapping="Wrap" Width="400"/>

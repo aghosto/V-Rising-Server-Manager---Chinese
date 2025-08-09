@@ -20,19 +20,12 @@ namespace VRisingServerManager
 
         public ManagerSettings(MainSettings mainSettings)
         {
-            // 验证传入的主设置不为null
             _mainSettings = mainSettings ?? throw new ArgumentNullException(nameof(mainSettings), "主设置数据不能为null");
-
             InitializeComponent();
+
             DataContext = _mainSettings; // 绑定到主设置数据
-
-            // 获取已存在的主窗口实例（避免新建导致的UI控件引用错误）
             _mainWindow = Application.Current.MainWindow as MainWindow;
-
-            // 初始化服务器选择控件状态
             UpdateServerComboState();
-
-            // 监听Servers集合变化（动态更新控件状态）
             _mainSettings.Servers.CollectionChanged += Servers_CollectionChanged;
         }
 
@@ -51,12 +44,10 @@ namespace VRisingServerManager
         {
             bool hasServers = _mainSettings.Servers.Count > 0;
 
-            // 更新控件启用状态
             ServerCombo.IsEnabled = hasServers;
             ServerCombo2.IsEnabled = hasServers;
             ResetServerButton.IsEnabled = hasServers;
 
-            // 自动选中第一个服务器（如果有）
             if (hasServers && ServerCombo.SelectedIndex == -1)
             {
                 ServerCombo.SelectedIndex = 0;
@@ -68,35 +59,20 @@ namespace VRisingServerManager
         }
 
         /// <summary>
-        /// 向主窗口控制台输出日志
-        /// </summary>
-        private void LogToConsole(string logMessage)
-        {
-            // 直接调用ShowLogMsg方法，使用MainConsole类型和白色文本
-            ShowLogMsg(logMessage, Brushes.White);
-        }
-
-        /// <summary>
         /// 向主窗口控制台输出日志（带颜色）
         /// </summary>
         private void ShowLogMsg(string logMessage, Brush color)
         {
             if (_mainWindow == null)
             {
-                // 容错：如果主窗口实例获取失败，尝试重新获取
                 _mainWindow = Application.Current.MainWindow as MainWindow;
                 if (_mainWindow == null)
                 {
-                    return; // 无法获取主窗口，放弃输出
+                    return;
                 }
             }
 
-            // 确保在UI线程更新控件
-            Dispatcher.Invoke(() =>
-            {
-                // 调用主窗口的日志显示方法
-                _mainWindow.ShowLogMsg(LogType.MainConsole, logMessage, color);
-            });
+            _mainWindow.ShowLogMsg(LogType.MainConsole, logMessage, color);
         }
 
         /// <summary>
@@ -104,11 +80,11 @@ namespace VRisingServerManager
         /// </summary>
         private async void ModSupportCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            // 安全检查：避免AppSettings为null（理论上不会，MainSettings已初始化）
-            if (_mainSettings.AppSettings == null) return;
+            if (_mainSettings.AppSettings == null) 
+                return;
 
-            // 如果是取消勾选，直接返回
-            if (!_mainSettings.AppSettings.EnableModSupport) return;
+            if (!_mainSettings.AppSettings.EnableModSupport) 
+                return;
 
             // 显示警告对话框
             var dialog = new ContentDialog
@@ -123,7 +99,6 @@ namespace VRisingServerManager
                 Owner = this
             };
 
-            // 如果用户未确认，取消启用状态
             if (await dialog.ShowAsync() != ContentDialogResult.Primary)
             {
                 _mainSettings.AppSettings.EnableModSupport = false;
@@ -142,14 +117,14 @@ namespace VRisingServerManager
         {
             try
             {
-                MainSettings.Save(_mainSettings);
                 _mainSettings.AppSettings.ManagerSettingsClose = true;
+                MainSettings.Save(_mainSettings);
                 ShowLogMsg("软件设置已保存", Brushes.LimeGreen);
                 Close();
             }
             catch (Exception ex)
             {
-                ShowLogMsg($"软件保存设置失败：{ex.Message}", Brushes.Red);
+                //ShowLogMsg($"软件保存设置失败：{ex.Message}", Brushes.Red);
 
                 _ = new ContentDialog
                 {
@@ -166,7 +141,6 @@ namespace VRisingServerManager
         /// </summary>
         private void ResetServerButton_Click(object sender, RoutedEventArgs e)
         {
-            // 安全检查：避免选中索引无效（如未选中或服务器被删除）
             if (ServerCombo.SelectedIndex < 0 || ServerCombo.SelectedIndex >= _mainSettings.Servers.Count)
             {
                 ShowLogMsg("重置Webhook设置失败：未选择有效服务器", Brushes.Red);
@@ -181,10 +155,9 @@ namespace VRisingServerManager
                 return;
             }
 
-            // 重置为默认值
             var server = _mainSettings.Servers[ServerCombo.SelectedIndex];
             server.WebhookMessages = new ServerWebhook();
-            ShowLogMsg($"已重置服务器 '{server.vsmServerName}' 的Webhook设置", Brushes.LimeGreen);
+            ShowLogMsg($"已重置服务器 {server.vsmServerName} 的Webhook设置", Brushes.LimeGreen);
         }
 
         /// <summary>
@@ -204,7 +177,6 @@ namespace VRisingServerManager
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
-            // 移除集合变化监听，避免内存泄漏
             _mainSettings.Servers.CollectionChanged -= Servers_CollectionChanged;
         }
     }

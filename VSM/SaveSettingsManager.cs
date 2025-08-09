@@ -55,21 +55,18 @@ public static class SaveSettingsManager
     {
         try
         {
-            // 确保目录存在
             string directory = Path.GetDirectoryName(filePath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            // 创建备份（如果文件已存在）
             if (createBackup && File.Exists(filePath))
             {
                 string backupPath = $"{filePath}.bak";
                 File.Copy(filePath, backupPath, overwrite: true);
             }
 
-            // 序列化并保存
             string jsonContent = JsonSerializer.Serialize(settings, _jsonOptions);
             File.WriteAllText(filePath, jsonContent);
         }

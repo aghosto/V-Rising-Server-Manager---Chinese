@@ -95,9 +95,12 @@ public partial class ModManager : Window
 
             ModsDataGrid.SelectedIndex = -1;
 
+            // 处理重复的UUID，只保留第一个出现的记录
             var downloadedModsMap = VsmSettings.DownloadedMods
                 .Where(m => m.Downloaded)
-                .ToDictionary(m => m.Uuid4);
+                .GroupBy(m => m.Uuid4) 
+                .Select(g => g.First())  
+                .ToDictionary(m => m.Uuid4);  
 
             foreach (ModInfo modInfo in Mods.ModList)
             {
@@ -565,7 +568,7 @@ public partial class ModManager : Window
             return true;
         }
 
-        mainWindow.ShowLogMsg(LogType.MainConsole, $"正在安装 {mod.Name} 到 {server.vsmServerName}", Brushes.Yellow);
+        //mainWindow.ShowLogMsg(LogType.MainConsole, $"正在安装 {mod.Name} 到 {server.vsmServerName}", Brushes.Yellow);
 
         string workingDir = Directory.GetCurrentDirectory();
         int downloadedModIndex = -1;
@@ -960,11 +963,61 @@ public partial class ModManager : Window
         ModsDataGrid.SelectedIndex = -1;
     }
 
-    private void ModFileEditor_Click(object sender, RoutedEventArgs e)
+    private void ModDirectory_Click(object sender, RoutedEventArgs e)
     {
-        ModInfo mod = (ModInfo)ModsDataGrid.SelectedItem;
-        Server server = (Server)ServerComboBox.SelectedItem;
+        Server currentServer = (Server)ServerComboBox.SelectedItem;
+        //string modFilePath = Path.Combine(currentServer.Path, "BepInEx", "plugin", configFileName);
 
+
+    }
+
+    // 右键点击"mod配置文件修改器"时触发
+    private void ModConfigEditor_Click(object sender, RoutedEventArgs e)
+    {
+        // 获取当前选中的Mod和服务器
+        ModInfo selectedMod = ModsDataGrid.SelectedItem as ModInfo;
+        Server currentServer = ServerComboBox.SelectedItem as Server;
+
+        if (selectedMod == null || currentServer == null)
+            return;
+
+        // 构建配置文件路径（BepInEx/config/Mod名称.cfg）
+        string configFileName = $"{selectedMod.Name}.cfg";
+        string configFilePath = Path.Combine(currentServer.Path, "BepInEx", "config", configFileName);
+
+        try
+        {
+            // 检查配置文件是否存在
+            if (!File.Exists(configFilePath))
+            {
+                // 询问是否创建新文件
+                var result = MessageBox.Show(
+                    $"未找到配置文件：{configFileName}\n是否在BepInEx/config目录下创建新文件？",
+                    "文件不存在",
+                    MessageBoxButton.YesNo,
+                    MessageBoxImage.Question
+                );
+
+                if (result != MessageBoxResult.Yes)
+                    return;
+
+                // 确保BepInEx/config目录存在
+                Directory.CreateDirectory(Path.GetDirectoryName(configFilePath));
+                File.Create(configFilePath).Dispose(); // 创建空文件
+            }
+
+            // 读取配置文件内容
+            string configContent = File.ReadAllText(configFilePath);
+
+            // 打开配置文件编辑器窗口
+            var editorWindow = new ModConfigEditor(configFilePath, configContent);
+            editorWindow.Owner = this;
+            editorWindow.ShowDialog();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"打开配置文件失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+        }
     }
 }
 

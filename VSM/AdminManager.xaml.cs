@@ -5,6 +5,9 @@ using System.Windows.Navigation;
 using ModernWpf.Controls;
 using System.Collections.Generic;
 using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using static VRisingServerManager.LogManager;
 
 namespace VRisingServerManager;
 /// <summary>
@@ -13,14 +16,32 @@ namespace VRisingServerManager;
 public partial class AdminManager : Window
 {
     Server serverToManage;
+    MainSettings _mainSettings;
+
+    // 定义事件：当管理员列表被修改并关闭窗口时触发
+    public event Action AdminListUpdated;
+
+    // 标记管理员列表是否有修改（用于判断是否需要触发事件）
+    private bool _hasChanges = false;
 
     public AdminManager(Server server)
     {
         InitializeComponent();
+        if (server == null)
+            throw new ArgumentNullException(nameof(server), "服务器实例不能为null");
+
         serverToManage = server;
-        ReloadList(serverToManage.Path + @"\SaveData\Settings\adminlist.txt");
+        ReloadList(Path.Combine(server.Path, "SaveData", "Settings", "adminlist.txt"));
         AdminList.SelectionChanged += AdminList_SelectionChanged;
 
+        // 窗口关闭时检查是否需要触发更新事件
+        Closing += (s, e) =>
+        {
+            if (_hasChanges)
+            {
+                AdminListUpdated?.Invoke(); // 触发事件，通知主窗口
+            }
+        };
     }
 
     private void AdminList_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
@@ -50,25 +71,44 @@ public partial class AdminManager : Window
             sr.Close();
         }
         if (AdminList.Items.Count > 0)
-            AdminList.SelectedIndex = AdminList.Items.Count - 1;
+            AdminList.SelectedIndex = AdminList.Items.Count;
     }
 
     private async void AddAdminButton_Click(object sender, RoutedEventArgs e)
     {
-        if (AdminToAdd.Text != "")
+        string input = AdminToAdd.Text.Trim();
+        if (string.IsNullOrEmpty(input))
         {
-            AdminList.Items.Add(AdminToAdd.Text);
-            if (AdminList.Items.Count > 0)
-                AdminList.SelectedIndex = AdminList.Items.Count - 1;
+            await ShowError("SteamID为空，请输入ID或链接");
+            return;
+        }
+
+        if (TryExtractSteamId(input, out string steamId))
+        {
+            if (ulong.TryParse(steamId, out _))
+            {
+                if (!AdminList.Items.Contains(steamId))
+                {
+                    AdminList.Items.Add(steamId);
+                    AdminToAdd.Clear();
+                    AdminList.SelectedIndex = AdminList.Items.Count;
+
+                    return;
+                }
+                else
+                {
+                    await ShowError("该ID已在管理员列表中");
+                }
+                _hasChanges = true;
+            }
+            else
+            {
+                await ShowError("提取的ID无效，请检查输入");
+            }
         }
         else
         {
-            ContentDialog closeFileDialog = new()
-            {
-                Content = "SteamID为空，添加失败",
-                PrimaryButtonText = "是",
-            };
-            await closeFileDialog.ShowAsync();
+            await ShowError("输入格式错误，请输入64位SteamID或Steam个人主页链接");
         }
     }
 
@@ -78,7 +118,7 @@ public partial class AdminManager : Window
         {
             AdminList.Items.RemoveAt(AdminList.SelectedIndex);
             if (AdminList.Items.Count > 0)
-                AdminList.SelectedIndex = AdminList.Items.Count - 1;
+                AdminList.SelectedIndex = AdminList.Items.Count;
         }
         else
         {
@@ -100,31 +140,78 @@ public partial class AdminManager : Window
 
     private async void SaveButton_Click(object sender, RoutedEventArgs e)
     {
-        if (File.Exists(serverToManage.Path + @"\SaveData\Settings\adminlist.txt"))
+        if (serverToManage == null)
         {
-            string sPath = @$"{serverToManage.Path}\SaveData\Settings\adminlist.txt";
-            StreamWriter SaveFile = new StreamWriter(sPath);
-            foreach (var item in AdminList.Items)
+            await ShowError("服务器信息为空，无法保存管理员列表");
+            return;
+        }
+        string adminListPath = Path.Combine(serverToManage.Path, "SaveData", "Settings", "adminlist.txt");
+        if (string.IsNullOrEmpty(adminListPath))
+        {
+            await ShowError("管理员列表路径无效");
+            return;
+        }
+        try
+        {
+            string directory = Path.GetDirectoryName(adminListPath);
+            if (!Directory.Exists(directory))
             {
-                SaveFile.WriteLine(item);
+                Directory.CreateDirectory(directory);
             }
-            SaveFile.Close();
+
+            using (StreamWriter saveFile = new StreamWriter(adminListPath))
+            {
+                foreach (var item in AdminList.Items)
+                {
+                    if (item != null)
+                    {
+                        saveFile.WriteLine(item.ToString());
+                    }
+                }
+            }
+            _hasChanges = true; 
             Close();
         }
-        else
+        catch (Exception ex)
         {
-            ContentDialog closeFileDialog = new()
-            {
-                Content = "未找到管理员文件(adminlist.txt)\n请确认服务器路径设置正确。",
-                PrimaryButtonText = "是",
-            };
-            await closeFileDialog.ShowAsync();
-            //MessageBox.Show("未找到管理员文件(adminlist.txt)\n请确认服务器路径设置正确。", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            await ShowError($"保存失败：{ex.Message}\n路径：{adminListPath}");
         }
     }
 
     private void ReloadButton_Click(object sender, RoutedEventArgs e)
     {
         ReloadList(serverToManage.Path + @"\SaveData\Settings\adminlist.txt");
+    }
+
+    private bool TryExtractSteamId(string input, out string steamId)
+    {
+        steamId = null;
+
+        if (Regex.IsMatch(input, @"^\d+$"))
+        {
+            steamId = input;
+            return true;
+        }
+
+        // 正则匹配获取一下玩家的64位steamID
+        var match = Regex.Match(input, @"steamcommunity\.com/profiles/(\d+)", RegexOptions.IgnoreCase);
+        if (match.Success && match.Groups.Count > 1)
+        {
+            steamId = match.Groups[1].Value;
+            return true;
+        }
+
+        return false;
+    }
+
+    private async Task ShowError(string message)
+    {
+        var dialog = new ContentDialog
+        {
+            Content = message,
+            Title = "操作失败",
+            CloseButtonText = "确定"
+        };
+        await dialog.ShowAsync();
     }
 }

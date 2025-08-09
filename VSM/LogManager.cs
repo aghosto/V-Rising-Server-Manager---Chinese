@@ -10,7 +10,15 @@ using System.Windows.Media;
 namespace VRisingServerManager;
 public class LogManager : Window
 {
-    MainWindow mainWindow = Application.Current.MainWindow as MainWindow;
+    private readonly MainWindow _mainWindow;
+
+    public LogManager(MainWindow mainWindow)
+    {
+        _mainWindow = mainWindow ?? throw new ArgumentNullException(nameof(mainWindow));
+    }
+
+    Server currentServer;
+
 
     public enum LogType
     {
@@ -29,41 +37,75 @@ public class LogManager : Window
     /// <returns></returns>
     public bool WriteServerCrashLog(Server server)
     {
-        DateTime Today = DateTime.Today;
-        DateTime Now = DateTime.Now;
-
-        string NowToday = Today.ToString("yyyy-MM-dd");
-        string NowNow = Now.ToString("HH-mm-ss");
-
-        if (!Directory.Exists(server.Path + @"\CrashLog"))
+        if (server == null)
         {
-            Directory.CreateDirectory(server.Path + @"\CrashLog");
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"无崩溃日志文件夹，正在创建。", Brushes.Yellow);
+            ShowLogError("写入崩溃日志失败：服务器实例为null");
+            return false;
         }
-        //每日日志文件夹，每日唯一
-        if (!Directory.Exists(server.Path + $@"\CrashLog\{NowToday}"))
-            Directory.CreateDirectory(server.Path + $@"\CrashLog\{NowToday}");
 
-        //每次重启、崩溃日志文件夹，根据时间每次生成
-        Directory.CreateDirectory(server.Path + $@"\CrashLog\{NowToday}\{NowNow}");
-
-        //特殊检查是否为mod服务器
-        if (Directory.Exists(server.Path + @"\BepinEx"))
+        if (string.IsNullOrEmpty(server.Path))
         {
-            //尝试复制mod服务器的两个日志文件
+            ShowLogError($"写入崩溃日志失败：[{server.vsmServerName ?? "未知服务器"}] 的路径未设置");
+            return false;
+        }
+
+        try
+        {
+            string crashLogDir = Path.Combine(server.Path, "CrashLog", DateTime.Today.ToString("yyyy-MM-dd"), DateTime.Now.ToString("HH-mm-ss"));
+            Directory.CreateDirectory(crashLogDir);
+            
+            // 复制BepInEx日志
+            if (Directory.Exists(Path.Combine(server.Path, "BepinEx")))
+            {
+                CopyFileIfExists(Path.Combine(server.Path, "BepinEx", "ErrorLog.log"), Path.Combine(crashLogDir, "BepinExErrorLog.log"));
+                CopyFileIfExists(Path.Combine(server.Path, "BepinEx", "LogOutput.log"), Path.Combine(crashLogDir, "BepinExLogOutput.log"));
+            }
+
+            //复制服务器核心日志
+            CopyFileIfExists(Path.Combine(server.Path, "logs", "VRisingServer.log"), Path.Combine(crashLogDir, "VRisingServer.log"));
+            //ShowLogSuccess($"崩溃日志已保存至：{crashLogDir}");
+            return true;
+        }
+        catch (Exception ex)
+        {
+            ShowLogError($"写入崩溃日志失败：{ex.Message}");
+            return false;
+        }
+    }
+
+    private void CopyFileIfExists(string sourcePath, string destinationPath)
+    {
+        if (File.Exists(sourcePath))
+        {
             try
             {
-                File.Copy(server.Path + @"\BepinEx\ErrorLog.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\BepinExErrorLog.log");
-                File.Copy(server.Path + @"\BepinEx\LogOutput.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\BepinExLogOutput.log");
+                File.Copy(sourcePath, destinationPath, overwrite: true);
             }
             catch (Exception ex)
             {
-                mainWindow.ShowLogMsg(LogType.MainConsole, $"创建BepInEx服务器日志错误：{ex.Message.ToString()}", Brushes.Red);
+                ShowLogError($"复制文件失败：{sourcePath} → {destinationPath}，错误：{ex.Message}");
             }
         }
+        else
+        {
+            ShowLogWarning($"文件不存在，跳过复制：{sourcePath}");
+        }
+    }
 
-        //固定位置原版服务器Log文件
-        File.Copy(server.Path + $@"\logs\VRisingServer.log", server.Path + $@"\CrashLog\{NowToday}\{NowNow}\VRisingServer.log");
-        return true;
+    private void ShowLogError(string message)
+    {
+        _mainWindow?.ShowLogMsg(LogType.MainConsole, $"{message}", Brushes.Red);
+    }
+
+    private void ShowLogWarning(string message)
+    {
+        _mainWindow?.ShowLogMsg(LogType.MainConsole, $"{message}", Brushes.Yellow);
+    }
+
+    private void ShowLogSuccess(string message)
+    {
+        _mainWindow?.ShowLogMsg(LogType.MainConsole, $"{message}", Brushes.Green);
     }
 }
+
+

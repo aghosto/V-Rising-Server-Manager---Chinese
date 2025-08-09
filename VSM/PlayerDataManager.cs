@@ -16,7 +16,7 @@ using Newtonsoft.Json.Converters;
 
 
 namespace VRisingServerManager;
-public class PlayerDataManager
+public class PlayerDataManager : IDisposable
 {
     private readonly MainWindow _mainWindow; // 主窗口引用（用于日志输出）
     private readonly Server _currentServer;  // 当前服务器实例
@@ -37,11 +37,15 @@ public class PlayerDataManager
             new JsonStringEnumConverter()
         },
     };
-
-    // 管理员文件路径
     private string AdminListPath => Path.Combine(_currentServer.Path, @"SaveData\Settings\adminlist.txt");
     private HashSet<ulong> _adminSteamIds = new HashSet<ulong>();
+    private string BanListPath => Path.Combine(_currentServer.Path, @"SaveData\Settings\banlist.txt");
+    private HashSet<ulong> _banSteamIds = new HashSet<ulong>();
 
+    // 新增：日志监听相关成员
+    private FileSystemWatcher _logWatcher; // 当前服务器的日志文件监听
+    private string _logFilePath; // 日志文件路径（如VRisingServer.log）
+    public event Action<string> LogUpdated; // 日志更新事件（传递新日志内容）
 
     // 构造函数，指定数据文件路径
     public PlayerDataManager(Server server, MainWindow mainWindow)
@@ -54,10 +58,121 @@ public class PlayerDataManager
         _dataFilePath = Path.Combine(_currentServer.Path, "player_data.json");
         Players = new ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>();
 
+        // 初始化日志文件路径（根据服务器实际日志位置调整）
+        _logFilePath = Path.Combine(_currentServer.Path, "logs", "VRisingServer.log");
+
         // 验证环境并加载数据
         EnsureDirectoryAndPermissions();
-        LoadOrCreateDataFile(); 
-        LoadAdminList(); 
+        LoadServerPlayerData(); 
+        LoadAdminList();
+
+        // 初始化日志监听（默认不启动，需手动调用StartLogWatching）
+        InitializeLogWatcher();
+    }
+
+    // 新增：初始化日志监听
+    private void InitializeLogWatcher()
+    {
+        if (_logWatcher != null)
+        {
+            _logWatcher.Dispose(); // 释放已有监听
+        }
+
+        _logWatcher = new FileSystemWatcher
+        {
+            Path = Path.GetDirectoryName(_logFilePath),
+            Filter = Path.GetFileName(_logFilePath),
+            NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Size,
+            EnableRaisingEvents = false // 默认禁用，需手动启动
+        };
+
+        // 绑定日志文件变化事件
+        _logWatcher.Changed += OnLogFileChanged;
+    }
+
+    // 新增：启动日志监听
+    public void StartLogWatching()
+    {
+        if (!File.Exists(_logFilePath))
+        {
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"日志文件不存在，无法启动监听：{_logFilePath}", Brushes.Orange);
+            return;
+        }
+
+        if (_logWatcher == null)
+        {
+            InitializeLogWatcher(); // 重新初始化（若已释放）
+        }
+
+        _logWatcher.EnableRaisingEvents = true;
+        _mainWindow.ShowLogMsg(LogType.MainConsole, $"已开始监听日志文件：{_logFilePath}", Brushes.Lime);
+    }
+
+
+    // 新增：停止日志监听
+    public void StopLogWatching()
+    {
+        if (_logWatcher != null)
+        {
+            _logWatcher.EnableRaisingEvents = false;
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"已停止监听日志文件：{_logFilePath}", Brushes.Yellow);
+        }
+    }
+
+
+    // 新增：处理日志文件变化
+    private void OnLogFileChanged(object sender, FileSystemEventArgs e)
+    {
+        try
+        {
+            // 日志文件被修改时，读取新增内容
+            string newLogContent = ReadNewLogContent();
+            if (!string.IsNullOrEmpty(newLogContent))
+            {
+                // 通过事件通知外部（如MainWindow）更新UI
+                LogUpdated?.Invoke(newLogContent);
+
+                // 若需要在PlayerDataManager中直接处理日志（如解析玩家事件），可在此添加逻辑
+                // ProcessLogContent(newLogContent);
+            }
+        }
+        catch (Exception ex)
+        {
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"日志监听错误：{ex.Message}", Brushes.Red);
+        }
+    }
+
+
+    // 新增：读取日志文件的新增内容（从上一次读取位置开始）
+    private long _lastLogPosition = 0; // 记录上次读取到的位置
+    private string ReadNewLogContent()
+    {
+        if (!File.Exists(_logFilePath))
+            return null;
+
+        using (var fs = new FileStream(_logFilePath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+        {
+            // 若文件大小小于上次位置（如日志被截断），重置位置
+            if (fs.Length < _lastLogPosition)
+            {
+                _lastLogPosition = 0;
+            }
+
+            // 若没有新增内容，返回空
+            if (fs.Length == _lastLogPosition)
+            {
+                return null;
+            }
+
+            // 从上次位置开始读取
+            fs.Position = _lastLogPosition;
+            using (var sr = new StreamReader(fs))
+            {
+                string newContent = sr.ReadToEnd();
+                _lastLogPosition = fs.Position; // 更新位置
+                return newContent;
+            }
+        }
     }
 
     // 确保服务器目录存在且有写入权限
@@ -92,7 +207,7 @@ public class PlayerDataManager
     }
 
     // 加载现有数据，若文件不存在则创建空文件
-    private void LoadOrCreateDataFile()
+    public void LoadOrCreateDataFile()
     {
         try
         {
@@ -100,27 +215,21 @@ public class PlayerDataManager
             {
                 string json = File.ReadAllText(_dataFilePath);
 
-                var baseDict = JsonSerializer.Deserialize<ConcurrentDictionary<ulong, VRisingPlayerInfo>>(json, _jsonOptions);
-                if (baseDict != null)
+                var players = JsonSerializer.Deserialize<ConcurrentDictionary<ulong, VRisingPlayerInfo>>(json, _jsonOptions);
+                if (players != null)
                 {
-                    foreach (var kvp in baseDict)
+                    foreach (var player in players)
                     {
-                        Players.TryAdd(kvp.Key, kvp.Value);
+                        Players.TryAdd(player.Key, player.Value);
                     }
-                    _mainWindow.ShowLogMsg(LogType.MainConsole, $"从文件加载 {Players.Count} 条玩家数据", Brushes.Lime);
+                    //_mainWindow.ShowLogMsg(LogType.MainConsole, $"从文件加载 {Players.Count} 条玩家数据", Brushes.Lime);
                 }
-                else
-                {
-                    _mainWindow.ShowLogMsg(LogType.MainConsole, "数据文件为空，初始化空集合", Brushes.Yellow);
-                }
-
-                // 服务器重启后重置在线状态
-                //ResetOnlineStatusOnRestart();
             }
             else
             {
                 // 文件不存在，创建空文件
-                Save(); // 调用Save()生成空文件
+                Players.Clear(); 
+                Save(); 
                 _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建新的玩家数据文件：{_dataFilePath}", Brushes.Orange);
             }
         }
@@ -128,7 +237,7 @@ public class PlayerDataManager
         {
             _mainWindow.ShowLogMsg(LogType.MainConsole, $"数据文件损坏（JSON解析失败）：{ex.Message}，将创建新文件", Brushes.Red);
             Players.Clear();
-            Save(); // 覆盖损坏文件
+            Save(); 
         }
         catch (Exception ex)
         {
@@ -140,32 +249,39 @@ public class PlayerDataManager
     /// <summary>
     /// 从文件加载数据
     /// </summary>
-    //private void LoadServerPlayerData()
-    //{
-    //    try
-    //    {
-    //        if (File.Exists(_dataFilePath))
-    //        {
-    //            string jsonData = File.ReadAllText(_dataFilePath);
-    //            var players = JsonSerializer.Deserialize<ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>>(jsonData);
-    //            Players = players ?? new ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>();
-    //            _mainWindow.ShowLogMsg(LogType.MainConsole, $"成功加载玩家数据", Brushes.Lime);
-    //        }
-    //        else
-    //        {
-    //            Players = new ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>();
-    //        }
-    //    }
-    //    catch (Exception ex)
-    //    {
-    //        _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载玩家数据失败: {ex.Message}", Brushes.Red);
-    //        Players = new ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>();
-    //        // 可添加日志记录
-    //    }
-    //}
+    public void LoadServerPlayerData()
+    {
+        try
+        {
+            Players.Clear(); // 文件不存在，清空数据
+            if (File.Exists(_dataFilePath))
+            {
+                string jsonData = File.ReadAllText(_dataFilePath);
+                var players = JsonSerializer.Deserialize<ObservableConcurrentDictionary<ulong, VRisingPlayerInfo>>(jsonData);
+                Players.Clear();
+                if (players != null)
+                {
+                    foreach (var player in players)
+                    {
+                        Players.TryAdd(player.Key, player.Value);
+                    }
+                }
+                //_mainWindow.ShowLogMsg(LogType.MainConsole, $"成功加载玩家数据", Brushes.Lime);
+            }
+            else
+            {
+                Players.Clear();
+            }
+        }
+        catch (Exception ex)
+        {
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载玩家数据失败: {ex.Message}", Brushes.Red);
+            Players.Clear();
+        }
+    }
 
     // 服务器重启后，重置所有玩家为离线状态
-    private void ResetOnlineStatusOnRestart()
+    public void ResetOnlineStatusOnRestart()
     {
         foreach (var player in Players.Values)
         {
@@ -236,6 +352,7 @@ public class PlayerDataManager
         {
             var dataToSave = new ConcurrentDictionary<ulong, VRisingPlayerInfo>(Players);
             string json = JsonSerializer.Serialize(dataToSave, _jsonOptions);
+
             await File.WriteAllTextAsync(_dataFilePath, json);
             //_mainWindow.ShowLogMsg(LogType.MainConsole, $"异步保存玩家数据成功: {_dataFilePath}", Brushes.Green);
         }
@@ -255,24 +372,6 @@ public class PlayerDataManager
 
         return null;
     }
-
-
-    //[Serializable]
-    //public class VRisingPlayerInfo
-    //{
-    //    public ulong SteamId { get; set; }
-    //    public string CharacterName { get; set; } = "";
-    //    public string NetEndPoint { get; set; } = "";
-    //    public bool IsOnline { get; set; } = false;
-    //    public DateTime LastStatusTime { get; set; } = DateTime.MinValue;
-    //    public DateTime? LoginTime { get; set; } = new DateTime();
-    //    public DateTime? LogoutTime { get; set; } = null;
-    //    public TimeSpan? SessionDuration { get; set; } = TimeSpan.Zero;
-    //    public string DisconnectReason { get; set; } = "LeftGame";
-    //    public bool IsAdmin { get; set; } = false;
-    //    public bool IsAuthenticated { get; set; } = false;
-    //    public TimeSpan TotalPlayTime { get; set; } = TimeSpan.Zero;
-    //}
 
     [Serializable]
     public class VRisingPlayerInfo : INotifyPropertyChanged
@@ -318,7 +417,6 @@ public class PlayerDataManager
             }
         }
         [JsonConverter(typeof(LocalDateTimeConverter))]
-
         private DateTime _lastStatusTime {  get; set; } = DateTime.MinValue;
         public DateTime LastStatusTime
         {
@@ -381,6 +479,16 @@ public class PlayerDataManager
                 OnPropertyChanged();
             }
         }
+        private bool _isBaned {  get; set; } = false;
+        public bool IsBaned
+        {
+            get => _isBaned;
+            set
+            {
+                _isBaned = value;
+                OnPropertyChanged();
+            }
+        }
         private bool _isAuthenticated {  get; set; } = false;
         public bool IsAuthenticated
         {
@@ -402,7 +510,7 @@ public class PlayerDataManager
             }
         }
 
-        // 实现INotifyPropertyChanged接口
+        // INotifyPropertyChanged接口
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
@@ -410,7 +518,7 @@ public class PlayerDataManager
         }
     }
 
-    // 线程安全的可观察字典（支持WPF数据绑定和实时更新）
+    // 线程安全的可观察字典
     public class ObservableConcurrentDictionary<TKey, TValue> : ConcurrentDictionary<TKey, TValue>,
         INotifyCollectionChanged, INotifyPropertyChanged
     {
@@ -460,7 +568,6 @@ public class PlayerDataManager
             });
         }
 
-        // 重写TryAdd方法，触发集合变更事件
         public new bool TryAdd(TKey key, TValue value)
         {
             if (base.TryAdd(key, value))
@@ -472,7 +579,6 @@ public class PlayerDataManager
             return false;
         }
 
-        // 重写TryRemove方法，触发集合变更事件
         public new bool TryRemove(TKey key, out TValue value)
         {
             if (base.TryRemove(key, out value))
@@ -484,10 +590,8 @@ public class PlayerDataManager
             return false;
         }
 
-        // 触发集合变更事件的辅助方法
         private void OnCollectionChanged(NotifyCollectionChangedAction action, object item, object oldItem = null)
         {
-            // 确保在UI线程触发事件（WPF要求）
             Application.Current.Dispatcher.Invoke(() =>
             {
                 CollectionChanged?.Invoke(this,
@@ -498,7 +602,6 @@ public class PlayerDataManager
             });
         }
 
-        // 触发属性变更事件的辅助方法
         private void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             Application.Current.Dispatcher.Invoke(() =>
@@ -513,13 +616,12 @@ public class PlayerDataManager
     /// </summary>
     public void LoadAdminList()
     {
-        _adminSteamIds.Clear(); // 清空现有缓存
+        _adminSteamIds.Clear(); 
 
         try
         {
             if (File.Exists(AdminListPath))
             {
-                // 读取所有行并转换为ulong
                 var lines = File.ReadAllLines(AdminListPath);
                 foreach (var line in lines)
                 {
@@ -527,28 +629,19 @@ public class PlayerDataManager
                     {
                         _adminSteamIds.Add(steamId);
                     }
-                    else if (!string.IsNullOrWhiteSpace(line))
-                    {
-                        // 记录无效格式的行（非空且无法转换为ulong）
-                        _mainWindow.ShowLogMsg(LogType.MainConsole,
-                            $"管理员列表格式错误：{line}（忽略此行）", Brushes.Orange);
-                    }
                 }
 
-                _mainWindow.ShowLogMsg(LogType.MainConsole,
-                    $"已加载管理员列表（{_adminSteamIds.Count} 人）", Brushes.Lime);
+                //_mainWindow.ShowLogMsg(LogType.MainConsole, $"已加载管理员列表（{_adminSteamIds.Count} 人）", Brushes.Lime);
             }
             else
             {
-                _mainWindow.ShowLogMsg(LogType.MainConsole,
-                    $"管理员列表文件不存在，将创建空列表：{AdminListPath}", Brushes.Orange);
-                CreateEmptyAdminList(); // 创建空文件
+                _mainWindow.ShowLogMsg(LogType.MainConsole, $"管理员列表文件不存在，将创建空列表：{AdminListPath}", Brushes.Orange);
+                CreateEmptyAdminList();
             }
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole,
-                $"加载管理员列表失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载管理员列表失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -560,20 +653,17 @@ public class PlayerDataManager
     {
         try
         {
-            // 确保目录存在
             var directory = Path.GetDirectoryName(AdminListPath);
             if (!Directory.Exists(directory))
             {
                 Directory.CreateDirectory(directory);
             }
 
-            // 创建空文件
             File.WriteAllText(AdminListPath, string.Empty);
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole,
-                $"创建管理员列表文件失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建管理员列表文件失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -586,22 +676,16 @@ public class PlayerDataManager
     {
         try
         {
-            // 转换为字符串列表（每行一个SteamID）
             var lines = adminSteamIds.Select(steamId => steamId.ToString()).ToList();
-
-            // 写入文件
             File.WriteAllLines(AdminListPath, lines);
 
-            // 更新缓存
             _adminSteamIds = new HashSet<ulong>(adminSteamIds);
 
-            _mainWindow.ShowLogMsg(LogType.MainConsole,
-                $"管理员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
+            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"管理员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole,
-                $"保存管理员列表失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"保存管理员列表失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -614,7 +698,6 @@ public class PlayerDataManager
         return _adminSteamIds.Contains(steamId);
     }
 
-
     /// <summary>
     /// 添加管理员（并保存到文件）
     /// </summary>
@@ -623,17 +706,15 @@ public class PlayerDataManager
         if (!_adminSteamIds.Contains(steamId))
         {
             _adminSteamIds.Add(steamId);
-            SaveAdminList(_adminSteamIds); // 自动保存
+            SaveAdminList(_adminSteamIds);
 
-            // 更新玩家数据中的管理员状态
             if (Players.TryGetValue(steamId, out var player))
             {
                 player.IsAdmin = true;
-                PlayerUpdated?.Invoke(player); // 触发UI更新
+                PlayerUpdated?.Invoke(player);
             }
         }
     }
-
 
     /// <summary>
     /// 移除管理员（并保存到文件）
@@ -643,9 +724,140 @@ public class PlayerDataManager
         if (_adminSteamIds.Contains(steamId))
         {
             _adminSteamIds.Remove(steamId);
-            SaveAdminList(_adminSteamIds); // 自动保存
+            SaveAdminList(_adminSteamIds);
 
-            // 更新玩家数据中的管理员状态
+            if (Players.TryGetValue(steamId, out var player))
+            {
+                player.IsAdmin = false;
+                PlayerUpdated?.Invoke(player);
+            }
+        }
+    }
+
+    /// <summary>
+    /// 获取所有管理员SteamID
+    /// </summary>
+    public HashSet<ulong> GetAllAdmins()
+    {
+        return new HashSet<ulong>(_adminSteamIds);
+    }
+
+    /// <summary>
+    /// 加载封禁人员列表（从banlist.txt读取）
+    /// </summary>
+    public void LoadBanList()
+    {
+        _banSteamIds.Clear();
+
+        try
+        {
+            if (File.Exists(BanListPath))
+            {
+                var lines = File.ReadAllLines(BanListPath);
+                foreach (var line in lines)
+                {
+                    if (ulong.TryParse(line.Trim(), out ulong steamId))
+                    {
+                        _banSteamIds.Add(steamId);
+                    }
+                }
+
+                //_mainWindow.ShowLogMsg(LogType.MainConsole, $"已加载封禁人员列表（{_banSteamIds.Count} 人）", Brushes.Lime);
+            }
+            else
+            {
+                _mainWindow.ShowLogMsg(LogType.MainConsole, $"封禁人员列表文件不存在，将创建空列表：{BanListPath}", Brushes.Orange);
+                CreateEmptyAdminList(); // 创建空文件
+            }
+        }
+        catch (Exception ex)
+        {
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载封禁人员列表失败：{ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
+    /// 创建空的封禁人员列表文件
+    /// </summary>
+    private void CreateEmptyBanList()
+    {
+        try
+        {
+            var directory = Path.GetDirectoryName(BanListPath);
+            if (!Directory.Exists(directory))
+            {
+                Directory.CreateDirectory(directory);
+            }
+
+            // 创建空文件
+            File.WriteAllText(BanListPath, string.Empty);
+        }
+        catch (Exception ex)
+        {
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建封禁人员列表文件失败：{ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
+    /// 保存封禁人员列表（覆盖原文件）
+    /// </summary>
+    /// <param name="banSteamIds">封禁人员SteamID集合（ulong类型）</param>
+    public void SaveBanList(HashSet<ulong> banSteamIds)
+    {
+        try
+        {
+            var lines = banSteamIds.Select(steamId => steamId.ToString()).ToList();
+
+            File.WriteAllLines(BanListPath, lines);
+
+            _banSteamIds = new HashSet<ulong>(banSteamIds);
+
+            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"封禁人员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
+        }
+        catch (Exception ex)
+        {
+            _mainWindow.ShowLogMsg(LogType.MainConsole, $"保存封禁人员列表文件失败：{ex.Message}", Brushes.Red);
+        }
+    }
+
+    /// <summary>
+    /// 检查玩家是否为封禁人员
+    /// </summary>
+    public bool IsBaned(ulong steamId)
+    {
+        return _banSteamIds.Contains(steamId);
+    }
+
+    /// <summary>
+    /// 添加封禁人员（并保存到文件）
+    /// </summary>
+    public void AddBan(ulong steamId)
+    {
+        if (!_banSteamIds.Contains(steamId))
+        {
+            _banSteamIds.Add(steamId);
+            SaveAdminList(_banSteamIds); // 自动保存
+
+            // 更新玩家数据中的封禁状态
+            if (Players.TryGetValue(steamId, out var player))
+            {
+                player.IsBaned = true;
+                PlayerUpdated?.Invoke(player); // 触发UI更新
+            }
+        }
+    }
+
+    /// <summary>
+    /// 移除封禁人员（并保存到文件）
+    /// </summary>
+    public void RemoveBan(ulong steamId)
+    {
+        if (_banSteamIds.Contains(steamId))
+        {
+            _banSteamIds.Remove(steamId);
+            SaveAdminList(_banSteamIds); // 自动保存
+
+            // 更新玩家数据中的封禁人员状态
             if (Players.TryGetValue(steamId, out var player))
             {
                 player.IsAdmin = false;
@@ -654,13 +866,21 @@ public class PlayerDataManager
         }
     }
 
-
     /// <summary>
-    /// 获取所有管理员SteamID
+    /// 获取所有封禁人员SteamID
     /// </summary>
-    public HashSet<ulong> GetAllAdmins()
+    public HashSet<ulong> GetAllBaned()
     {
-        return new HashSet<ulong>(_adminSteamIds); // 返回副本，避免外部直接修改缓存
+        return new HashSet<ulong>(_banSteamIds);
+    }
+
+
+    // 新增：释放资源（停止监听，避免内存泄漏）
+    public void Dispose()
+    {
+        StopLogWatching();
+        _logWatcher?.Dispose();
+        _logWatcher = null;
     }
 
     // 自定义日期转换器（处理DateTime类型）

@@ -128,7 +128,12 @@
                       RowHeaderWidth="0">
                 <DataGrid.Resources>
                     <ContextMenu x:Key="myContextMenu">
-                        <MenuItem Header="打开Mod设置文件" Click="ModFileEditor_Click"/>
+                        <MenuItem Header="打开Mod文件夹" Click="ModDirectory_Click"/>
+                        <MenuItem Header="Mod配置文件修改器" Click="ModConfigEditor_Click">
+                            <MenuItem.Icon>
+                                <ui:SymbolIcon Symbol="Edit"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
                     </ContextMenu>
                     <Style TargetType="DataGridCell">
                         <Style.Triggers>

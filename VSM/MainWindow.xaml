@@ -135,7 +135,7 @@
 
                 <Separator Grid.Row="1" Margin="0,2,0,2"/>
 
-                <GroupBox Header="服务器管理" Grid.Row="2" Margin="5 5 5 0" DataContext="{Binding ElementName=ServerTabControl, Path=SelectedItem}">
+                <GroupBox Header="服务器管理" Grid.Row="2" Margin="5 5 5 0" DataContext="{Binding ElementName=ServerTabControl, Path=SelectedItem}" >
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -156,8 +156,12 @@
                                          Margin="5" 
                                          Width="100" 
                                          HorizontalAlignment="Center" 
-                                         IsOn="{Binding AutoRestart, Mode=TwoWay}" 
-                                         ToolTip="服务器是否在意外崩溃后自动重启。"/>
+                                         IsOn="{Binding AutoRestart, Mode=TwoWay}"
+                                         OnContent="启用"
+                                         OffContent="禁用"
+                                         ToolTip="服务器是否在意外崩溃后自动重启。">
+                            
+                        </ui:ToggleSwitch>
 
                         <DockPanel Grid.Column="1">
                             <ui:ToggleSwitch Header="服务器状态" 
@@ -172,11 +176,11 @@
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Runtime.State}" Value="运行中">
                                                 <Setter Property="IsOn" Value="True"/>
-                                                <Setter Property="OffContent" Value="关闭"/>
+                                                <Setter Property="OnContent" Value="运行中"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Runtime.State}" Value="已停止">
                                                 <Setter Property="IsOn" Value="False"/>
-                                                <Setter Property="OffContent" Value="已关闭"/>
+                                                <Setter Property="OffContent" Value="已停止"/>
                                             </DataTrigger>
                                             <DataTrigger Binding="{Binding Runtime.State}" Value="更新中">
                                                 <Setter Property="IsOn" Value="False"/>
@@ -211,7 +215,9 @@
                                          Width="100" 
                                          HorizontalAlignment="Center" 
                                          ToolTip="设定服务器是否以无窗口模式运行" 
-                                         IsOn="{Binding RunWithoutWindow, Mode=TwoWay}"/>
+                                         IsOn="{Binding RunWithoutWindow, Mode=TwoWay}"
+                                         OnContent="启用"
+                                         OffContent="禁用"/>
 
                         <StackPanel Grid.Row="1" Grid.Column="0">
                             <Button Margin="2" Click="StartServerButton_Click" ToolTip="启动游戏服务器。" HorizontalAlignment="Stretch">
@@ -372,7 +378,7 @@
                             <TextBlock Text="添加服务器"/>
                         </DockPanel>
                     </Button>
-                    <Button Grid.Column="1" Margin="5 0 0 0" Click="ChangeSaveFile_Click" Padding="5" ToolTip="更改服务器存档。" VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="30" IsEnabled="False">
+                    <Button Grid.Column="1" Margin="5 0 0 0" Click="ChangeSaveFile_Click" IsEnabled="False" Padding="5" ToolTip="更改服务器存档。" VerticalAlignment="Center" HorizontalAlignment="Stretch" Height="30">
                         <Button.Content>
                             <DockPanel>
                                 <Image Source="Resources\icon_develop.png" Margin="5,0,0,0"/>
@@ -592,7 +598,7 @@
                             </Grid.ColumnDefinitions>
 
                             <TextBlock Text="服务器名称:" FontWeight="Bold" Margin="5"/>
-                            <TextBlock x:Name="ServerNameText" Grid.Column="0" Margin="85 5 0 5" HorizontalAlignment="Left"/>
+                            <TextBlock x:Name="ServerNameText" Grid.Column="0" Margin="85 5 0 5" Foreground="#00bceb" HorizontalAlignment="Left"/>
 
                             <TextBlock Text="在线人数:" Grid.Column="1" FontWeight="Bold" Grid.Row="1" Margin="5"/>
                             <TextBlock x:Name="PlayerCountText" Grid.Column="1" Margin="85 5 0 5" HorizontalAlignment="Left"/>
@@ -629,26 +635,72 @@
                             
                             <DataGrid.ContextMenu>
                                 <ContextMenu>
-                                    <MenuItem Header="添加为管理员" Click="AddAsAdminMenuItem_Click" ToolTip="将选中玩家添加到管理员列表">
+                                    <MenuItem Header="刷新玩家列表" Click="RefreshPlayerListMenuItem_Click">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Refresh"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <Separator/>
+                                    <MenuItem Header="添加管理员" Click="AddAsAdminMenuItem_Click" ToolTip="将选中玩家添加到管理员列表">
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon Symbol="Add"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <MenuItem Header="移除管理员权限" Click="RemoveAdminMenuItem_Click" ToolTip="从管理员列表中移除选中玩家">
+                                    <MenuItem Header="移除管理员" Click="RemoveAdminMenuItem_Click" ToolTip="从管理员列表中移除选中玩家">
                                         <MenuItem.Icon>
                                             <ui:SymbolIcon Symbol="Remove"/>
                                         </MenuItem.Icon>
                                     </MenuItem>
-                                    <Separator/>
-                                    <MenuItem Header="刷新玩家列表" Click="RefreshPlayerListMenuItem_Click"/>
+                                    <!--<MenuItem Header="封禁玩家" Click="BanPlayerMenuItem_Click">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Dislike"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>
+                                    <MenuItem Header="解禁玩家" Click="UnBanPlayerMenuItem_Click">
+                                        <MenuItem.Icon>
+                                            <ui:SymbolIcon Symbol="Like"/>
+                                        </MenuItem.Icon>
+                                    </MenuItem>-->
                                 </ContextMenu>
                             </DataGrid.ContextMenu>
                             
                             <DataGrid.Columns>
                                 <DataGridTextColumn Header="角色名称" Binding="{Binding CharacterName}" Width="*"/>
                                 <DataGridTextColumn Header="SteamID" Binding="{Binding SteamId}" Width="170"/>
-                                <DataGridCheckBoxColumn Header="管理员" Binding="{Binding IsAdmin}" Width="70" />
-                                <DataGridCheckBoxColumn Header="在线" Binding="{Binding IsOnline}" Width="50" />
+                                <DataGridCheckBoxColumn Header="管理员" Binding="{Binding IsAdmin}" Width="70" >
+                                    <DataGridCheckBoxColumn.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridCheckBoxColumn.CellStyle>
+                                </DataGridCheckBoxColumn>
+                                <DataGridCheckBoxColumn Header="在线" Binding="{Binding IsOnline}" Width="50">
+                                    <DataGridCheckBoxColumn.CellStyle>
+                                        <Style TargetType="DataGridCell">
+                                            <Setter Property="HorizontalAlignment" Value="Center"/>
+                                            <Style.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                </Trigger>
+                                                <Trigger Property="IsSelected" Value="True">
+                                                    <Setter Property="Background" Value="Transparent"/>
+                                                    <Setter Property="Foreground" Value="Black"/>
+                                                    <Setter Property="BorderThickness" Value="0"/>
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </DataGridCheckBoxColumn.CellStyle>
+                                </DataGridCheckBoxColumn>
                                 <DataGridTextColumn Header="在线时长" 
                                                     Binding="{Binding TotalPlayTime, StringFormat=\{0:hh\\:mm\\:ss\}}" 
                                                     Width="80"/>
@@ -664,7 +716,7 @@
             </TabControl>
         </Grid>
 
-        <StatusBar Grid.Row="1" Height="Auto" VerticalAlignment="Bottom">
+        <StatusBar Grid.Row="1" Height="35" VerticalAlignment="Bottom" Margin="0 5 0 0">
             <StatusBarItem HorizontalAlignment="Left">
                 <Button ToolTip="单击以获取最新更新。" Click="VersionButton_Click" Height="30" Margin="5 0 0 0">
                     <Button.Content>
@@ -676,7 +728,10 @@
                 </Button>
             </StatusBarItem>
             <StatusBarItem>
-                <Button Grid.Column="2" Content="刷新状态" Click="RefreshServerStatus_Click" Margin="5"/>
+                <Button Grid.Column="2" Content="刷新状态" Click="RefreshServerStatus_Click" Height="30"/>
+            </StatusBarItem>
+            <StatusBarItem>
+                <Button Grid.Column="2" Content="问题反馈" Click="ReportIssue_Click" Height="30"/>
             </StatusBarItem>
             <StatusBarItem HorizontalAlignment="Center" VerticalAlignment="Center">
                 <Grid HorizontalAlignment="Center" Height="25" Width="650">
@@ -704,7 +759,6 @@
             </StatusBarItem>
         </StatusBar>
 
-        <!-- 托盘图标控件 -->
         <tb:TaskbarIcon 
             x:Name="TrayIcon"
             Visibility="Visible"
@@ -720,7 +774,6 @@
                 </TransformGroup>
             </tb:TaskbarIcon.RenderTransform>
 
-            <!-- 右键菜单 -->
             <tb:TaskbarIcon.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="显示窗口" Click="TrayIcon_ShowWindow"/>

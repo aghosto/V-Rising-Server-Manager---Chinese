@@ -78,11 +78,17 @@ public class MainSettings : PropertyChangedBase
 public class Server : PropertyChangedBase
 {
     public string vsmServerName { get; set; } = "夜族崛起服务器";
-    private string _path = Directory.GetCurrentDirectory() + @"\Server1";
+    private string _path = Directory.GetCurrentDirectory() + @"\Server";
     public string Path
     {
         get => _path;
         set => SetField(ref _path, value);
+    }
+    private bool _firstStart = true;
+    public bool FirstStart
+    {
+        get => _firstStart;
+        set => SetField(ref _firstStart, value);
     }
     public LaunchSettings LaunchSettings { get; set; } = new LaunchSettings();
     public RCONServerSettings RconServerSettings { get; set; } = new RCONServerSettings();
@@ -136,7 +142,7 @@ public class Server : PropertyChangedBase
         get => _runWithoutWindow;
         set => SetField(ref _runWithoutWindow, value);
     }
-    // 新增：记录每个安装的Mod的版本
+
     public Dictionary<string, string> InstalledModVersions { get; set; } = new();
 }
 
@@ -375,6 +381,12 @@ public class AppSettings : PropertyChangedBase
     {
         get => _managerSettingsClose;
         set => SetField(ref _managerSettingsClose, value);
+    }
+    private bool _adminManagerClose;
+    public bool AdminManagerClose
+    {
+        get => _adminManagerClose;
+        set => SetField(ref _adminManagerClose, value);
     }
     private bool _hasNewVersion;
     public bool HasNewVersion

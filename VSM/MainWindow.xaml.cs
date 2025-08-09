@@ -28,6 +28,9 @@ using static VRisingServerManager.PlayerDataManager;
 using LiveCharts;
 using LiveCharts.Wpf;
 using System.Net;
+using System.Windows.Controls.Ribbon;
+using System.Collections.ObjectModel;
+using System.Windows.Data;
 
 namespace VRisingServerManager;
 /// <summary>
@@ -45,8 +48,8 @@ public partial class MainWindow : Window
     private ServerSpecSettings ServerSpecSettings = new();
     //private ChangeSaveFileEditor changeSaveFileEditor = new();
 
-
-    LogManager LogManager = new();
+    private static MainWindow? _instance;
+    public static MainWindow Instance => _instance ?? throw new InvalidOperationException("MainWindow未初始化");
 
     // 日志文件相对路径（基于当前服务器路径）
     private readonly Dictionary<LogType, string> _logTypeToTag = new Dictionary<LogType, string>
@@ -67,8 +70,8 @@ public partial class MainWindow : Window
     // 最大加载行数
     private const int MAX_LOG_LINES = 600;
 
-    // 当前选中的服务器
-    private Server _currentServer;
+
+    private LogManager LogManager;
 
     // 定时器（用于定时检查日志更新）
     private DispatcherTimer _logUpdateTimer;
@@ -90,6 +93,15 @@ public partial class MainWindow : Window
     // 管理员列表文件路径
     private string AdminListPath => Path.Combine(_currentServer.Path, @"SaveData\Settings\adminlist.txt");
 
+    // 服务器到玩家数据的映射
+    private Dictionary<Server, ObservableCollection<VRisingPlayerInfo>> _serverPlayers = new();
+
+    // 当前选中的服务器
+    private Server _currentServer;
+
+    // 服务器列表
+    private List<Server> _servers = new();
+
     public MainWindow()
     {
         if (!File.Exists(Directory.GetCurrentDirectory() + @"\VSMSettings.json"))
@@ -107,7 +119,7 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         Closing += MainWindow_Closing;
-            
+
         // 初始化日志控件映射
         _logTypeToTexbox = new Dictionary<LogType, RichTextBox>
         {
@@ -135,18 +147,21 @@ public partial class MainWindow : Window
         };
 
         // 初始化定时器（每1秒检查一次）
-        _logUpdateTimer = new DispatcherTimer
+        if (VsmSettings.Servers.Count != 0)
         {
-            Interval = TimeSpan.FromSeconds(1)
-        };
-        _logUpdateTimer.Tick += LogUpdateTimer_Tick;
-        _logUpdateTimer.Start();
+            _logUpdateTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _logUpdateTimer.Tick += LogUpdateTimer_Tick;
+            _logUpdateTimer.Start();
+        }
 
         // 初始化日志定时器时调整间隔
-        _logUpdateTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromMilliseconds(1000)
-        };
+        //_logUpdateTimer = new DispatcherTimer
+        //{
+        //    Interval = TimeSpan.FromMilliseconds(1000)
+        //};
 
         // 绑定自动滚动复选框事件
         AutoScrollVRisingLog.Checked += AutoScrollCheckBox_CheckedChanged;
@@ -159,16 +174,24 @@ public partial class MainWindow : Window
         // 监听服务器选择变化
         ServerTabControl.SelectionChanged += async (s, e) =>
         {
+            if (VsmSettings.Servers.Count == 0)
+                return;
             if (ServerTabControl.SelectedItem is Server selectedServer)
             {
                 _currentServer = selectedServer;
-                InitializeLogWatchers();
-                InitializeServerStateListener();
-                ReadLog(_currentServer);
-                InitializePlayerDataManager(_currentServer);
-                //InitServerStatusPanel();
-                //UpdateServerStatusUI();
-                UpdatePlayerCountText();
+                if (_currentServer.FirstStart)
+                    return;
+
+                _playerDataManager = new PlayerDataManager(_currentServer, this);
+                if (_currentServer.Runtime.State == ServerRuntime.ServerState.运行中)
+                {
+                    InitializeLogWatchers();
+                    InitializeServerStateListener();
+                    ReadLog(_currentServer);
+                    //InitializePlayerDataManager(_currentServer);
+                    UpdatePlayerCountText();
+                }
+                //RefreshAdminStatus();
                 if (!string.IsNullOrEmpty(_activeLogType))
                 {
                     LoadLogByType(_logTagToType[_activeLogType], true);
@@ -176,6 +199,7 @@ public partial class MainWindow : Window
             }
         };
 
+        //InitializeServerList();
 
         VsmSettings.AppSettings.PropertyChanged += AppSettings_PropertyChanged;
         VsmSettings.Servers.CollectionChanged += Servers_CollectionChanged; // MVVM method not working
@@ -205,6 +229,7 @@ public partial class MainWindow : Window
         if (VsmSettings.AppSettings.AutoUpdateApp == true)
             LookForUpdate();
     }
+
 
     private void MainWindow_Closing(object? sender, CancelEventArgs e)
     {
@@ -379,6 +404,8 @@ public partial class MainWindow : Window
     // 日志标签页切换事件（强制更新）
     private void LogTabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
+        if (_currentServer == null) return;
+
         if (LogTabControl.SelectedItem is TabItem selectedTab && selectedTab.Tag is string logType)
         {
             // 先暂停其他的所有标签页
@@ -398,11 +425,18 @@ public partial class MainWindow : Window
     // 根据窗口类型加载日志文件
     private void LoadLogByType(LogType logType, bool forceRefresh = false)
     {
-        if (logType == LogType.MainConsole)
-            return;
-
         if (_currentServer == null || !_logTypeToTexbox.ContainsKey(logType))
             return;
+
+        if (logType == LogType.MainConsole)
+        {
+            RichTextBox mainLogTextBox = _logTypeToTexbox[logType];
+            if (_logTypeToCheckbox[logType].IsChecked == true)
+            {
+                mainLogTextBox.ScrollToEnd();
+            }
+            return;
+        }
             
         RichTextBox logBox = _logTypeToTexbox[logType];
         string fullPath = Path.Combine(_currentServer.Path, _logTypeToTag[logType]);
@@ -525,7 +559,8 @@ public partial class MainWindow : Window
     // 更新服务器状态面板数据
     private void UpdateServerStatusUI()
     {
-        if (_currentServer == null) return;
+        if (_currentServer == null) 
+            return;
 
         if (ServerNameText != null)
             ServerNameText.Text = _currentServer.vsmServerName;
@@ -561,20 +596,20 @@ public partial class MainWindow : Window
                 if (!string.IsNullOrEmpty(_activeLogType) && _logWatchers.TryGetValue(_logTagToType[_activeLogType], out var watcher))
                 {
                     watcher.EnableRaisingEvents = true;
-                    //ShowLogMsg(_logTagToType[_activeLogType], "服务器正在运行，日志将实时更新", Brushes.Lime);
+                    //ShowLogMsg(LogType.MainConsole, "服务器正在运行，日志将实时更新", Brushes.Lime);
                 }
             }
             else
             {
-                UpdateServerStatusUI();
                 foreach (var watcher in _logWatchers.Values)
                 {
                     watcher.EnableRaisingEvents = false;
                 }
+                UpdateServerStatusUI();
 
                 if (!string.IsNullOrEmpty(_activeLogType))
                 {
-                    //ShowLogMsg(_logTagToType[_activeLogType], $"服务器状态：{currentState}，日志已停止更新", Brushes.Gray);
+                    //ShowLogMsg(LogType.MainConsole, $"服务器状态：{currentState}，日志已停止更新", Brushes.Gray);
                 }
             }
         });
@@ -655,7 +690,6 @@ public partial class MainWindow : Window
     // 打开日志按钮点击事件
     private async void OpenLogButton_Click(object sender, RoutedEventArgs e)
     {
-        // 1. 获取当前服务器实例
         //Server server = ((Button)sender).DataContext as Server;
         if (_currentServer == null)
         {
@@ -663,7 +697,6 @@ public partial class MainWindow : Window
             return;
         }
 
-        // 2. 验证按钮标签和日志类型映射
         if (sender is not Button btn || btn.Tag is not string logType || !_logTagToType.ContainsKey(logType))
         {
             ShowLogMsg(LogType.MainConsole, $"日志类型配置错误", Brushes.Red);
@@ -733,6 +766,7 @@ public partial class MainWindow : Window
         var paragraph = new Paragraph();
         paragraph.Foreground = GetLogColor(line);
         paragraph.Inlines.Add(new Run(line));
+        paragraph.Margin = new Thickness(0);
         _logTypeToTexbox[logType].Document.Blocks.Add(paragraph);
     }
 
@@ -774,7 +808,7 @@ public partial class MainWindow : Window
 
         if (lowerLine.Contains("[error]") || lowerLine.Contains("exception"))
             return Brushes.Red;
-        if (lowerLine.Contains("[warning]") || lowerLine.Contains("warn") || lowerLine.Contains("internal") || lowerLine.Contains("to debug"))
+        if (lowerLine.Contains("[warning]") || lowerLine.Contains("warn") || lowerLine.Contains("internal") || lowerLine.Contains("debug"))
             return Brushes.Yellow;
         if (lowerLine.Contains("[info]"))
             return Brushes.LimeGreen;
@@ -806,7 +840,7 @@ public partial class MainWindow : Window
             attempt++;
             try
             {
-                ShowLogMsg(LogType.MainConsole, $"检查更新中 ({attempt}/{maxRetries})...", Brushes.Gray);
+                //ShowLogMsg(LogType.MainConsole, $"检查更新中 ({attempt}/{maxRetries})...", Brushes.Gray);
 
                 HttpResponseMessage response = await httpClient.GetAsync("https://gitee.com/aGHOSToZero/V-Rising-Server-Manager---Chinese/raw/master/VERSION");
                 response.EnsureSuccessStatusCode();
@@ -913,10 +947,10 @@ public partial class MainWindow : Window
                     ShowLogMsg(LogType.MainConsole, $"重载自动重启时间，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。", Brushes.Yellow);
                     VsmSettings.AppSettings.ManagerSettingsClose = false;
                 }
-                bool timetoRestart = await CheckForRestart();
-                if (timetoRestart == true && VsmSettings.Servers.Count > 0)
-                    AutoRestart();
             }
+            bool timetoRestart = await CheckForRestart();
+            if (timetoRestart == true && VsmSettings.Servers.Count > 0)
+                AutoRestart();
         }
     }
 
@@ -933,10 +967,13 @@ public partial class MainWindow : Window
     private async Task<bool> CheckForRestart()
     {
         bool timetoRestart = false;
-        if (DateTime.Now.Hour == VsmSettings.AppSettings.AutoRestartHour && 
-                DateTime.Now.Minute == VsmSettings.AppSettings.AutoRestartMin && 
+        if (DateTime.Now.Hour == VsmSettings.AppSettings.AutoRestartHour &&
+                DateTime.Now.Minute == VsmSettings.AppSettings.AutoRestartMin &&
                     DateTime.Now.Second == VsmSettings.AppSettings.AutoRestartSec)
+        {
             AutoRestart();
+            //ShowLogMsg(LogType.MainConsole, "自动重启中", Brushes.Yellow);
+        }
         return timetoRestart;
     }
 
@@ -962,11 +999,11 @@ public partial class MainWindow : Window
         }
         else
         {
-            ShowLogMsg(LogType.MainConsole, $"当前无正在运行的服务器，自动重启未生效。\r", Brushes.Yellow);
+            ShowLogMsg(LogType.MainConsole, $"当前无正在运行的服务器，自动重启未生效。", Brushes.Yellow);
             return;
         }
 
-        ShowLogMsg(LogType.MainConsole, $"正在自动重启 {runningServers.Count} 个服务器。" + ((runningServers.Count > 0) ? $"，在此之前即将关闭 {runningServers.Count} 个服务器。" : ""), Brushes.Yellow);
+        ShowLogMsg(LogType.MainConsole, $"正在自动重启 {runningServers.Count} 个服务器" + ((runningServers.Count > 0) ? $" ,在此之前即将关闭 {runningServers.Count} 个服务器" : ""), Brushes.Yellow);
         foreach (Server server in runningServers)
         {
             await RestartServer(server);
@@ -1053,7 +1090,7 @@ public partial class MainWindow : Window
         if (server.Runtime.Process != null && !server.Runtime.Process.HasExited)
         {
             ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 仍在运行中，无法更新", Brushes.Yellow);
-            server.Runtime.State = ServerRuntime.ServerState.已停止; // 重置状态
+            server.Runtime.State = ServerRuntime.ServerState.已停止;
             return false;
         }
 
@@ -1124,7 +1161,7 @@ public partial class MainWindow : Window
                     FileName = steamCmdPath,
                     Arguments = parameters,
                     CreateNoWindow = true,
-                    UseShellExecute = VsmSettings.AppSettings.ShowSteamWindow ? true : false,
+                    UseShellExecute = false, 
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     WorkingDirectory = server.Path,
@@ -1255,24 +1292,20 @@ public partial class MainWindow : Window
 
         try
         {
-            // 规范化路径
             string saveDataPath = Path.Combine(server.Path, "SaveData", "Settings");
             string defaultSettingsPath = Path.Combine(server.Path, "VRisingServer_Data", "StreamingAssets", "Settings");
 
-            // 确保保存目录存在
             if (!Directory.Exists(saveDataPath))
             {
                 Directory.CreateDirectory(saveDataPath);
                 ShowLogMsg(LogType.MainConsole, $"创建目录: {saveDataPath}", Brushes.Yellow);
             }
 
-            // 确保配置文件存在
             string hostSettingsPath = Path.Combine(saveDataPath, "ServerHostSettings.json");
             string gameSettingsPath = Path.Combine(saveDataPath, "ServerGameSettings.json");
 
             if (!File.Exists(hostSettingsPath) || !File.Exists(gameSettingsPath))
             {
-                // 检查默认配置文件是否存在
                 string defaultHostSettingsPath = Path.Combine(defaultSettingsPath, "ServerHostSettings.json");
                 string defaultGameSettingsPath = Path.Combine(defaultSettingsPath, "ServerGameSettings.json");
 
@@ -1285,50 +1318,42 @@ public partial class MainWindow : Window
                 // 复制默认配置文件
                 File.Copy(defaultHostSettingsPath, hostSettingsPath, true);
                 File.Copy(defaultGameSettingsPath, gameSettingsPath, true);
-                ShowLogMsg(LogType.MainConsole, "已复制默认配置文件", Brushes.Lime);
+                //ShowLogMsg(LogType.MainConsole, "已复制默认配置文件", Brushes.Lime);
             }
 
-            // 读取服务器配置
             string jsonString = File.ReadAllText(hostSettingsPath);
             ServerSettings jsonObject = JsonConvert.DeserializeObject<ServerSettings>(jsonString);
 
-            ShowLogMsg(LogType.MainConsole,
-                $"启动服务器：{jsonObject.Name} | VSM内名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}",
-                Brushes.Lime);
+            //ShowLogMsg(LogType.MainConsole, $"启动服务器：{jsonObject.Name} | VSM内名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}", Brushes.Lime);
+            ShowLogMsg(LogType.MainConsole, $"启动服务器：{server.vsmServerName}{(server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3" : "")}", Brushes.Lime);
 
             // 等待服务器初始化
             await Task.Delay(1000);
 
-            // 启动服务器进程
             string serverExePath = Path.Combine(server.Path, "VRisingServer.exe");
+
             if (!File.Exists(serverExePath))
             {
                 ShowLogMsg(LogType.MainConsole, "错误：未找到VRisingServer.exe", Brushes.Red);
                 return false;
             }
 
-            ShowLogMsg(LogType.MainConsole,
-                $"启动服务器：{server.vsmServerName}{(server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3" : "")}",
-                Brushes.Lime);
-
             if (VsmSettings.WebhookSettings.Enabled && !string.IsNullOrEmpty(server.WebhookMessages.StartServer) && server.WebhookMessages.Enabled)
             {
                 SendDiscordMessage(server.WebhookMessages.StartServer);
             }
 
-            // 构建启动参数
             string parameters = $@"-persistentDataPath ""{Path.Combine(server.Path, "SaveData")}"" 
                               -serverName ""{jsonObject.Name}"" 
                               -saveName ""{server.LaunchSettings.WorldName}"" 日志处理错误
                               -logFile ""{Path.Combine(server.Path, "logs", "VRisingServer.log")}""
                               {(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
 
-            // 启动服务器进程
             Process serverProcess = new()
             {
                 StartInfo = new ProcessStartInfo
                 {
-                    WindowStyle = ProcessWindowStyle.Normal,
+                    WindowStyle = server.RunWithoutWindow ? ProcessWindowStyle.Hidden : ProcessWindowStyle.Normal,
                     FileName = serverExePath,
                     UseShellExecute = true,
                     Arguments = parameters
@@ -1336,7 +1361,7 @@ public partial class MainWindow : Window
                 EnableRaisingEvents = true
             };
 
-            ShowLogMsg(LogType.MainConsole, "正在载入配置文件...", Brushes.Lime);
+            //ShowLogMsg(LogType.MainConsole, "正在载入配置文件...", Brushes.Lime);
 
             serverProcess.Exited += (sender, e) => ServerProcessExited(sender, e, server);
             serverProcess.Start();
@@ -1345,10 +1370,23 @@ public partial class MainWindow : Window
             server.Runtime.UserStopped = false;
             server.Runtime.Process = serverProcess;
 
-            ShowLogMsg(LogType.MainConsole,
-                $"启动服务器完成：{jsonObject.Name} | VSM抬头名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}",
-                Brushes.Lime);
-
+            ShowLogMsg(LogType.MainConsole, $"启动服务器完成：{jsonObject.Name} | VSM抬头名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}", Brushes.Lime);
+            //InitializePlayerDataManager(server);
+            if (server.FirstStart)
+            {
+                server.FirstStart = false;
+                ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 首次启动，将在10秒后重启以更新数据", Brushes.Yellow);
+                await Task.Delay(10000);
+                await RestartServer(server);
+                MainSettings.Save(VsmSettings);
+            }
+            else
+            {
+                ReadLog(server);
+                _playerDataManager = new PlayerDataManager(server, this);
+                _playerDataManager.ResetOnlineStatusOnRestart();
+            }
+            //MainSettings.Save(VsmSettings);
             return true;
         }
         catch (Exception ex)
@@ -1391,7 +1429,7 @@ public partial class MainWindow : Window
         RCONClient.Disconnect();
     }
 
-    private void ScanForServers()
+    private async void ScanForServers()
     {
         int foundServers = 0;
 
@@ -1415,7 +1453,7 @@ public partial class MainWindow : Window
         {
             if (server.AutoStart == true && server.Runtime.State == ServerRuntime.ServerState.已停止)
             {
-                StartServer(server);
+                await StartServer(server);
             }
         }
 
@@ -1489,25 +1527,52 @@ public partial class MainWindow : Window
 
     private async Task<bool> StopServer(Server server)
     {
-        if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.StopServer) && server.WebhookMessages.Enabled == true)
+        if (server.Runtime.Process == null || server.Runtime.Process.HasExited)
+        {
+            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 未运行或已退出", Brushes.Yellow);
+            server.Runtime.Process = null;
+            return true;
+        }
+
+        // 发送关闭通知
+        if (VsmSettings.WebhookSettings.Enabled && !string.IsNullOrEmpty(server.WebhookMessages.StopServer) && server.WebhookMessages.Enabled)
+        {
             SendDiscordMessage(server.WebhookMessages.StopServer);
+        }
 
         server.Runtime.UserStopped = true;
+        //ShowLogMsg(LogType.MainConsole, $"正在关闭服务器 {server.vsmServerName}...", Brushes.Yellow);
 
-        bool success;
-        bool close = server.Runtime.Process.CloseMainWindow();
-
-        if (close)
+        try
         {
-            await server.Runtime.Process.WaitForExitAsync();
-            server.Runtime.Process = null;
-            success = true;
+            bool close = server.Runtime.Process.CloseMainWindow();
+            if (close)
+            {
+                await server.Runtime.Process.WaitForExitAsync();
+                server.Runtime.State = ServerRuntime.ServerState.已停止;
+                //ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 已关闭", Brushes.Green);
+                server.Runtime.Process = null;
+                return true;
+            }
+            
+            int processId = server.Runtime.Process.Id;
+            Process process = Process.GetProcessById(processId);
+            if (process != null && !process.HasExited)
+            {
+                process.Kill();
+                await process.WaitForExitAsync(); 
+                //ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 已关闭（PID: {processId}）", Brushes.Yellow);
+                server.Runtime.State = ServerRuntime.ServerState.已停止;
+                server.Runtime.Process = null;
+                return true;
+            }
+            return false;
         }
-        else
+        catch (Exception ex)
         {
-            success = false;
+            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 关闭失败：{ex.Message}", Brushes.Yellow);
+            return false;
         }
-        return success;
     }
 
     private async Task<bool> RemoveServer(Server server)
@@ -1669,17 +1734,17 @@ public partial class MainWindow : Window
             return;
         }
 
-        if (server.Runtime?.Process == null)
-        {
-            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 服务器进程未启动，无法读取日志", Brushes.Red);
-            return;
-        }
+        //if (server.Runtime?.Process == null)
+        //{
+        //    ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 服务器进程未启动，无法读取日志", Brushes.Red);
+        //    return;
+        //}
 
         string logPath = Path.Combine(server.Path, "logs", "VRisingServer.log");
+
         string ipAddress = "";
         string steamID = "";
         int foundVariables = 0;
-        // 异步流标志位
         bool serverAsynchronousShuttingDown = false;
 
         try
@@ -1700,15 +1765,15 @@ public partial class MainWindow : Window
 
                 // 文件存在，设置标志位
                 server.LogFileExists = true;
-                //ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 已检测到日志文件：{logPath}", Brushes.Green);
+                server.FirstStart = false;
+                MainSettings.Save(VsmSettings);
+
+                ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 已检测到日志文件：{logPath}", Brushes.Green);
             }
 
-            // 打开文件流（无需再次检查文件存在性）
+
             using FileStream fs = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using StreamReader sr = new StreamReader(fs);
-
-            // 移动到文件末尾，只读取新内容
-            fs.Seek(0, SeekOrigin.End);
 
             // 持续读取日志
             while (!serverAsynchronousShuttingDown && server.Runtime.Process != null)
@@ -1717,44 +1782,55 @@ public partial class MainWindow : Window
                 if (line != null)
                 {
                     // 处理服务器IP
-                    if (string.IsNullOrEmpty(ipAddress) && line.Contains("PlatformSystemBase - OnPolicyResponse - Public IP: "))
+                    if (line.Contains("PlatformSystemBase - OnPolicyResponse - Public IP: "))
                     {
-                        ipAddress = ExtractValue(line, "Public IP: ", " ");
-                        ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 服务器IP: {ipAddress}", Brushes.Cyan);
+                        ipAddress = line.Split("PlatformSystemBase - OnPolicyResponse - Public IP: ")[1];
+                        foundVariables++;
                     }
-
                     // 处理SteamID
-                    if (string.IsNullOrEmpty(steamID) && line.Contains("SteamNetworking - Successfully logged in with the SteamGameServer API. SteamID: "))
+                    if (line.Contains("SteamNetworking - Successfully logged in with the SteamGameServer API. SteamID: "))
                     {
-                        steamID = ExtractValue(line, "SteamID: ", " ");
-                        ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] SteamID: {steamID}", Brushes.Cyan);
+                        steamID = line.Split("SteamNetworking - Successfully logged in with the SteamGameServer API. SteamID: ")[1];
+                        foundVariables++;
                     }
-
                     // 处理关闭异步流
                     if (line.Contains("Shutting down Asynchronous Streaming"))
                     {
                         serverAsynchronousShuttingDown = true;
+                        foundVariables++;
+#if DEBUG
+                        ShowLogMsg(LogType.MainConsole, $"Public IP：{ipAddress}", Brushes.Orange);
+                        ShowLogMsg(LogType.MainConsole, $"Game Server SteamID: {steamID}", Brushes.Orange);
+#endif
                     }
-
-                    // 处理玩家事件
-                    ProcessPlayerEvent(line);
                 }
                 else
                 {
                     // 无新内容时短暂等待
                     await Task.Delay(500);
+                    //ShowLogMsg(LogType.MainConsole, $"等待日志更新", Brushes.Green);
                 }
             }
+
+            // 移动到文件末尾，只读取新内容
+            fs.Seek(0, SeekOrigin.End);
+            long initialPosition = fs.Position;
+
+            // 初始化玩家更新定时器
+            InitializePlayerDataManager(server);
+            InitializePlayerUpdateTimer();
+            InitializeServerStateListener();
+            await MonitorPlayerActivity(server, sr, fs, initialPosition);
 
             // 发送服务器就绪通知（如果配置）
             if (!serverAsynchronousShuttingDown && VsmSettings.WebhookSettings.Enabled && server.WebhookMessages.Enabled)
             {
                 List<string> toSend = new()
-            {
-                !string.IsNullOrEmpty(server.WebhookMessages.ServerReady) ? server.WebhookMessages.ServerReady : "",
-                server.WebhookMessages.BroadcastIP ? $"Public IP: {ipAddress}" : "",
-                server.WebhookMessages.BroadcastSteamID ? $"SteamID: {steamID}" : ""
-            };
+                {
+                    !string.IsNullOrEmpty(server.WebhookMessages.ServerReady) ? server.WebhookMessages.ServerReady : "",
+                    server.WebhookMessages.BroadcastIP ? $"Public IP: {ipAddress}" : "",
+                    server.WebhookMessages.BroadcastSteamID ? $"SteamID: {steamID}" : ""
+                };
 
                 if (toSend.Any(x => !string.IsNullOrEmpty(x)))
                 {
@@ -1764,42 +1840,14 @@ public partial class MainWindow : Window
         }
         catch (FileNotFoundException ex)
         {
-            // 特殊处理：文件突然消失（可能被手动删除）
             server.LogFileExists = false;
-            ShowLogMsg(LogType.MainConsole,
-                $"[{server.vsmServerName}] 日志文件已被删除，请重启服务器: {ex.Message}",
-                Brushes.Red);
+            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 日志文件已被删除，请重启服务器: {ex.Message}", Brushes.Red);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole,
-                $"[{server.vsmServerName}] 日志处理错误：{ex.Message}",
-                Brushes.Red);
+            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 日志处理错误：{ex.Message}", Brushes.Red);
         }
 
-        //ShowLogMsg(LogType.MainConsole, $"Public IP：{ipAddress}", Brushes.Orange);
-        //ShowLogMsg(LogType.MainConsole, $"Game Server SteamID: {steamID}", Brushes.Orange);
-
-        if (foundVariables == 3 && VsmSettings.WebhookSettings.Enabled == true && server.WebhookMessages.Enabled == true)
-        {
-            List<string> toSendList = new()
-            {
-                !string.IsNullOrEmpty(server.WebhookMessages.ServerReady) ? server.WebhookMessages.ServerReady : "",
-                (server.WebhookMessages.BroadcastIP == true) ? $"Public IP: {ipAddress}" : "",
-                (server.WebhookMessages.BroadcastSteamID == true) ? $"SteamID: {steamID}" : ""
-            };
-
-            if (!toSendList.All(x => string.IsNullOrEmpty(x)))
-            {
-                string toSend = string.Join("\r", toSendList);
-                SendDiscordMessage(toSend);
-            }
-        }
-
-        // 初始化玩家更新定时器
-        InitializePlayerUpdateTimer();
-        // 开始监控玩家活动
-        //await MonitorPlayerActivity(server, sr, fs, initialPosition);
     }
 
     // 监控玩家活动
@@ -1853,7 +1901,11 @@ public partial class MainWindow : Window
 
     private void ProcessPlayerEvent(string logLine)
     {
-        if (logLine.Contains("User") && logLine.Contains("connected as ID"))
+        if (logLine.Contains("User") && logLine.Contains("begun its spawn fadeout"))
+        {
+            HandlePlayerCreate(logLine);
+        }
+        else if (logLine.Contains("User") && logLine.Contains("connected as ID"))
         {
             HandlePlayerConnect(logLine);
         }
@@ -1867,6 +1919,54 @@ public partial class MainWindow : Window
         }
     }
 
+    private void HandlePlayerCreate(string logLine)
+    {
+        try
+        {
+            string steamIdStr = ExtractValue(logLine, "User ", " (");
+            string characterName = ExtractValue(logLine, "Character: ", ") has begun");
+
+            if (string.IsNullOrEmpty(characterName) || string.IsNullOrEmpty(steamIdStr))
+            {
+                ShowLogMsg(LogType.MainConsole, $"连接日志缺少关键信息: {logLine}", Brushes.Orange);
+                return;
+            }
+
+            if (!ulong.TryParse(steamIdStr, out ulong steamId))
+            {
+                ShowLogMsg(LogType.MainConsole, $"无效SteamID格式: {steamIdStr}", Brushes.Red);
+                return;
+            }
+
+            if (_playerDataManager.Players.TryGetValue(steamId, out var existingPlayer))
+            {
+                if (existingPlayer != null)
+                {
+                    DateTime now = DateTime.Now;
+                    existingPlayer.IsOnline = true;
+                    existingPlayer.LoginTime = now;
+                    existingPlayer.LastStatusTime = now;
+                    existingPlayer.CharacterName = characterName;
+                    _playerDataManager?.AddOrUpdatePlayer(steamId, existingPlayer);
+                    _playerDataManager?.SaveAsync();
+                    _playerDataManager?.LoadOrCreateDataFile();
+                    PlayerDataGrid.ItemsSource = _playerDataManager?.Players.Values;
+                }
+                ShowLogMsg(LogType.MainConsole, $"玩家创建角色: {characterName} (SteamID: {steamId})", Brushes.Green);
+            }
+
+
+            if (VsmSettings.WebhookSettings.Enabled)
+            {
+                //SendDiscordMessage($"📥 **玩家上线**\n角色: {characterName}\nSteamID: {steamId}");
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowLogMsg(LogType.MainConsole, $"连接处理失败: {ex.Message}", Brushes.Red);
+        }
+    }
+
     private void HandlePlayerConnect(string logLine)
     {
         try
@@ -1875,7 +1975,13 @@ public partial class MainWindow : Window
             string netEndpoint = ExtractValue(logLine, "{Steam ", "}") ?? "";
             string steamIdStr = ExtractValue(logLine, "}' '", "', approvedUserIndex");
 
-            if (string.IsNullOrEmpty(characterName) || string.IsNullOrEmpty(steamIdStr))
+            if (string.IsNullOrEmpty(characterName))
+            {
+                ShowLogMsg(LogType.MainConsole, $"玩家未创建角色，等待创建角色中", Brushes.Orange);
+                characterName = "";
+            }
+
+            if (string.IsNullOrEmpty(steamIdStr))
             {
                 ShowLogMsg(LogType.MainConsole, $"连接日志缺少关键信息: {logLine}", Brushes.Orange);
                 return;
@@ -1900,24 +2006,24 @@ public partial class MainWindow : Window
                 IsAuthenticated = true
             };
 
-            if (_connectedPlayers.TryGetValue(steamId, out var existingPlayer))
-            {
-                // 累加历史时长
-                if (existingPlayer.IsOnline && existingPlayer.LoginTime.HasValue)
-                {
-                    var lastSession = now - existingPlayer.LoginTime.Value;
-                    existingPlayer.TotalPlayTime += lastSession;
-                    //ShowLogMsg(LogType.MainConsole, $"玩家重连: {characterName} (SteamID: {steamId})，上次时长: {FormatTimeSpan(lastSession)}", Brushes.Cyan);
-                }
-                player.TotalPlayTime = existingPlayer.TotalPlayTime;
-                player.IsAdmin = existingPlayer.IsAdmin;
-            }
+            //if (_playerDataManager.Players.TryGetValue(steamId, out var existingPlayer))
+            //{
+            //    // 累加历史时长
+            //    if (existingPlayer.IsOnline && existingPlayer.LoginTime.HasValue)
+            //    {
+            //        var lastSession = now - existingPlayer.LoginTime.Value;
+            //        existingPlayer.TotalPlayTime += lastSession;
+            //        ShowLogMsg(LogType.MainConsole, $"玩家重连: {characterName} (SteamID: {steamId})，上次时长: {FormatTimeSpan(lastSession)}", Brushes.Cyan);
+            //    }
+            //    player.TotalPlayTime = existingPlayer.TotalPlayTime;
+            //    player.IsAdmin = existingPlayer.IsAdmin;
+            //}
 
             _connectedPlayers[steamId] = player;
             _netEndpointToPlayer[netEndpoint] = player;
             _playerDataManager?.AddOrUpdatePlayer(steamId, player);
             _playerDataManager?.SaveAsync();
-            //ShowLogMsg(LogType.MainConsole, $"玩家连接: {characterName} (SteamID: {steamId})", Brushes.Green);
+            ShowLogMsg(LogType.MainConsole, $"玩家连接: {characterName} (SteamID: {steamId})", Brushes.Green);
 
             if (VsmSettings.WebhookSettings.Enabled)
             {
@@ -1934,8 +2040,8 @@ public partial class MainWindow : Window
     {
         try
         {
-            string netEndpoint = ExtractValue(logLine, "{Steam ", "}") ?? "";
-            string reason = ExtractValue(logLine, "Reason: ", " ") ?? "未知原因";
+            string netEndpoint = ExtractValue(logLine, "{Steam ", "}'") ?? "";
+            string reason = ExtractValue(logLine, "Reason: ", " k_") ?? "未知原因";
             VRisingPlayerInfo player = new VRisingPlayerInfo();
             if (string.IsNullOrEmpty(netEndpoint))
             {
@@ -1956,14 +2062,14 @@ public partial class MainWindow : Window
                         ShowLogMsg(LogType.MainConsole, $"未找到匹配玩家 (NetEndpoint: {netEndpoint})", Brushes.Orange);
                         return;
                     }
-                        ShowLogMsg(LogType.MainConsole, $"玩家连接状态：{player.IsOnline.ToString()}", Brushes.Orange);
+                        //ShowLogMsg(LogType.MainConsole, $"玩家连接状态：{player.IsOnline.ToString()}", Brushes.Orange);
                     break;
                 }
             }
 
             if (!player.IsOnline)
             {
-                ShowLogMsg(LogType.MainConsole, $"重复断开事件: {player.CharacterName} (SteamID: {player.SteamId})", Brushes.Gray);
+                //ShowLogMsg(LogType.MainConsole, $"重复断开事件: {player.CharacterName} (SteamID: {player.SteamId})", Brushes.Gray);
                 return;
             }
 
@@ -1983,9 +2089,8 @@ public partial class MainWindow : Window
 
             ShowLogMsg(LogType.MainConsole,
                 $"玩家断开: {player.CharacterName} (SteamID: {player.SteamId})\n" +
-                $"本次时长: {FormatTimeSpan(player.SessionDuration.Value)} | " +
-                $"总时长: {FormatTimeSpan(player.TotalPlayTime)}",
-                Brushes.Yellow);
+                $"本次时长: {FormatTimeSpan(player.SessionDuration.Value)} | 总时长: {FormatTimeSpan(player.TotalPlayTime)}",
+                Brushes.Gray);
 
             if (VsmSettings.WebhookSettings.Enabled)
             {
@@ -2011,13 +2116,16 @@ public partial class MainWindow : Window
 
             if (_connectedPlayers.TryGetValue(steamId, out var player))
             {
-                player.IsAdmin = true;
+                bool isAdmin = _playerDataManager?.IsAdmin(steamId) ?? false;
+
+                player.IsAdmin = isAdmin;
                 player.LastStatusTime = DateTime.Now;
                 _connectedPlayers[steamId] = player;
                 _playerDataManager?.AddOrUpdatePlayer(steamId, player);
                 _playerDataManager?.SaveAsync();
 
-                //ShowLogMsg(LogType.MainConsole, $"管理员权限授予: {player.CharacterName} (SteamID: {steamId})", Brushes.Purple);
+                string status = isAdmin ? "已确认管理员权限" : "非管理员";
+                ShowLogMsg(LogType.MainConsole, $"{player.CharacterName} (SteamID: {steamId}): {status}", Brushes.Purple);
             }
         }
         catch (Exception ex)
@@ -2058,7 +2166,8 @@ public partial class MainWindow : Window
     private void InitializePlayerUpdateTimer()
     {
         playerUpdateTimer = new System.Timers.Timer(5000); // 每5秒更新一次
-        playerUpdateTimer.Elapsed += (sender, e) => UpdatePlayerStatus();
+        //playerUpdateTimer.Elapsed += (sender, e) => UpdatePlayerStatus();
+        playerUpdateTimer.Elapsed += (sender, e) => UpdatePlayerCountText();
         playerUpdateTimer.Start();
     }
 
@@ -2067,6 +2176,8 @@ public partial class MainWindow : Window
     {
         try
         {
+            _playerDataManager.Players.Clear();
+            _playerDataManager.LoadServerPlayerData();
             int onlineCount = _playerDataManager.Players.Values.Count(p => p.IsOnline);
 
             if (VsmSettings.WebhookSettings.Enabled && onlineCount > 0)
@@ -2094,53 +2205,114 @@ public partial class MainWindow : Window
     #region Events
     private async void ServerProcessExited(object sender, EventArgs e, Server server)
     {
-        server.Runtime.State = ServerRuntime.ServerState.已停止;
-            
-        switch (server.Runtime.Process.ExitCode)
+        if (server == null)
         {
-            case 1:
-                ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 崩溃了。", Brushes.Red);
-                break;
-            case -2147483645:
-                ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 已中断，代码为‘-2147483645’，端口无法打开时可能会发生这种情况。确保没有其他服务器正在使用相同的端口。", Brushes.Red);
-                break;
-        }
-
-        server.Runtime.Process = null;
-
-        if (server.Runtime.RestartAttempts >= 3)
-        {
-            ShowLogMsg(LogType.MainConsole, $"服务器 '{server.vsmServerName}' 已尝试重新启动3次未成功，正在禁用自动重启功能。", Brushes.Red);
-            if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.AttemptStart3) && server.WebhookMessages.Enabled == true)
-                SendDiscordMessage(server.WebhookMessages.AttemptStart3);
-            server.Runtime.RestartAttempts = 0;
-            server.AutoRestart = false;
-            if(VsmSettings.AppSettings.SaveLogWhenCrash)
-            {
-                if (LogManager.WriteServerCrashLog(server))
-                    ShowLogMsg(LogType.MainConsole, $@" 已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。", Brushes.Yellow);
-            }
-            ShowLogMsg(LogType.MainConsole, $@" 崩溃后自动重启3次失败重新启动服务器中。", Brushes.Lime);
-            await Task.Delay(5);
-            if (await StartServer(server))
-            {
-                ShowLogMsg(LogType.MainConsole, $@" 崩溃后重启服务器成功，重新启用自动重启功能。", Brushes.Lime);
-                server.AutoRestart = true;
-            }
+            ShowLogMsg(LogType.MainConsole, "错误：服务器实例为空，无法处理进程退出事件", Brushes.Red);
             return;
         }
 
-        if (server.AutoRestart == true && server.Runtime.UserStopped == false)
+        if (server.Runtime == null)
         {
-            server.Runtime.RestartAttempts++;
-            if (VsmSettings.WebhookSettings.Enabled == true && !string.IsNullOrEmpty(server.WebhookMessages.ServerCrash) && server.WebhookMessages.Enabled == true)
-                SendDiscordMessage(server.WebhookMessages.ServerCrash);
-            if (VsmSettings.AppSettings.SaveLogWhenCrash)
+            ShowLogMsg(LogType.MainConsole, $"错误：[{server.vsmServerName}] 运行时对象未初始化", Brushes.Red);
+            return;
+        }
+
+        int exitCode = -1;
+        Process exitedProcess = sender as Process;
+        if (exitedProcess != null && !exitedProcess.HasExited)
+        {
+            try
             {
-                if (LogManager.WriteServerCrashLog(server))
-                    ShowLogMsg(LogType.MainConsole, $@" 已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。", Brushes.Yellow);
+                exitCode = exitedProcess.ExitCode; // 仅在进程未释放时获取
             }
-            await StartServer(server);
+            catch (InvalidOperationException)
+            {
+                // 进程已释放时忽略
+                exitCode = -1;
+            }
+        }
+
+        server.Runtime.State = ServerRuntime.ServerState.已停止;
+        server.Runtime.Process = null; 
+
+        try
+        {
+            switch (exitCode)
+            {
+                case 1:
+                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 崩溃了。", Brushes.Red);
+                    break;
+                case -2147483645:
+                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 已中断（代码：-2147483645），可能是端口被占用。", Brushes.Red);
+                    break;
+                default:
+                    //ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 已停止（退出码：{exitCode}）", Brushes.Yellow);
+                    break;
+            }
+
+            if (server.Runtime.RestartAttempts >= 3)
+            {
+                ShowLogMsg(LogType.MainConsole, $"服务器 '{server.vsmServerName}' 已尝试重启3次失败，禁用自动重启。", Brushes.Red);
+
+                if (VsmSettings.WebhookSettings.Enabled &&
+                    !string.IsNullOrEmpty(server.WebhookMessages.AttemptStart3) &&
+                    server.WebhookMessages.Enabled)
+                {
+                    SendDiscordMessage(server.WebhookMessages.AttemptStart3);
+                }
+
+                if (VsmSettings.AppSettings.SaveLogWhenCrash)
+                {
+                    if (LogManager.WriteServerCrashLog(server))
+                    {
+                        ShowLogMsg(LogType.MainConsole, $"已创建崩溃日志：{Path.Combine(server.Path, "CrashLog")}", Brushes.Yellow);
+                    }
+                }
+
+                ShowLogMsg(LogType.MainConsole, "尝试最后一次重启服务器...", Brushes.Lime);
+                await Task.Delay(5000); // 延长延迟，避免频繁重启
+
+                bool restartSuccess = await StartServer(server);
+                if (restartSuccess)
+                {
+                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 重启成功，重新启用自动重启。", Brushes.Green);
+                    server.AutoRestart = true;
+                    server.Runtime.RestartAttempts = 0;
+                }
+                else
+                {
+                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 最后一次重启失败，请手动检查。", Brushes.Red);
+                }
+                return;
+            }
+
+            if (server.AutoRestart && !server.Runtime.UserStopped)
+            {
+                server.Runtime.RestartAttempts++;
+                ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 将自动重启（尝试 {server.Runtime.RestartAttempts}/3）", Brushes.Lime);
+
+                if (VsmSettings.WebhookSettings.Enabled &&
+                    !string.IsNullOrEmpty(server.WebhookMessages.ServerCrash) &&
+                    server.WebhookMessages.Enabled)
+                {
+                    SendDiscordMessage(server.WebhookMessages.ServerCrash);
+                }
+
+                if (VsmSettings.AppSettings.SaveLogWhenCrash)
+                {
+                    if (LogManager.WriteServerCrashLog(server))
+                    {
+                        ShowLogMsg(LogType.MainConsole, $"已创建崩溃日志：{Path.Combine(server.Path, "CrashLog")}", Brushes.Yellow);
+                    }
+                }
+
+                await Task.Delay(3000);
+                await StartServer(server);
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 处理进程退出时出错：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -2230,32 +2402,34 @@ public partial class MainWindow : Window
     #region Buttons
     private async void StartServerButton_Click(object sender, RoutedEventArgs e)
     {
-        // 点击后马上禁用按钮
-        var button = sender as Button;
-        button.IsEnabled = false; 
-            
-        bool started = false;
-        Server server = ((Button)sender).DataContext as Server;
-
-        // 保存目前软件设置
-        MainSettings.Save(VsmSettings);
-
-        if (File.Exists(server.Path + @"\start_server_example.bat"))
+        if (sender is not Button button || button.DataContext is not Server server)
         {
-            if (started = await StartServer(server))
-            {
-                // 服务器启动完成后重新启用按钮
-                button.IsEnabled = true;
-            }
-        }
-        else
-        {
-            ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 服务器启动失败，请到服务器文件夹确认是否下载成功", Brushes.Red);
+            ShowLogMsg(LogType.MainConsole, "启动服务器失败：无效的按钮或服务器实例", Brushes.Red);
             return;
         }
 
-        if (started == true)// && VsmSettings.WebhookSettings.Enabled)
-            ReadLog(server);
+        // 点击后马上禁用按钮，防止双击
+        button.IsEnabled = false;
+        try
+        {
+            MainSettings.Save(VsmSettings);
+            string batPath = Path.Combine(server.Path, "start_server_example.bat");
+            if (!File.Exists(batPath))
+            {
+                ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 启动失败：未找到启动文件（{batPath}）", Brushes.Red);
+                return;
+            }
+            await StartServer(server);
+        }
+        catch (Exception ex)
+        {
+            ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 启动异常：{ex.Message}", Brushes.Red);
+        }
+        finally
+        {
+            // 走完流程后重新启用按钮
+            button.IsEnabled = true;
+        }
     }
 
     private async void UpdateServerButton_Click(object sender, RoutedEventArgs e)
@@ -2338,39 +2512,53 @@ public partial class MainWindow : Window
                 return;
             }
 
-            ShowLogMsg(LogType.MainConsole, $"正在停止服务器：" + server.vsmServerName, Brushes.Yellow);
+            ShowLogMsg(LogType.MainConsole, $"正在停止服务器：{server.vsmServerName}", Brushes.Yellow);
+            bool wasRunning = server.Runtime?.State == ServerRuntime.ServerState.运行中;
             bool success = await StopServer(server);
-            LogManager.WriteServerCrashLog(server);
+
             if (success)
             {
-                //playerUpdateTimer.Stop();
-                ShowLogMsg(LogType.MainConsole, $"已成功停止服务器：" + server.vsmServerName, Brushes.Lime);
+                ShowLogMsg(LogType.MainConsole, $"已成功停止服务器：{server.vsmServerName}", Brushes.Lime);
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, $"无法停止服务器：" + server.vsmServerName, Brushes.Red);
+                if (wasRunning)
+                {
+                    LogManager.WriteServerCrashLog(server);
+                }
+                ShowLogMsg(LogType.MainConsole, $"无法停止服务器：{server.vsmServerName}", Brushes.Red);
             }
-
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"{ex.Message.ToString()}", Brushes.Red);
+            ShowLogMsg(LogType.MainConsole, $"停止服务器时出错：{ex.Message}", Brushes.Red);
+            if (sender is Button button && button.DataContext is Server server)
+            {
+                if (server.Runtime?.State == ServerRuntime.ServerState.运行中)
+                {
+                    LogManager.WriteServerCrashLog(server);
+                }
+            }
         }
-
     }
+
     private async void RestartServerButton_Click(object sender, RoutedEventArgs e)
     {
-        Server server = ((Button)sender).DataContext as Server;
-        if (VsmSettings.AppSettings.SaveLogWhenCrash)
+        Button button = (Button)sender;
+        Server server = button.DataContext as Server;
+
+        if (server == null)
         {
-            LogManager.WriteServerCrashLog(server);
-            ShowLogMsg(LogType.MainConsole, $"已备份 {server.vsmServerName} 服务器日志", Brushes.Lime);
+            ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+            return;
         }
+
         await RestartServer(server);
     }
 
     private async Task<bool> RestartServer(Server server)
     {
+        LogManager = new(this);
         ShowLogMsg(LogType.MainConsole, $"正在重启服务器：" + server.vsmServerName, Brushes.Yellow);
         try
         {
@@ -2382,7 +2570,7 @@ public partial class MainWindow : Window
                 else
                     ShowLogMsg(LogType.MainConsole, $"已备份 {server.vsmServerName} 服务器日志", Brushes.Lime);
 
-                ShowLogMsg(LogType.MainConsole, $"正在启动服务器：" + server.vsmServerName, Brushes.Yellow);
+                ShowLogMsg(LogType.MainConsole, $"正在启动服务器：{server.vsmServerName}", Brushes.Yellow);
 
                 success = false;
 
@@ -2395,8 +2583,8 @@ public partial class MainWindow : Window
                     return false;
                 }
 
-                if (success == true && VsmSettings.WebhookSettings.Enabled)
-                    ReadLog(server);
+                //if (success == true && VsmSettings.WebhookSettings.Enabled)
+                //    ReadLog(server);
                 return true;
             }
             else
@@ -2425,7 +2613,13 @@ public partial class MainWindow : Window
     private async void VoiceServices_Click(object sender, RoutedEventArgs e)
     {
         Server server = ((Button)sender).DataContext as Server;
-             
+
+        if (server == null)
+        {
+            ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+            return;
+        }
+
         if (!File.Exists(server.Path + @"\SaveData\Settings\ServerVoipSettings.json"))
         {
             ContentDialog yesNoDialog = new ContentDialog()
@@ -2468,6 +2662,11 @@ public partial class MainWindow : Window
         if (server == null)
         {
             ShowLogMsg(LogType.MainConsole, $"错误：找不到要删除的选定服务器", Brushes.Red);
+            return;
+        }
+        if (server.Runtime.State == ServerRuntime.ServerState.运行中 || server.Runtime.State == ServerRuntime.ServerState.更新中)
+        {
+            ShowLogMsg(LogType.MainConsole, $"错误：服务器正在运行或者更新中，请先停止服务器！", Brushes.Red);
             return;
         }
         bool success = await RemoveServer(server);
@@ -2528,12 +2727,20 @@ public partial class MainWindow : Window
     private async void ManageAdminsButton_Click(object sender, RoutedEventArgs e)
     {
         Server server = ((Button)sender).DataContext as Server;
+
+        if (server == null)
+        {
+            ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+            return;
+        }
+
         var aManager = Application.Current.Windows.OfType<AdminManager>().FirstOrDefault();
         if (aManager != null)
         {   
             aManager.Activate();
             aManager.Topmost = true;
             aManager.Topmost = false;
+            aManager.AdminListUpdated += OnAdminListUpdated;
         }
         else
         {
@@ -2551,6 +2758,7 @@ public partial class MainWindow : Window
             {
                 aManager = new AdminManager(server);
                 aManager.Show();
+                aManager.AdminListUpdated += OnAdminListUpdated;
             }
         }
     }
@@ -2613,7 +2821,7 @@ public partial class MainWindow : Window
             {
                 Owner = this,
                 Title = "MOD管理器",
-                Content = $"没有添加任何服务器。请在尝试管理MODS之前至少添加一个服务器。",
+                Content = $"没有添加任何服务器。请在尝试管理MOD之前至少添加一个服务器。",
                 CloseButtonText = "Ok",
                 DefaultButton = ContentDialogButton.Close
             }.ShowAsync();
@@ -2780,8 +2988,7 @@ public partial class MainWindow : Window
 
         // 刷新列表显示
         PlayerDataGrid.Items.Refresh();
-        ShowLogMsg(LogType.MainConsole,
-            $"已添加 {selectedPlayer.CharacterName} 为管理员", Brushes.Purple);
+        ShowLogMsg(LogType.MainConsole, $"已添加 {selectedPlayer.CharacterName} 为管理员", Brushes.Purple);
     }
 
 
@@ -2798,8 +3005,7 @@ public partial class MainWindow : Window
 
         // 刷新列表显示
         PlayerDataGrid.Items.Refresh();
-        ShowLogMsg(LogType.MainConsole,
-            $"已移除 {selectedPlayer.CharacterName} 的管理员权限", Brushes.Purple);
+        ShowLogMsg(LogType.MainConsole, $"已移除 {selectedPlayer.CharacterName} 的管理员权限", Brushes.Purple);
     }
 
     // 右键菜单：刷新玩家列表
@@ -2811,7 +3017,9 @@ public partial class MainWindow : Window
     // 刷新管理员状态
     private void RefreshAdminStatus()
     {
-        if (_playerDataManager == null) return;
+        if (_playerDataManager == null) 
+            return;
+        //HashSet<ulong> admins = _playerDataManager.GetAllAdmins();
 
         // 同步所有玩家的管理员状态
         foreach (var player in _playerDataManager.Players.Values)
@@ -3283,35 +3491,56 @@ public partial class MainWindow : Window
 
     private void ChangeSaveFile_Click(object sender, RoutedEventArgs e)
     {
-        Server server = ((Button)sender).DataContext as Server;
+        List<Server> servers = new();
+        if (VsmSettings.Servers.Count == 0)
+            return;
 
-        if (VsmSettings.AppSettings.SaveLogWhenCrash)
+        foreach (var server in VsmSettings.Servers)
         {
-            if (LogManager.WriteServerCrashLog(server))
-                ShowLogMsg(LogType.MainConsole, $@"已创建服务器崩溃日志，请到 {server.Path}\CrashLog下查看。", Brushes.Yellow);
+            servers.Add(server);
         }
+        var saveManager = new SaveFileManager(servers);
+        saveManager.ShowDialog();
     }
 
     private void RefreshServerStatus_Click(object sender, RoutedEventArgs e)
     {
-        if (_currentServer == null)
-        {
-            ShowLogMsg(LogType.MainConsole, "请先选择服务器", Brushes.Yellow);
-            return;
-        }
+        //if (_currentServer == null)
+        //{
+        //    ShowLogMsg(LogType.MainConsole, "请先选择服务器", Brushes.Yellow);
+        //    return;
+        //}
 
-        string logPath = Path.Combine(_currentServer.Path, _logTypeToTag[LogType.VRising]);
-        if (!File.Exists(logPath))
-        {
-            ShowLogMsg(LogType.MainConsole, "未找到日志文件，无法刷新状态", Brushes.Red);
-            return;
-        }
+        //string logPath = Path.Combine(_currentServer.Path, _logTypeToTag[LogType.VRising]);
+        //if (!File.Exists(logPath))
+        //{
+        //    ShowLogMsg(LogType.MainConsole, "未找到日志文件，无法刷新状态", Brushes.Red);
+        //    return;
+        //}
 
         // 手动刷新玩家状态
-        UpdateServerStatusUI();
-        UpdatePlayerStatus();
-        RefreshAdminStatus();
+        //UpdateServerStatusUI();
+        //UpdatePlayerStatus();
+        //RefreshAdminStatus();
     }
+
+    private async void ReportIssue_Click(object sender, RoutedEventArgs e)
+    {
+        try
+        {
+            string newIssueUrl = "https://github.com/aghosto/V-Rising-Server-Manager---Chinese/issues";
+
+            Process.Start(new ProcessStartInfo(newIssueUrl)
+            {
+                UseShellExecute = true
+            });
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorDialog($"无法打开问题反馈页面：{ex.Message}");
+        }
+    }
+
 
     /// <summary>
     /// 生成时间戳字符串
@@ -3332,28 +3561,23 @@ public partial class MainWindow : Window
         };
     }
 
-    // 初始化服务器状态面板
-    private void InitServerStatusPanel()
-    {
-        PlayerDataGrid.ItemsSource = _playerDataManager.Players.Values;
-        ServerNameText.Text = "未选择服务器";
-        PlayerCountText.Text = "0/0";
-        ServerStatusText.Text = "未监控";
-        LastUpdatedText.Text = "最后更新: 无";
-    }
-
     // 初始化玩家数据管理器
     private void InitializePlayerDataManager(Server currentServer)
     {
+        _currentServer = currentServer;
+        if (_currentServer.FirstStart == true)
+            return;
+
         try
         {
-            _playerDataManager = new (currentServer, this);
+            _playerDataManager = new PlayerDataManager(_currentServer, this);
+            _playerDataManager.LoadOrCreateDataFile();
+            PlayerDataGrid.ItemsSource = _playerDataManager.Players.Values;
 
             _playerDataManager.PlayerUpdated += (player) =>
             {
                 Dispatcher.Invoke(() =>
                 {
-                    //PlayerDataGrid.ItemsSource = _playerDataManager.Players;
                     UpdatePlayerCountText(); // 更新在线人数
                     RefreshAdminStatus();
                 });
@@ -3380,4 +3604,35 @@ public partial class MainWindow : Window
             }
         });
     }
+
+    // 管理员列表更新
+    private void OnAdminListUpdated()
+    {
+        HashSet<ulong> admins = _playerDataManager.GetAllAdmins();
+
+        if (_currentServer == null || _playerDataManager == null) 
+            return;
+
+        _playerDataManager.LoadAdminList();
+
+        foreach (var player in admins)
+        {
+            if (_playerDataManager.Players.ContainsKey(player))
+            {
+                _playerDataManager.Players[player].IsAdmin = true;
+            }
+            else
+                _playerDataManager.Players[player].IsAdmin = false;
+        }
+
+        Dispatcher.Invoke(() =>
+        {
+            PlayerDataGrid.ItemsSource = null; 
+            PlayerDataGrid.ItemsSource = _playerDataManager.Players.Values;
+            RefreshAdminStatus();
+        });
+    }
+
 }
+
+

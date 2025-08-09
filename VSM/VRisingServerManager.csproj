@@ -39,6 +39,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="LogWatcherService.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Remove="App.config" />
     <None Remove="logo.ico" />
     <None Remove="Resources\Add.png" />
@@ -224,8 +228,8 @@
   </Target>
 	
     <Target Name="BuildToFolder" AfterTargets="Build">
-	    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="E:\Zero\GitHub\V-Rising-Server-Manager\VSM\bin\Release\你好哦" />
-	    <Copy SourceFiles="$(TargetDir)$(ProjectName).exe" DestinationFolder="E:\Zero\GitHub\V-Rising-Server-Manager\VSM\bin\Release\你好哦" />
+	    <Copy SourceFiles="$(TargetDir)$(ProjectName).dll" DestinationFolder="E:\Zero\GitHub\V-Rising-Server-Manager\VSM\bin\Release\VSM-Ch" />
+	    <Copy SourceFiles="$(TargetDir)$(ProjectName).exe" DestinationFolder="E:\Zero\GitHub\V-Rising-Server-Manager\VSM\bin\Release\VSM-Ch" />
     </Target>
 
   <Target Name="PostPublish" AfterTargets="Publish">
