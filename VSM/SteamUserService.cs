@@ -8,7 +8,7 @@ namespace SteamServices;
 
 public class SteamUserService
 {
-    private readonly string _apiKey = ""; // Steam API密钥
+    private readonly string _apiKey = "239B25802271A2936AC757B2D1E75217"; // Steam API密钥
     private readonly HttpClient _httpClient;
     private readonly string _saveDirectory; // 保存JSON文件的目录
 
@@ -165,28 +165,28 @@ public class SteamUserProfile
     public string SteamId { get; set; } // 64位SteamID
 
     [JsonProperty("personaname")]
-    public string Username { get; set; } // 用户名
+    public string Username { get; set; } 
 
     [JsonProperty("profileurl")]
-    public string ProfileUrl { get; set; } // 个人资料URL
+    public string ProfileUrl { get; set; }
 
     [JsonProperty("avatar")]
-    public string AvatarSmall { get; set; } // 小尺寸头像
+    public string AvatarSmall { get; set; }
 
     [JsonProperty("avatarmedium")]
-    public string AvatarMedium { get; set; } // 中等尺寸头像
+    public string AvatarMedium { get; set; }
 
     [JsonProperty("avatarfull")]
-    public string AvatarFull { get; set; } // 大尺寸头像
+    public string AvatarFull { get; set; }
 
     [JsonProperty("personastate")]
     public int Status { get; set; } // 在线状态（0:离线, 1:在线, 2:忙碌, 3:离开, 4:睡眠, 5:LookingToTrade, 6:LookingToPlay）
 
     [JsonProperty("realname")]
-    public string RealName { get; set; } // 真实姓名（如果设置）
+    public string RealName { get; set; } 
 
     [JsonProperty("timecreated")]
-    public long? AccountCreatedTimestamp { get; set; } // 账号创建时间戳
+    public long? AccountCreatedTimestamp { get; set; }
 
     // 转换时间戳为DateTime
     public DateTime? AccountCreatedDate =>

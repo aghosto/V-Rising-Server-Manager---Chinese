@@ -12,12 +12,9 @@ namespace VRisingServerManager
 {
     public partial class SaveFileManager : Window
     {
-        // 存档根目录
         private string _baseSavePath;
-        // 选中的存档路径和服务器
         private string _selectedSavePath;
         private Server _selectedServer;
-        // 服务器列表
         private List<Server> _servers;
 
         // 存档节点类型
@@ -29,7 +26,6 @@ namespace VRisingServerManager
             SaveFile    // 存档文件
         }
 
-        // 存档树节点数据模型
         public class SaveNode
         {
             public string Name { get; set; }
@@ -47,7 +43,6 @@ namespace VRisingServerManager
             _servers = servers;
             InitializeServerList();
 
-            // 初始化存档根目录
             string userProfile = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
             _baseSavePath = Path.Combine(userProfile, "AppData", "LocalLow", "Stunlock Studios", "VRising", "CloudSaves");
 
@@ -58,9 +53,6 @@ namespace VRisingServerManager
             Resources.Add("ServerStateToColorConverter", new ServerStateToColorConverter());
         }
 
-        /// <summary>
-        /// 初始化服务器列表
-        /// </summary>
         private void InitializeServerList()
         {
             if (_servers == null)
@@ -79,9 +71,6 @@ namespace VRisingServerManager
             }
         }
 
-        /// <summary>
-        /// 加载本地存档文件
-        /// </summary>
         private void LoadSaveFiles()
         {
             try
@@ -110,7 +99,6 @@ namespace VRisingServerManager
                         ExtraInfo = steamId
                     };
 
-                    // 获取版本文件夹(v3/v4)
                     var versionFolders = Directory.GetDirectories(userFolder)
                         .Where(d =>
                         {
@@ -191,9 +179,6 @@ namespace VRisingServerManager
             }
         }
 
-        /// <summary>
-        /// 应用版本筛选
-        /// </summary>
         private void ApplyVersionFilter()
         {
             // 实际应用中应该使用CollectionViewSource和Filter实现
@@ -201,40 +186,26 @@ namespace VRisingServerManager
             LoadSaveFiles();
         }
 
-        /// <summary>
-        /// 检查是否为有效的64位SteamID
-        /// </summary>
         private bool IsValidSteamId(string folderName)
         {
             return ulong.TryParse(folderName, out _);
         }
 
-        /// <summary>
-        /// 刷新存档列表
-        /// </summary>
         private void RefreshSaves_Click(object sender, RoutedEventArgs e)
         {
             LoadSaveFiles();
         }
 
-        /// <summary>
-        /// 刷新服务器列表
-        /// </summary>
         private void RefreshServers_Click(object sender, RoutedEventArgs e)
         {
             InitializeServerList();
         }
 
-        /// <summary>
-        /// 存档选择变更事件
-        /// </summary>
         private void SavesTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
             if (e.NewValue is SaveNode selectedNode)
             {
-                // 只有选择存档文件或存档文件夹时才有效
-                bool isSaveItem = selectedNode.Type == SaveNodeType.SaveFile ||
-                                 selectedNode.Type == SaveNodeType.SaveFolder;
+                bool isSaveItem = selectedNode.Type == SaveNodeType.SaveFile || selectedNode.Type == SaveNodeType.SaveFolder;
 
                 _selectedSavePath = isSaveItem ? selectedNode.Path : null;
 
@@ -259,13 +230,9 @@ namespace VRisingServerManager
                 SelectedSaveInfo.Text = "未选择任何存档";
             }
 
-            // 更新按钮状态
             UpdateApplyButtonState();
         }
 
-        /// <summary>
-        /// 服务器选择变更事件
-        /// </summary>
         private void ServersListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ServersListBox.SelectedItem is Server selectedServer)
@@ -281,21 +248,14 @@ namespace VRisingServerManager
                 SelectedServerInfo.Text = "未选择任何服务器";
             }
 
-            // 更新按钮状态
             UpdateApplyButtonState();
         }
 
-        /// <summary>
-        /// 更新应用按钮状态
-        /// </summary>
         private void UpdateApplyButtonState()
         {
             UseSaveButton.IsEnabled = !string.IsNullOrEmpty(_selectedSavePath) && _selectedServer != null;
         }
 
-        /// <summary>
-        /// 使用选中的存档应用到服务器
-        /// </summary>
         private void UseSelectedSave_Click(object sender, RoutedEventArgs e)
         {
             if (string.IsNullOrEmpty(_selectedSavePath) || _selectedServer == null)
@@ -368,14 +328,14 @@ namespace VRisingServerManager
                 // 复制新存档
                 if (Directory.Exists(sourcePath))
                 {
-                    // 如果是文件夹，复制所有.save文件
-                    foreach (var file in Directory.GetFiles(sourcePath, "*.save"))
+                    // 如果是文件夹，复制所有.save.gz文件
+                    foreach (var file in Directory.GetFiles(sourcePath, "*.save.gz"))
                     {
                         string destFile = Path.Combine(targetPath, Path.GetFileName(file));
                         File.Copy(file, destFile, true);
                     }
                 }
-                else if (File.Exists(sourcePath) && Path.GetExtension(sourcePath).Equals(".save", StringComparison.OrdinalIgnoreCase))
+                else if (File.Exists(sourcePath) && Path.GetExtension(sourcePath).Equals(".save.gz", StringComparison.OrdinalIgnoreCase))
                 {
                     // 如果是单个文件，直接复制
                     string destFile = Path.Combine(targetPath, Path.GetFileName(sourcePath));
@@ -423,21 +383,14 @@ namespace VRisingServerManager
             catch (Exception ex)
             {
                 Console.WriteLine($"创建存档备份失败: {ex.Message}");
-                // 备份失败不阻止存档替换，但应该记录日志
             }
         }
 
-        /// <summary>
-        /// 取消按钮
-        /// </summary>
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
-        /// <summary>
-        /// 拖拽事件处理
-        /// </summary>
         private void DragDrop_DragEnter(object sender, DragEventArgs e)
         {
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -456,13 +409,13 @@ namespace VRisingServerManager
 
         private void DragDrop_DragLeave(object sender, DragEventArgs e)
         {
-            DragStatusText.Text = "拖拽.save文件或存档文件夹到此处";
+            DragStatusText.Text = "拖拽.save.gz文件或存档文件夹到此处";
             DragStatusText.Foreground = System.Windows.Media.Brushes.Gray;
         }
 
         private void DragDrop_Drop(object sender, DragEventArgs e)
         {
-            DragStatusText.Text = "拖拽.save文件或存档文件夹到此处";
+            DragStatusText.Text = "拖拽.save.gz文件或存档文件夹到此处";
             DragStatusText.Foreground = System.Windows.Media.Brushes.Gray;
 
             if (e.Data.GetDataPresent(DataFormats.FileDrop))
@@ -487,7 +440,7 @@ namespace VRisingServerManager
                 if (Directory.Exists(path))
                 {
                     // 检查是否是有效的存档文件夹
-                    int saveFileCount = Directory.GetFiles(path, "*.save").Length;
+                    int saveFileCount = Directory.GetFiles(path, "*.save.gz").Length;
 
                     if (saveFileCount > 0)
                     {
@@ -500,7 +453,7 @@ namespace VRisingServerManager
                         SelectedSaveInfo.Text = "选中的文件夹中未找到存档文件";
                     }
                 }
-                else if (File.Exists(path) && Path.GetExtension(path).Equals(".save", StringComparison.OrdinalIgnoreCase))
+                else if (File.Exists(path) && Path.GetExtension(path).Equals(".save.gz", StringComparison.OrdinalIgnoreCase))
                 {
                     // 单个存档文件
                     _selectedSavePath = path;
@@ -525,7 +478,7 @@ namespace VRisingServerManager
         {
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
-                Filter = "存档文件 (*.save)|*.save|所有文件 (*.*)|*.*",
+                Filter = "存档文件 (*.save.gz)|*.save.gz|所有文件 (*.*)|*.*",
                 Title = "选择存档文件"
             };
 
@@ -550,7 +503,7 @@ namespace VRisingServerManager
             if (folderDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 _selectedSavePath = folderDialog.SelectedPath;
-                int saveFileCount = Directory.GetFiles(_selectedSavePath, "*.save").Length;
+                int saveFileCount = Directory.GetFiles(_selectedSavePath, "*.save.gz").Length;
                 SelectedSaveInfo.Text = $"文件夹: {_selectedSavePath} (包含 {saveFileCount} 个存档文件)";
                 UpdateApplyButtonState();
             }

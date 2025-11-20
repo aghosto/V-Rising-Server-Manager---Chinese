@@ -6,7 +6,6 @@
         xmlns:local="clr-namespace:VRisingServerManager"
         xmlns:ui="http://schemas.modernwpf.com/2019"
         xmlns:tb="http://www.hardcodet.net/taskbar"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         ui:WindowHelper.UseModernWindowStyle="True"
         WindowStartupLocation="CenterScreen" 
         mc:Ignorable="d"
@@ -382,7 +381,7 @@
                         <Button.Content>
                             <DockPanel>
                                 <Image Source="Resources\icon_develop.png" Margin="5,0,0,0"/>
-                                <TextBlock Text="更改服务器存档" Margin="5,0,5,0"/>
+                                <TextBlock Text="开发中，占位" Margin="5,0,5,0"/>
                             </DockPanel>
                         </Button.Content>
                     </Button>
@@ -445,9 +444,6 @@
                             </Button>
                             <Button Click="ClearLogButton_Click" Tag="MainConsole" Margin="0,0,5,0" ToolTip="清空日志">
                                 <ui:SymbolIcon Symbol="Clear"/>
-                            </Button>
-                            <Button Click="SaveLogButton_Click" Tag="MainConsole" Margin="0,0,5,0" ToolTip="保存日志">
-                                <ui:SymbolIcon Symbol="Save"/>
                             </Button>
                             <CheckBox x:Name="AutoScrollMainConsole" Content="自动滚动" IsChecked="True" Margin="10,0,0,0"/>
                             <Grid HorizontalAlignment="Center" Height="30" Width="500" Visibility="Hidden">
@@ -588,7 +584,7 @@
                     </Grid>
                 </TabItem>
 
-                <TabItem Header="服务器状态" IsEnabled="True">
+                <TabItem Header="服务器状态" IsEnabled="False" ToolTipService.ShowOnDisabled="True" ToolTip="显示服务器中的玩家数据等信息，尚未完善，暂不建议启用">
                     <StackPanel Orientation="Vertical">
                         <Grid>
                             <Grid.ColumnDefinitions>

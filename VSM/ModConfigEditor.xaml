@@ -5,6 +5,7 @@
         Title="Mod配置文件编辑器" Height="600" Width="800" WindowStartupLocation="CenterScreen">
 
     <Window.Resources>
+        <!-- 原有样式保持不变 -->
         <Style x:Key="CommentStyle" TargetType="Run">
             <Setter Property="Foreground" Value="#FF888888"/>
             <Setter Property="FontStyle" Value="Italic"/>
@@ -21,7 +22,7 @@
             <Setter Property="Foreground" Value="#FFBA55D3"/>
         </Style>
         <Style x:Key="DefaultValueStyle" TargetType="Run">
-            <Setter Property="Foreground" Value="#FFFFA500"/>
+            <Setter Property="Foreground" Value="#000000"/>
         </Style>
 
         <Style x:Key="AutoCompleteItemStyle" TargetType="ListBoxItem">
@@ -38,33 +39,70 @@
                 </Trigger>
             </Style.Triggers>
         </Style>
-    </Window.Resources>
-    
-    <Grid Margin="10">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
-        </Grid.RowDefinitions>
 
-        <Grid Grid.Row="0">
+        <Style x:Key="SearchPanelStyle" TargetType="Grid">
+            <Setter Property="Background" Value="#E8F4FC"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="3" Opacity="0.2" ShadowDepth="1"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="SearchButtonStyle" TargetType="Button">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#2D2D2D"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Margin" Value="0 0 2 0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#D0E8F8"/>
+                </Trigger>
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#B9DCF5"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
+        <Style x:Key="SearchTextBoxStyle" TargetType="TextBox">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Padding" Value="5"/>
+            <Setter Property="Foreground" Value="#2D2D2D"/>
+            <Setter Property="CaretBrush" Value="#0078D7"/>
+            <Setter Property="FocusVisualStyle" Value="{x:Null}"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="10">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
             <RichTextBox x:Name="ConfigRichTextBox" 
-             Grid.Row="0"
-             VerticalScrollBarVisibility="Auto"
-             HorizontalScrollBarVisibility="Auto"
-             Margin="0,0,0,10"
-             AcceptsTab="True"
-             TextChanged="ConfigRichTextBox_TextChanged" 
-             PreviewKeyDown="ConfigRichTextBox_PreviewKeyDown">
+                         Grid.Row="0"
+                         VerticalScrollBarVisibility="Auto"
+                         HorizontalScrollBarVisibility="Auto"
+                         Margin="0,0,0,10"
+                         AcceptsTab="True"
+                         TextChanged="ConfigRichTextBox_TextChanged" 
+                         PreviewKeyDown="ConfigRichTextBox_PreviewKeyDown">
                 <FlowDocument/>
             </RichTextBox>
 
             <Popup x:Name="AutoCompletePopup" AllowsTransparency="True" Placement="Relative" StaysOpen="False">
                 <Border Background="White" BorderBrush="#CCCCCC" BorderThickness="1" CornerRadius="3" Padding="2">
                     <ListBox x:Name="SuggestionsListBox" 
-                 Width="150" 
-                 MaxHeight="150"
-                 PreviewMouseLeftButtonUp="SuggestionsListBox_PreviewMouseLeftButtonUp"
-                 ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                             Width="150" 
+                             MaxHeight="150"
+                             PreviewMouseLeftButtonUp="SuggestionsListBox_PreviewMouseLeftButtonUp"
+                             ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                         <ListBox.ItemContainerStyle>
                             <Style TargetType="ListBoxItem">
                                 <Setter Property="Padding" Value="5,2"/>
@@ -76,11 +114,67 @@
                     </ListBox>
                 </Border>
             </Popup>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
+                <Button x:Name="SaveButton" Content="保存" Click="SaveButton_Click" Width="80" Margin="0,0,10,0"/>
+                <Button x:Name="CancelButton" Content="取消" Click="CancelButton_Click" Width="80"/>
+            </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right">
-            <Button x:Name="SaveButton" Content="保存" Click="SaveButton_Click" Width="80" Margin="0,0,10,0"/>
-            <Button x:Name="CancelButton" Content="取消" Click="CancelButton_Click" Width="80"/>
-        </StackPanel>
+        <!--<Canvas>
+            <Grid x:Name="SearchPanel" 
+                  Height="30" 
+                  Width="250"
+                  Margin="0 0 20 0"
+                  Canvas.Right="0"
+                  Canvas.Top="10"
+                  Style="{StaticResource SearchPanelStyle}"
+                  Visibility="Collapsed" 
+                  Panel.ZIndex="100">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <ui:SymbolIcon Symbol="Find" 
+                               Grid.Column="0" 
+                               Margin="5 0" 
+                               VerticalAlignment="Center" 
+                               Foreground="#666666"/>
+
+                <TextBox x:Name="SearchTextBox" 
+                         Grid.Column="1" 
+                         Style="{StaticResource SearchTextBoxStyle}"
+                         KeyDown="SearchTextBox_KeyDown"/>
+
+                <Border Grid.Column="2" 
+                        Width="1" 
+                        Background="#D0D7E3" 
+                        Margin="0 5"/>
+
+                <Button x:Name="FindNextButton" 
+                        Grid.Column="3" 
+                        Content="下一个" 
+                        Style="{StaticResource SearchButtonStyle}"
+                        Click="FindNextButton_Click"/>
+
+                <Button x:Name="FindPreviousButton" 
+                        Grid.Column="4" 
+                        Content="上一个" 
+                        Style="{StaticResource SearchButtonStyle}"
+                        Click="FindPreviousButton_Click"/>
+
+                <Button x:Name="CloseSearchButton" 
+                        Grid.Column="5" 
+                        Style="{StaticResource SearchButtonStyle}"
+                        Click="CloseSearchButton_Click">
+                    <ui:SymbolIcon Symbol="Clear"/>
+                </Button>
+            </Grid>
+        </Canvas>-->
     </Grid>
 </Window>

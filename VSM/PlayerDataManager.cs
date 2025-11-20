@@ -95,7 +95,7 @@ public class PlayerDataManager : IDisposable
     {
         if (!File.Exists(_logFilePath))
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"日志文件不存在，无法启动监听：{_logFilePath}", Brushes.Orange);
+            _mainWindow.ShowLogMsg($"日志文件不存在，无法启动监听：{_logFilePath}", Brushes.Orange);
             return;
         }
 
@@ -105,7 +105,7 @@ public class PlayerDataManager : IDisposable
         }
 
         _logWatcher.EnableRaisingEvents = true;
-        _mainWindow.ShowLogMsg(LogType.MainConsole, $"已开始监听日志文件：{_logFilePath}", Brushes.Lime);
+        _mainWindow.ShowLogMsg($"已开始监听日志文件：{_logFilePath}", Brushes.Lime);
     }
 
 
@@ -115,7 +115,7 @@ public class PlayerDataManager : IDisposable
         if (_logWatcher != null)
         {
             _logWatcher.EnableRaisingEvents = false;
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"已停止监听日志文件：{_logFilePath}", Brushes.Yellow);
+            _mainWindow.ShowLogMsg($"已停止监听日志文件：{_logFilePath}", Brushes.Yellow);
         }
     }
 
@@ -138,7 +138,7 @@ public class PlayerDataManager : IDisposable
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"日志监听错误：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"日志监听错误：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -186,22 +186,22 @@ public class PlayerDataManager : IDisposable
             if (!Directory.Exists(serverDir))
             {
                 Directory.CreateDirectory(serverDir);
-                _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建服务器目录: {serverDir}", Brushes.Orange);
+                _mainWindow.ShowLogMsg($"创建服务器目录: {serverDir}", Brushes.Orange);
             }
 
             // 验证写入权限（创建临时文件后立即删除）
             string testFile = Path.Combine(serverDir, "tmp_permission_test.tmp");
             using (var fs = File.Create(testFile, 1, FileOptions.DeleteOnClose)) { }
-            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"文件写入权限验证通过（路径: {serverDir}）", Brushes.Lime);
+            //_mainWindow.ShowLogMsg($"文件写入权限验证通过（路径: {serverDir}）", Brushes.Lime);
         }
         catch (UnauthorizedAccessException ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"权限不足：无法写入服务器目录，请以管理员身份运行。", Brushes.Red);
+            _mainWindow.ShowLogMsg($"权限不足：无法写入服务器目录，请以管理员身份运行。", Brushes.Red);
             throw;
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"目录验证失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"目录验证失败：{ex.Message}", Brushes.Red);
             throw;
         }
     }
@@ -213,6 +213,7 @@ public class PlayerDataManager : IDisposable
         {
             if (File.Exists(_dataFilePath))
             {
+                Players.Clear(); 
                 string json = File.ReadAllText(_dataFilePath);
 
                 var players = JsonSerializer.Deserialize<ConcurrentDictionary<ulong, VRisingPlayerInfo>>(json, _jsonOptions);
@@ -222,7 +223,7 @@ public class PlayerDataManager : IDisposable
                     {
                         Players.TryAdd(player.Key, player.Value);
                     }
-                    //_mainWindow.ShowLogMsg(LogType.MainConsole, $"从文件加载 {Players.Count} 条玩家数据", Brushes.Lime);
+                    //_mainWindow.ShowLogMsg($"从文件加载 {Players.Count} 条玩家数据", Brushes.Lime);
                 }
             }
             else
@@ -230,18 +231,18 @@ public class PlayerDataManager : IDisposable
                 // 文件不存在，创建空文件
                 Players.Clear(); 
                 Save(); 
-                _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建新的玩家数据文件：{_dataFilePath}", Brushes.Orange);
+                _mainWindow.ShowLogMsg($"创建新的玩家数据文件：{_dataFilePath}", Brushes.Orange);
             }
         }
         catch (JsonException ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"数据文件损坏（JSON解析失败）：{ex.Message}，将创建新文件", Brushes.Red);
+            _mainWindow.ShowLogMsg($"数据文件损坏（JSON解析失败）：{ex.Message}，将创建新文件", Brushes.Red);
             Players.Clear();
             Save(); 
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载玩家数据失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"加载玩家数据失败：{ex.Message}", Brushes.Red);
             Players.Clear();
         }
     }
@@ -266,7 +267,7 @@ public class PlayerDataManager : IDisposable
                         Players.TryAdd(player.Key, player.Value);
                     }
                 }
-                //_mainWindow.ShowLogMsg(LogType.MainConsole, $"成功加载玩家数据", Brushes.Lime);
+                //_mainWindow.ShowLogMsg($"成功加载玩家数据", Brushes.Lime);
             }
             else
             {
@@ -275,7 +276,7 @@ public class PlayerDataManager : IDisposable
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载玩家数据失败: {ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"加载玩家数据失败: {ex.Message}", Brushes.Red);
             Players.Clear();
         }
     }
@@ -305,7 +306,7 @@ public class PlayerDataManager : IDisposable
     {
         if (playerInfo == null)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, "添加失败：玩家信息为空", Brushes.Red);
+            _mainWindow.ShowLogMsg("添加失败：玩家信息为空", Brushes.Red);
             return;
         }
 
@@ -337,11 +338,11 @@ public class PlayerDataManager : IDisposable
             string json = JsonSerializer.Serialize(dataToSave, _jsonOptions);
 
             File.WriteAllText(_dataFilePath, json);
-            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"玩家数据已保存: {_dataFilePath}", Brushes.Green);
+            //_mainWindow.ShowLogMsg($"玩家数据已保存: {_dataFilePath}", Brushes.Green);
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"保存失败: {ex.Message}（路径: {_dataFilePath}）", Brushes.Red);
+            _mainWindow.ShowLogMsg($"保存失败: {ex.Message}（路径: {_dataFilePath}）", Brushes.Red);
         }
     }
 
@@ -354,11 +355,11 @@ public class PlayerDataManager : IDisposable
             string json = JsonSerializer.Serialize(dataToSave, _jsonOptions);
 
             await File.WriteAllTextAsync(_dataFilePath, json);
-            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"异步保存玩家数据成功: {_dataFilePath}", Brushes.Green);
+            //_mainWindow.ShowLogMsg($"异步保存玩家数据成功: {_dataFilePath}", Brushes.Green);
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"异步保存失败: {ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"异步保存失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -631,17 +632,17 @@ public class PlayerDataManager : IDisposable
                     }
                 }
 
-                //_mainWindow.ShowLogMsg(LogType.MainConsole, $"已加载管理员列表（{_adminSteamIds.Count} 人）", Brushes.Lime);
+                //_mainWindow.ShowLogMsg($"已加载管理员列表（{_adminSteamIds.Count} 人）", Brushes.Lime);
             }
             else
             {
-                _mainWindow.ShowLogMsg(LogType.MainConsole, $"管理员列表文件不存在，将创建空列表：{AdminListPath}", Brushes.Orange);
+                _mainWindow.ShowLogMsg($"管理员列表文件不存在，将创建空列表：{AdminListPath}", Brushes.Orange);
                 CreateEmptyAdminList();
             }
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载管理员列表失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"加载管理员列表失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -663,7 +664,7 @@ public class PlayerDataManager : IDisposable
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建管理员列表文件失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"创建管理员列表文件失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -681,11 +682,11 @@ public class PlayerDataManager : IDisposable
 
             _adminSteamIds = new HashSet<ulong>(adminSteamIds);
 
-            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"管理员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
+            //_mainWindow.ShowLogMsg($"管理员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"保存管理员列表失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"保存管理员列表失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -762,17 +763,17 @@ public class PlayerDataManager : IDisposable
                     }
                 }
 
-                //_mainWindow.ShowLogMsg(LogType.MainConsole, $"已加载封禁人员列表（{_banSteamIds.Count} 人）", Brushes.Lime);
+                //_mainWindow.ShowLogMsg($"已加载封禁人员列表（{_banSteamIds.Count} 人）", Brushes.Lime);
             }
             else
             {
-                _mainWindow.ShowLogMsg(LogType.MainConsole, $"封禁人员列表文件不存在，将创建空列表：{BanListPath}", Brushes.Orange);
+                _mainWindow.ShowLogMsg($"封禁人员列表文件不存在，将创建空列表：{BanListPath}", Brushes.Orange);
                 CreateEmptyAdminList(); // 创建空文件
             }
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"加载封禁人员列表失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"加载封禁人员列表失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -794,7 +795,7 @@ public class PlayerDataManager : IDisposable
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"创建封禁人员列表文件失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"创建封禁人员列表文件失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -812,11 +813,11 @@ public class PlayerDataManager : IDisposable
 
             _banSteamIds = new HashSet<ulong>(banSteamIds);
 
-            //_mainWindow.ShowLogMsg(LogType.MainConsole, $"封禁人员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
+            //_mainWindow.ShowLogMsg($"封禁人员列表已保存（{adminSteamIds.Count} 人）", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            _mainWindow.ShowLogMsg(LogType.MainConsole, $"保存封禁人员列表文件失败：{ex.Message}", Brushes.Red);
+            _mainWindow.ShowLogMsg($"保存封禁人员列表文件失败：{ex.Message}", Brushes.Red);
         }
     }
 

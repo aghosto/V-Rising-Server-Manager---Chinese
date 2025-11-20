@@ -25,14 +25,13 @@ using System.Windows.Threading;
 using Hardcodet.Wpf.TaskbarNotification;
 using static VRisingServerManager.LogManager;
 using static VRisingServerManager.PlayerDataManager;
-using LiveCharts;
-using LiveCharts.Wpf;
 using System.Net;
 using System.Windows.Controls.Ribbon;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 
 namespace VRisingServerManager;
+
 /// <summary>
 /// Interaction logic for MainWindow.xaml
 /// </summary>
@@ -120,6 +119,17 @@ public partial class MainWindow : Window
 
         Closing += MainWindow_Closing;
 
+        // 初始化定时器（每1秒检查一次）
+        if (VsmSettings.Servers.Count != 0)
+        {
+            _logUpdateTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(1)
+            };
+            _logUpdateTimer.Tick += LogUpdateTimer_Tick;
+            _logUpdateTimer.Start();
+        }
+
         // 初始化日志控件映射
         _logTypeToTexbox = new Dictionary<LogType, RichTextBox>
         {
@@ -127,14 +137,6 @@ public partial class MainWindow : Window
             { LogType.MainConsole, MainMenuConsoleTextBox },
             { LogType.BepinExOutput, BepinExOutputLogTextBox },
             { LogType.BepinExError, BepinExErrorLogTextBox }
-        };
-
-        _logTagToType = new Dictionary<string, LogType>
-        {
-            { "VRising", LogType.VRising },
-            { "MainConsole", LogType.MainConsole },
-            { "BepinExOutput", LogType.BepinExOutput },
-            { "BepinExError", LogType.BepinExError },
         };
 
         // 初始化自动滚动控件映射
@@ -146,16 +148,13 @@ public partial class MainWindow : Window
             { LogType.BepinExError, AutoScrollBepinExErrorLog }
         };
 
-        // 初始化定时器（每1秒检查一次）
-        if (VsmSettings.Servers.Count != 0)
+        _logTagToType = new Dictionary<string, LogType>
         {
-            _logUpdateTimer = new DispatcherTimer
-            {
-                Interval = TimeSpan.FromSeconds(1)
-            };
-            _logUpdateTimer.Tick += LogUpdateTimer_Tick;
-            _logUpdateTimer.Start();
-        }
+            { "VRising", LogType.VRising },
+            { "MainConsole", LogType.MainConsole },
+            { "BepinExOutput", LogType.BepinExOutput },
+            { "BepinExError", LogType.BepinExError },
+        };
 
         // 初始化日志定时器时调整间隔
         //_logUpdateTimer = new DispatcherTimer
@@ -186,10 +185,10 @@ public partial class MainWindow : Window
                 if (_currentServer.Runtime.State == ServerRuntime.ServerState.运行中)
                 {
                     InitializeLogWatchers();
-                    InitializeServerStateListener();
-                    ReadLog(_currentServer);
+                    //InitializeServerStateListener();
                     //InitializePlayerDataManager(_currentServer);
-                    UpdatePlayerCountText();
+                    //ReadLog(_currentServer);
+                    //UpdatePlayerCountText();
                 }
                 //RefreshAdminStatus();
                 if (!string.IsNullOrEmpty(_activeLogType))
@@ -206,12 +205,8 @@ public partial class MainWindow : Window
         VsmSettings.AppSettings.Version = new AppSettings().Version;
 
         // 初始化日志
-        ShowLogMsg(LogType.MainConsole, $"夜族崛起服务端管理器(VSM)启动成功。", Brushes.Lime);
-        ShowLogMsg(LogType.MainConsole,
-            ((VsmSettings.Servers.Count > 0) ?
-            $"{VsmSettings.Servers.Count} 个服务器从设置中加载成功。" :
-            $"未找到服务器，请点击“添加服务器”以开始使用。"),
-            VsmSettings.Servers.Count > 0 ? Brushes.Lime : Brushes.Yellow);
+        ShowLogMsg($"夜族崛起服务端管理器(VSM)启动成功。", Brushes.Lime);
+        ShowLogMsg(((VsmSettings.Servers.Count > 0) ? $"{VsmSettings.Servers.Count} 个服务器从设置中加载成功。" : $"未找到服务器，请点击“添加服务器”以开始使用。"), VsmSettings.Servers.Count > 0 ? Brushes.Lime : Brushes.Yellow);
 
         ScanForServers();
         SetupTimer();
@@ -223,7 +218,7 @@ public partial class MainWindow : Window
             File.Delete("VSMUpdater.dll");
             File.Delete("VSMUpdater.deps.json");
             File.Delete("VSMUpdater.runtimeconfig.json");
-            ShowLogMsg(LogType.MainConsole, $"旧版更新程序清理完成。", Brushes.Gray);
+            ShowLogMsg($"旧版更新程序清理完成。", Brushes.Gray);
         }
 
         if (VsmSettings.AppSettings.AutoUpdateApp == true)
@@ -363,7 +358,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"定时器检查日志更新失败：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"定时器检查日志更新失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -451,11 +446,11 @@ public partial class MainWindow : Window
 
                 if (!File.Exists(fullPath))
                 {
-                    ShowLogMsg(logType, $"日志文件不存在：{fullPath}", Brushes.Yellow);
-                    ShowLogMsg(logType, $"请确保服务器有正常启动过至少一次", Brushes.Yellow);
+                    ShowLogMsg($"日志文件不存在：{fullPath}", Brushes.Yellow, logType);
+                    ShowLogMsg($"请确保服务器有正常启动过至少一次", Brushes.Yellow, logType);
                     if (logBox != VRisingLogTextBox)
                     {
-                        ShowLogMsg(logType, $"或当前服务器并不是Mod服务器", Brushes.Yellow);
+                        ShowLogMsg($"或当前服务器并不是Mod服务器", Brushes.Yellow, logType);
                     }
                     return;
                 }
@@ -468,7 +463,7 @@ public partial class MainWindow : Window
 
                 _lastFileSizes[logType] = new FileInfo(fullPath).Length;
 
-                ShowLogMsg(logType, $"已加载最近 {lines.Length} 行日志", Brushes.Gray);
+                ShowLogMsg($"已加载最近 {lines.Length} 行日志", Brushes.Gray, logType);
             }
 
             if (_logTypeToCheckbox[logType].IsChecked == true)
@@ -478,7 +473,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(logType, $"加载失败：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"加载失败：{ex.Message}", Brushes.Red, logType);
         }
     }
 
@@ -552,7 +547,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"更新 {logType} 日志失败: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"更新 {logType} 日志失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -596,7 +591,7 @@ public partial class MainWindow : Window
                 if (!string.IsNullOrEmpty(_activeLogType) && _logWatchers.TryGetValue(_logTagToType[_activeLogType], out var watcher))
                 {
                     watcher.EnableRaisingEvents = true;
-                    //ShowLogMsg(LogType.MainConsole, "服务器正在运行，日志将实时更新", Brushes.Lime);
+                    //ShowLogMsg("服务器正在运行，日志将实时更新", Brushes.Lime);
                 }
             }
             else
@@ -609,7 +604,7 @@ public partial class MainWindow : Window
 
                 if (!string.IsNullOrEmpty(_activeLogType))
                 {
-                    //ShowLogMsg(LogType.MainConsole, $"服务器状态：{currentState}，日志已停止更新", Brushes.Gray);
+                    //ShowLogMsg($"服务器状态：{currentState}，日志已停止更新", Brushes.Gray);
                 }
             }
         });
@@ -651,7 +646,7 @@ public partial class MainWindow : Window
         if (sender is Button btn && btn.Tag is string logType && _logTagToType.ContainsKey(logType))
         {
             _logTypeToTexbox[_logTagToType[logType]].Document.Blocks.Clear();
-            ShowLogMsg(_logTagToType[logType], "日志已清空", Brushes.Gray);
+            ShowLogMsg("日志已清空", Brushes.Gray, _logTagToType[logType]);
         }
     }
 
@@ -699,7 +694,7 @@ public partial class MainWindow : Window
 
         if (sender is not Button btn || btn.Tag is not string logType || !_logTagToType.ContainsKey(logType))
         {
-            ShowLogMsg(LogType.MainConsole, $"日志类型配置错误", Brushes.Red);
+            ShowLogMsg($"日志类型配置错误", Brushes.Red);
             return;
         }
 
@@ -722,13 +717,7 @@ public partial class MainWindow : Window
                     return;
             }
 
-            if (string.IsNullOrEmpty(logPath))
-            {
-                await ShowErrorDialog($"日志文件不存在：{logPath}");
-                return;
-            }
-
-            if (!File.Exists(logPath))
+            if (string.IsNullOrEmpty(logPath) || !File.Exists(logPath))
             {
                 await ShowErrorDialog($"日志文件不存在：{logPath}");
                 return;
@@ -741,7 +730,7 @@ public partial class MainWindow : Window
                 Verb = "open"            
             });
 
-            //ShowLogMsg(LogType.MainConsole, $"已用默认程序打开日志：{logPath}", Brushes.Green);
+            //ShowLogMsg($"已用默认程序打开日志：{logPath}", Brushes.Green);
         }
         catch (Exception ex)
         {
@@ -750,7 +739,7 @@ public partial class MainWindow : Window
         }
     }
 
-    public static async Task ShowErrorDialog(string message)
+    public async Task ShowErrorDialog(string message)
     {
         var dialog = new ContentDialog
         {
@@ -789,7 +778,7 @@ public partial class MainWindow : Window
         }
 
     }
-    public void ShowLogMsg(LogType logType, string message, Brush color)
+    public void ShowLogMsg(string message, Brush color, LogType logType = LogType.MainConsole)
     {
         if (Dispatcher.CheckAccess())
         {
@@ -806,12 +795,12 @@ public partial class MainWindow : Window
         if (string.IsNullOrEmpty(line)) return Brushes.White;
         string lowerLine = line.ToLower();
 
-        if (lowerLine.Contains("[error]") || lowerLine.Contains("exception"))
+        if (lowerLine.Contains("[error") || lowerLine.Contains("exception"))
             return Brushes.Red;
-        if (lowerLine.Contains("[warning]") || lowerLine.Contains("warn") || lowerLine.Contains("internal") || lowerLine.Contains("debug"))
+        if (lowerLine.Contains("[warning") || lowerLine.Contains("warn") || lowerLine.Contains("internal") || lowerLine.Contains("debug"))
             return Brushes.Yellow;
-        if (lowerLine.Contains("[info]"))
-            return Brushes.LimeGreen;
+        //if (lowerLine.Contains("[info"))
+        //    return Brushes.LimeGreen;
         return Brushes.White;
     }
 
@@ -840,7 +829,7 @@ public partial class MainWindow : Window
             attempt++;
             try
             {
-                //ShowLogMsg(LogType.MainConsole, $"检查更新中 ({attempt}/{maxRetries})...", Brushes.Gray);
+                //ShowLogMsg($"检查更新中 ({attempt}/{maxRetries})...", Brushes.Gray);
 
                 HttpResponseMessage response = await httpClient.GetAsync("https://gitee.com/aGHOSToZero/V-Rising-Server-Manager---Chinese/raw/master/VERSION");
                 response.EnsureSuccessStatusCode();
@@ -852,12 +841,12 @@ public partial class MainWindow : Window
                 {
                     VsmSettings.AppSettings.HasNewVersion = true;
                     VsmSettings.AppSettings.NewVersion = latestVersion;
-                    ShowLogMsg(LogType.MainConsole, $"发现新版本：{latestVersion}，可点击左下角版本按钮更新软件", Brushes.Yellow);
+                    ShowLogMsg($"发现新版本：{latestVersion}，可点击左下角版本按钮更新软件", Brushes.Yellow);
                 }
                 else
                 {
                     VsmSettings.AppSettings.HasNewVersion = false;
-                    ShowLogMsg(LogType.MainConsole, $"正在运行最新的版本：{latestVersion}", Brushes.Lime);
+                    ShowLogMsg($"正在运行最新的版本：{latestVersion}", Brushes.Lime);
                 }
 
                 return; 
@@ -892,18 +881,18 @@ public partial class MainWindow : Window
 
                 if (attempt < maxRetries)
                 {
-                    ShowLogMsg(LogType.MainConsole, $"检查更新失败 ({attempt}/{maxRetries}): {errorMessage}，正在重试...", Brushes.Orange);
+                    ShowLogMsg($"检查更新失败 ({attempt}/{maxRetries}): {errorMessage}，正在重试...", Brushes.Orange);
                     await Task.Delay(retryDelayMs);
                 }
                 else
                 {
-                    ShowLogMsg(LogType.MainConsole, $"搜索软件更新失败: {errorMessage}", Brushes.Red);
-                    ShowLogMsg(LogType.MainConsole, $"请检查网络连接或稍后再试", Brushes.Red);
+                    ShowLogMsg($"搜索软件更新失败: {errorMessage}", Brushes.Red);
+                    ShowLogMsg($"请检查网络连接或稍后再试", Brushes.Red);
                 }
             }
             catch (Exception ex)
             {
-                ShowLogMsg(LogType.MainConsole, $"搜索软件更新时发生未知错误: {ex.Message}", Brushes.Red);
+                ShowLogMsg($"搜索软件更新时发生未知错误: {ex.Message}", Brushes.Red);
                 break;
             }
         }
@@ -930,7 +919,7 @@ public partial class MainWindow : Window
     {
         if (VsmSettings.AppSettings.EnableAutoRestart == true)
         {
-            ShowLogMsg(LogType.MainConsole, $"自动重启已启动，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。", Brushes.Yellow);
+            ShowLogMsg($"自动重启已启动，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。", Brushes.Yellow);
             AutoRestartTimer = new PeriodicTimer(TimeSpan.FromSeconds(1));
             AutoRestartLoop();
         }
@@ -944,7 +933,7 @@ public partial class MainWindow : Window
             {
                 if (VsmSettings.AppSettings.EnableAutoRestart)
                 {
-                    ShowLogMsg(LogType.MainConsole, $"重载自动重启时间，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。", Brushes.Yellow);
+                    ShowLogMsg($"重载自动重启时间，重启时间为每日的 {VsmSettings.AppSettings.AutoRestartHour} 时 {VsmSettings.AppSettings.AutoRestartMin} 分 {VsmSettings.AppSettings.AutoRestartSec} 秒。", Brushes.Yellow);
                     VsmSettings.AppSettings.ManagerSettingsClose = false;
                 }
             }
@@ -972,7 +961,7 @@ public partial class MainWindow : Window
                     DateTime.Now.Second == VsmSettings.AppSettings.AutoRestartSec)
         {
             AutoRestart();
-            //ShowLogMsg(LogType.MainConsole, "自动重启中", Brushes.Yellow);
+            //ShowLogMsg("自动重启中", Brushes.Yellow);
         }
         return timetoRestart;
     }
@@ -999,16 +988,16 @@ public partial class MainWindow : Window
         }
         else
         {
-            ShowLogMsg(LogType.MainConsole, $"当前无正在运行的服务器，自动重启未生效。", Brushes.Yellow);
+            ShowLogMsg($"当前无正在运行的服务器，自动重启未生效。", Brushes.Yellow);
             return;
         }
 
-        ShowLogMsg(LogType.MainConsole, $"正在自动重启 {runningServers.Count} 个服务器" + ((runningServers.Count > 0) ? $" ,在此之前即将关闭 {runningServers.Count} 个服务器" : ""), Brushes.Yellow);
+        ShowLogMsg($"正在自动重启 {runningServers.Count} 个服务器" + ((runningServers.Count > 0) ? $" ,在此之前即将关闭 {runningServers.Count} 个服务器" : ""), Brushes.Yellow);
         foreach (Server server in runningServers)
         {
             await RestartServer(server);
         }
-        ShowLogMsg(LogType.MainConsole, $"自动重启完成。", Brushes.Lime);
+        ShowLogMsg($"自动重启完成。", Brushes.Lime);
 
     }
 
@@ -1019,7 +1008,7 @@ public partial class MainWindow : Window
 
         if (VsmSettings.WebhookSettings.URL == "")
         {
-            //ShowLogMsg(LogType.MainConsole, "Discord webhook尝试发送消息，但URL未定义。", Brushes.Yellow);
+            //ShowLogMsg("Discord webhook尝试发送消息，但URL未定义。", Brushes.Yellow);
             return;
         }
 
@@ -1038,21 +1027,21 @@ public partial class MainWindow : Window
     private async Task<bool> UpdateSteamCMD()
     {
         string workingDir = Directory.GetCurrentDirectory();
-        ShowLogMsg(LogType.MainConsole, "未找到SteamCMD，正在下载...", Brushes.Yellow);
+        ShowLogMsg("未找到SteamCMD，正在下载...", Brushes.Yellow);
         byte[] fileBytes = await HttpClient.GetByteArrayAsync(@"https://steamcdn-a.akamaihd.net/client/installer/steamcmd.zip");
         await File.WriteAllBytesAsync(workingDir + @"\steamcmd.zip", fileBytes);
         if (File.Exists(workingDir + @"\SteamCMD\steamcmd.exe") == true)
         {
             File.Delete(workingDir + @"\SteamCMD\steamcmd.exe");
         }
-        ShowLogMsg(LogType.MainConsole, "解压中...", Brushes.Yellow);
+        ShowLogMsg("解压中...", Brushes.Yellow);
         ZipFile.ExtractToDirectory(workingDir + @"\steamcmd.zip", workingDir + @"\SteamCMD");
         if (File.Exists(workingDir + @"\steamcmd.zip"))
         {
             File.Delete(workingDir + @"\steamcmd.zip");
         }
 
-        ShowLogMsg(LogType.MainConsole, "正在获取V Rising Dedicated Server应用信息。", Brushes.Lime);
+        ShowLogMsg("正在获取V Rising Dedicated Server应用信息。", Brushes.Lime);
         await CheckForUpdate();
 
         return true;
@@ -1062,14 +1051,14 @@ public partial class MainWindow : Window
     {
         if (server.Runtime.State == ServerRuntime.ServerState.更新中)
         {
-            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 正在更新中，尝试终止现有SteamCMD进程...", Brushes.Yellow);
+            ShowLogMsg($"服务器 {server.vsmServerName} 正在更新中，尝试终止现有SteamCMD进程...", Brushes.Yellow);
             KillAllSteamcmdProcesses();
             server.Runtime.State = ServerRuntime.ServerState.已停止;
             return false;
         }
         if (server.Runtime.State != ServerRuntime.ServerState.已停止)
         {
-            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 状态为 {server.Runtime.State}，无法更新（仅允许已停止状态）", Brushes.Red);
+            ShowLogMsg($"服务器 {server.vsmServerName} 状态为 {server.Runtime.State}，无法更新（仅允许已停止状态）", Brushes.Red);
             return false;
         }
         server.Runtime.State = ServerRuntime.ServerState.更新中;
@@ -1083,13 +1072,13 @@ public partial class MainWindow : Window
 
         if (!Directory.Exists(server.Path))
         {
-            ShowLogMsg(LogType.MainConsole, $"服务器目录不存在，正在创建: {server.Path}", Brushes.Lime);
+            ShowLogMsg($"服务器目录不存在，正在创建: {server.Path}", Brushes.Lime);
             Directory.CreateDirectory(server.Path);
         }
 
         if (server.Runtime.Process != null && !server.Runtime.Process.HasExited)
         {
-            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 仍在运行中，无法更新", Brushes.Yellow);
+            ShowLogMsg($"服务器 {server.vsmServerName} 仍在运行中，无法更新", Brushes.Yellow);
             server.Runtime.State = ServerRuntime.ServerState.已停止;
             return false;
         }
@@ -1099,7 +1088,7 @@ public partial class MainWindow : Window
 
         if (!File.Exists(steamCmdPath))
         {
-            ShowLogMsg(LogType.MainConsole, "未找到SteamCMD，正在下载...", Brushes.Lime);
+            ShowLogMsg("未找到SteamCMD，正在下载...", Brushes.Lime);
 
             try
             {
@@ -1113,11 +1102,11 @@ public partial class MainWindow : Window
 
                 ZipFile.ExtractToDirectory(zipPath, steamCmdDir);
                 File.Delete(zipPath);
-                ShowLogMsg(LogType.MainConsole, "SteamCMD下载并安装成功", Brushes.Lime);
+                ShowLogMsg("SteamCMD下载并安装成功", Brushes.Lime);
             }
             catch (Exception ex)
             {
-                ShowLogMsg(LogType.MainConsole, $"SteamCMD下载失败：{ex.Message}", Brushes.Red);
+                ShowLogMsg($"SteamCMD下载失败：{ex.Message}", Brushes.Red);
                 server.Runtime.State = ServerRuntime.ServerState.已停止;
                 return false;
             }
@@ -1126,12 +1115,12 @@ public partial class MainWindow : Window
         bool isNewInstall = !Directory.EnumerateFiles(server.Path).Any();
         string action = isNewInstall ? "下载" : "更新";
 
-        ShowLogMsg(LogType.MainConsole, $"正在{action}游戏服务器：{server.vsmServerName}，请等待...", Brushes.Lime);
-        //ShowLogMsg(LogType.MainConsole, $"若{action}成功但启动失败，请到设置中开启“显示SteamCMD窗口”", Brushes.Gray);
+        ShowLogMsg($"正在{action}游戏服务器：{server.vsmServerName}，请等待...", Brushes.Lime);
+        //ShowLogMsg($"若{action}成功但启动失败，请到设置中开启“显示SteamCMD窗口”", Brushes.Gray);
 
         if (VsmSettings.AppSettings == null)
         {
-            ShowLogMsg(LogType.MainConsole, "警告：应用设置未初始化，使用默认值", Brushes.Yellow);
+            ShowLogMsg("警告：应用设置未初始化，使用默认值", Brushes.Yellow);
             VsmSettings.AppSettings = new AppSettings();
         }
 
@@ -1160,8 +1149,8 @@ public partial class MainWindow : Window
                 {
                     FileName = steamCmdPath,
                     Arguments = parameters,
-                    CreateNoWindow = true,
-                    UseShellExecute = false, 
+                    CreateNoWindow = !VsmSettings.AppSettings.ShowSteamWindow,
+                    UseShellExecute = false,
                     RedirectStandardOutput = true,
                     RedirectStandardError = true,
                     WorkingDirectory = server.Path,
@@ -1181,7 +1170,7 @@ public partial class MainWindow : Window
                     // 检测到中文路径错误
                     if (e.Data.Contains("默认文件夹"))
                     {
-                        ShowLogMsg(LogType.MainConsole, "错误：路径包含中文，请不要在带有中文的目录中使用！", Brushes.Red);
+                        ShowLogMsg("错误：路径包含中文，请不要在带有中文的目录中使用！", Brushes.Red);
                         hasError = true;
                         KillAllSteamcmdProcesses(); 
                         return;
@@ -1189,7 +1178,7 @@ public partial class MainWindow : Window
 
                     if (e.Data.Contains("FAILED (No Connection)"))
                     {
-                        ShowLogMsg(LogType.MainConsole, "错误：服务器更新失败，请检查你的网络连接！", Brushes.Red);
+                        ShowLogMsg("错误：服务器更新失败，请检查你的网络连接！", Brushes.Red);
                         hasError = true;
                         KillAllSteamcmdProcesses();
                         return;
@@ -1204,7 +1193,7 @@ public partial class MainWindow : Window
 
             if (hasError)
             {
-                ShowLogMsg(LogType.MainConsole, $"{action}被强制终止（检测到错误）", Brushes.Red);
+                ShowLogMsg($"{action}被强制终止（检测到错误）", Brushes.Red);
                 server.Runtime.State = ServerRuntime.ServerState.已停止;
                 return false;
             }
@@ -1213,7 +1202,7 @@ public partial class MainWindow : Window
             {
                 Dispatcher.Invoke(() =>
                 {
-                    ShowLogMsg(LogType.MainConsole, $"{action}成功：{server.vsmServerName}", Brushes.Lime);
+                    ShowLogMsg($"{action}成功：{server.vsmServerName}", Brushes.Lime);
                     LogTextBox.Text = $"{action}完成！";
                 });
                 server.Runtime.State = ServerRuntime.ServerState.已停止;
@@ -1223,7 +1212,7 @@ public partial class MainWindow : Window
             {
                 Dispatcher.Invoke(() =>
                 {
-                    ShowLogMsg(LogType.MainConsole, $"{action}失败，退出代码：{steamcmd.ExitCode}", Brushes.Red);
+                    ShowLogMsg($"{action}失败，退出代码：{steamcmd.ExitCode}", Brushes.Red);
                     LogTextBox.Text = $"{action}失败";
                 });
                 server.Runtime.State = ServerRuntime.ServerState.已停止;
@@ -1234,7 +1223,7 @@ public partial class MainWindow : Window
         {
             Dispatcher.Invoke(() =>
             {
-                ShowLogMsg(LogType.MainConsole, $"{action}出错：{ex.Message}", Brushes.Red);
+                ShowLogMsg($"{action}出错：{ex.Message}", Brushes.Red);
                 LogTextBox.Text = "操作出错";
             });
             server.Runtime.State = ServerRuntime.ServerState.已停止;
@@ -1272,13 +1261,13 @@ public partial class MainWindow : Window
                 {
                     process.Kill();
                     process.WaitForExit(1000);
-                    ShowLogMsg(LogType.MainConsole, $"终止SteamCMD进程（PID: {process.Id}）", Brushes.Yellow);
+                    ShowLogMsg($"终止SteamCMD进程（PID: {process.Id}）", Brushes.Yellow);
                 }
             }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"终止SteamCMD进程失败：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"终止SteamCMD进程失败：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -1286,7 +1275,7 @@ public partial class MainWindow : Window
     {
         if (server.Runtime.Process != null)
         {
-            ShowLogMsg(LogType.MainConsole, $"错误：{server.vsmServerName} 已在运行中", Brushes.Red);
+            ShowLogMsg($"错误：{server.vsmServerName} 已在运行中", Brushes.Red);
             return false;
         }
 
@@ -1298,7 +1287,7 @@ public partial class MainWindow : Window
             if (!Directory.Exists(saveDataPath))
             {
                 Directory.CreateDirectory(saveDataPath);
-                ShowLogMsg(LogType.MainConsole, $"创建目录: {saveDataPath}", Brushes.Yellow);
+                ShowLogMsg($"创建目录: {saveDataPath}", Brushes.Yellow);
             }
 
             string hostSettingsPath = Path.Combine(saveDataPath, "ServerHostSettings.json");
@@ -1311,21 +1300,20 @@ public partial class MainWindow : Window
 
                 if (!File.Exists(defaultHostSettingsPath) || !File.Exists(defaultGameSettingsPath))
                 {
-                    ShowLogMsg(LogType.MainConsole, "错误：找不到默认配置文件", Brushes.Red);
+                    ShowLogMsg("错误：找不到默认配置文件", Brushes.Red);
                     return false;
                 }
 
                 // 复制默认配置文件
                 File.Copy(defaultHostSettingsPath, hostSettingsPath, true);
                 File.Copy(defaultGameSettingsPath, gameSettingsPath, true);
-                //ShowLogMsg(LogType.MainConsole, "已复制默认配置文件", Brushes.Lime);
+                //ShowLogMsg("已复制默认配置文件", Brushes.Lime);
             }
 
             string jsonString = File.ReadAllText(hostSettingsPath);
             ServerSettings jsonObject = JsonConvert.DeserializeObject<ServerSettings>(jsonString);
 
-            //ShowLogMsg(LogType.MainConsole, $"启动服务器：{jsonObject.Name} | VSM内名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}", Brushes.Lime);
-            ShowLogMsg(LogType.MainConsole, $"启动服务器：{server.vsmServerName}{(server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3" : "")}", Brushes.Lime);
+            ShowLogMsg($"启动服务器：{server.vsmServerName}{(server.Runtime.RestartAttempts > 0 ? $" 尝试 {server.Runtime.RestartAttempts}/3" : "")}", Brushes.Lime);
 
             // 等待服务器初始化
             await Task.Delay(1000);
@@ -1334,7 +1322,7 @@ public partial class MainWindow : Window
 
             if (!File.Exists(serverExePath))
             {
-                ShowLogMsg(LogType.MainConsole, "错误：未找到VRisingServer.exe", Brushes.Red);
+                ShowLogMsg("错误：未找到VRisingServer.exe", Brushes.Red);
                 return false;
             }
 
@@ -1345,7 +1333,7 @@ public partial class MainWindow : Window
 
             string parameters = $@"-persistentDataPath ""{Path.Combine(server.Path, "SaveData")}"" 
                               -serverName ""{jsonObject.Name}"" 
-                              -saveName ""{server.LaunchSettings.WorldName}"" 日志处理错误
+                              -saveName ""{server.LaunchSettings.WorldName}"" 
                               -logFile ""{Path.Combine(server.Path, "logs", "VRisingServer.log")}""
                               {(server.LaunchSettings.BindToIP ? $@" -address ""{server.LaunchSettings.BindingIP}""" : "")}";
 
@@ -1361,7 +1349,7 @@ public partial class MainWindow : Window
                 EnableRaisingEvents = true
             };
 
-            //ShowLogMsg(LogType.MainConsole, "正在载入配置文件...", Brushes.Lime);
+            //ShowLogMsg("正在载入配置文件...", Brushes.Lime);
 
             serverProcess.Exited += (sender, e) => ServerProcessExited(sender, e, server);
             serverProcess.Start();
@@ -1370,28 +1358,27 @@ public partial class MainWindow : Window
             server.Runtime.UserStopped = false;
             server.Runtime.Process = serverProcess;
 
-            ShowLogMsg(LogType.MainConsole, $"启动服务器完成：{jsonObject.Name} | VSM抬头名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}", Brushes.Lime);
-            //InitializePlayerDataManager(server);
+            ShowLogMsg($"启动服务器完成：{jsonObject.Name} | VSM抬头名称：{server.vsmServerName} | 显示名称：{server.LaunchSettings.DisplayName}", Brushes.Lime);
             if (server.FirstStart)
             {
                 server.FirstStart = false;
-                ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 首次启动，将在10秒后重启以更新数据", Brushes.Yellow);
+                MainSettings.Save(VsmSettings);
+                ShowLogMsg($"服务器 {server.vsmServerName} 首次启动，将在10秒后重启以更新数据", Brushes.Yellow);
                 await Task.Delay(10000);
                 await RestartServer(server);
-                MainSettings.Save(VsmSettings);
             }
-            else
-            {
-                ReadLog(server);
-                _playerDataManager = new PlayerDataManager(server, this);
-                _playerDataManager.ResetOnlineStatusOnRestart();
-            }
+            //else
+            //{
+            //    ReadLog(server);
+            //    //_playerDataManager = new PlayerDataManager(server, this);
+            //    //_playerDataManager.ResetOnlineStatusOnRestart();
+            //}
             //MainSettings.Save(VsmSettings);
             return true;
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"启动服务器失败：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"启动服务器失败：{ex.Message}", Brushes.Red);
             return false;
         }
     }
@@ -1459,7 +1446,7 @@ public partial class MainWindow : Window
 
         if (foundServers > 0)
         {
-            ShowLogMsg(LogType.MainConsole, $"已找到 {foundServers} 个服务器正在运行。", Brushes.Lime);
+            ShowLogMsg($"已找到 {foundServers} 个服务器正在运行。", Brushes.Lime);
         }
     }
 
@@ -1506,7 +1493,7 @@ public partial class MainWindow : Window
             serverTasks.Add(StopServer(server));
         }
 
-        ShowLogMsg(LogType.MainConsole, $"正在自动更新 {VsmSettings.Servers.Count} 个服务器。" + ((runningServers.Count > 0) ? $"在此之前即将关闭 {runningServers.Count} 个服务器。" : ""), Brushes.Yellow);
+        ShowLogMsg($"正在自动更新 {VsmSettings.Servers.Count} 个服务器。" + ((runningServers.Count > 0) ? $"在此之前即将关闭 {runningServers.Count} 个服务器。" : ""), Brushes.Yellow);
 
         await Task.WhenAll(serverTasks.ToArray());
         serverTasks.Clear();
@@ -1522,14 +1509,14 @@ public partial class MainWindow : Window
         }
 
         await Task.WhenAll(serverTasks.ToArray());
-        ShowLogMsg(LogType.MainConsole, $"自动更新完成。", Brushes.Lime);
+        ShowLogMsg($"自动更新完成。", Brushes.Lime);
     }
 
     private async Task<bool> StopServer(Server server)
     {
         if (server.Runtime.Process == null || server.Runtime.Process.HasExited)
         {
-            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 未运行或已退出", Brushes.Yellow);
+            ShowLogMsg($"服务器 {server.vsmServerName} 未运行或已退出", Brushes.Yellow);
             server.Runtime.Process = null;
             return true;
         }
@@ -1541,7 +1528,7 @@ public partial class MainWindow : Window
         }
 
         server.Runtime.UserStopped = true;
-        //ShowLogMsg(LogType.MainConsole, $"正在关闭服务器 {server.vsmServerName}...", Brushes.Yellow);
+        //ShowLogMsg($"正在关闭服务器 {server.vsmServerName}...", Brushes.Yellow);
 
         try
         {
@@ -1550,7 +1537,7 @@ public partial class MainWindow : Window
             {
                 await server.Runtime.Process.WaitForExitAsync();
                 server.Runtime.State = ServerRuntime.ServerState.已停止;
-                //ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 已关闭", Brushes.Green);
+                //ShowLogMsg($"服务器 {server.vsmServerName} 已关闭", Brushes.Green);
                 server.Runtime.Process = null;
                 return true;
             }
@@ -1559,9 +1546,15 @@ public partial class MainWindow : Window
             Process process = Process.GetProcessById(processId);
             if (process != null && !process.HasExited)
             {
-                process.Kill();
+                // 例如：通过命令行参数通知进程停止
+                //Process.Start(new ProcessStartInfo("VRisingServer.exe", "-exit")
+                //{
+                //    CreateNoWindow = true
+                //});
+                SendCtrlC(process);
+                //process.Kill();
                 await process.WaitForExitAsync(); 
-                //ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 已关闭（PID: {processId}）", Brushes.Yellow);
+                //ShowLogMsg($"服务器 {server.vsmServerName} 已关闭（PID: {processId}）", Brushes.Yellow);
                 server.Runtime.State = ServerRuntime.ServerState.已停止;
                 server.Runtime.Process = null;
                 return true;
@@ -1570,9 +1563,24 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 关闭失败：{ex.Message}", Brushes.Yellow);
+            ShowLogMsg($"服务器 {server.vsmServerName} 关闭失败：{ex.Message}", Brushes.Yellow);
             return false;
         }
+    }
+
+    [System.Runtime.InteropServices.DllImport("kernel32.dll")]
+    private static extern bool GenerateConsoleCtrlEvent(uint dwCtrlEvent, uint dwProcessGroupId);
+
+    public void SendCtrlC(Process process)
+    {
+        if (process == null || process.HasExited) return;
+
+        // 发送Ctrl+C信号（需进程属于当前进程组，且未禁用Ctrl+C处理）
+        GenerateConsoleCtrlEvent(0, (uint)process.Id); // 0 = CTRL_C_EVENT
+
+        // 等待退出
+        if (!process.WaitForExit(5000))
+            process.Kill();
     }
 
     private async Task<bool> RemoveServer(Server server)
@@ -1627,7 +1635,7 @@ public partial class MainWindow : Window
     private async Task<bool> CheckForUpdate()
     {
         bool foundUpdate = false;
-        ShowLogMsg(LogType.MainConsole, $"正在查询服务器更新...", Brushes.Yellow);
+        ShowLogMsg($"正在查询服务器更新...", Brushes.Yellow);
         string json = await HttpClient.GetStringAsync("https://api.steamcmd.net/v1/info/1829350");
         JsonNode jsonNode = JsonNode.Parse(json);
 
@@ -1641,7 +1649,7 @@ public partial class MainWindow : Window
                 VsmSettings.AppSettings.LastUpdateTime = "服务器最近更新的时间：" + DateTimeOffset.FromUnixTimeSeconds(long.Parse(VsmSettings.AppSettings.LastUpdateTimeUNIX)).DateTime.ToString();
 
             MainSettings.Save(VsmSettings);
-            ShowLogMsg(LogType.MainConsole, $"当前游戏服务器已是最新版本。", Brushes.Lime);
+            ShowLogMsg($"当前游戏服务器已是最新版本。", Brushes.Lime);
             return foundUpdate;
         }
 
@@ -1696,13 +1704,13 @@ public partial class MainWindow : Window
     //            }
     //            catch (Exception ex)
     //            {
-    //                ShowLogMsg(LogType.MainConsole, $"错误：{ex.Message}", Brushes.Orange);
+    //                ShowLogMsg($"错误：{ex.Message}", Brushes.Orange);
     //            }
     //        }
 
-    //        ShowLogMsg(LogType.MainConsole, $"Public IP: {ipAddress}", Brushes.Orange);
-    //        ShowLogMsg(LogType.MainConsole, $"Game Server SteamID: {steamID}", Brushes.Orange);
-    //        ShowLogMsg(LogType.MainConsole, $"{foundVariables}", Brushes.Orange);
+    //        ShowLogMsg($"Public IP: {ipAddress}", Brushes.Orange);
+    //        ShowLogMsg($"Game Server SteamID: {steamID}", Brushes.Orange);
+    //        ShowLogMsg($"{foundVariables}", Brushes.Orange);
 
     //        if (foundVariables == 3 && VsmSettings.WebhookSettings.Enabled == true && server.WebhookMessages.Enabled == true)
     //        {
@@ -1730,13 +1738,13 @@ public partial class MainWindow : Window
     {
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"传入的服务器为空！", Brushes.Red);
+            ShowLogMsg($"传入的服务器为空！", Brushes.Red);
             return;
         }
 
         //if (server.Runtime?.Process == null)
         //{
-        //    ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 服务器进程未启动，无法读取日志", Brushes.Red);
+        //    ShowLogMsg($"[{server.vsmServerName}] 服务器进程未启动，无法读取日志", Brushes.Red);
         //    return;
         //}
 
@@ -1754,11 +1762,11 @@ public partial class MainWindow : Window
             {
                 if (!File.Exists(logPath))
                 {
-                    ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 日志文件不存在，请确保服务器已成功启动过一次", Brushes.Yellow);
+                    ShowLogMsg($"[{server.vsmServerName}] 日志文件不存在，请确保服务器已成功启动过一次", Brushes.Yellow);
                     await Task.Delay(5000);
                     if (!File.Exists(logPath))
                     {
-                        ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 日志文件仍不存在，请手动启动服务器一次", Brushes.Red);
+                        ShowLogMsg($"[{server.vsmServerName}] 日志文件仍不存在，请手动启动服务器一次", Brushes.Red);
                         return;
                     }
                 }
@@ -1768,84 +1776,89 @@ public partial class MainWindow : Window
                 server.FirstStart = false;
                 MainSettings.Save(VsmSettings);
 
-                ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 已检测到日志文件：{logPath}", Brushes.Green);
+                ShowLogMsg($"[{server.vsmServerName}] 已检测到日志文件：{logPath}", Brushes.Green);
             }
 
 
             using FileStream fs = new FileStream(logPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
             using StreamReader sr = new StreamReader(fs);
-
+            
             // 持续读取日志
-            while (!serverAsynchronousShuttingDown && server.Runtime.Process != null)
+            while (foundVariables < 3 && server.Runtime.Process != null)
             {
                 string line = await sr.ReadLineAsync();
                 if (line != null)
                 {
-                    // 处理服务器IP
-                    if (line.Contains("PlatformSystemBase - OnPolicyResponse - Public IP: "))
-                    {
-                        ipAddress = line.Split("PlatformSystemBase - OnPolicyResponse - Public IP: ")[1];
-                        foundVariables++;
-                    }
-                    // 处理SteamID
                     if (line.Contains("SteamNetworking - Successfully logged in with the SteamGameServer API. SteamID: "))
                     {
                         steamID = line.Split("SteamNetworking - Successfully logged in with the SteamGameServer API. SteamID: ")[1];
                         foundVariables++;
+                        //ShowLogMsg(foundVariables.ToString(), Brushes.Cyan);
+                        //ShowLogMsg(steamID.ToString(), Brushes.Cyan);
                     }
-                    // 处理关闭异步流
+                    if (line.Contains("PlatformSystemBase - OnPolicyResponse - Public IP: "))
+                    {
+                        ipAddress = line.Split("PlatformSystemBase - OnPolicyResponse - Public IP: ")[1];
+                        foundVariables++;
+                        //ShowLogMsg(foundVariables.ToString(), Brushes.Cyan);
+                        //ShowLogMsg(ipAddress, Brushes.Cyan);
+                    }
                     if (line.Contains("Shutting down Asynchronous Streaming"))
                     {
                         serverAsynchronousShuttingDown = true;
                         foundVariables++;
-#if DEBUG
-                        ShowLogMsg(LogType.MainConsole, $"Public IP：{ipAddress}", Brushes.Orange);
-                        ShowLogMsg(LogType.MainConsole, $"Game Server SteamID: {steamID}", Brushes.Orange);
-#endif
+                        //ShowLogMsg(foundVariables.ToString(), Brushes.Cyan);
+                        //ShowLogMsg(serverAsynchronousShuttingDown.ToString(), Brushes.Cyan);
                     }
                 }
                 else
                 {
                     // 无新内容时短暂等待
-                    await Task.Delay(500);
-                    //ShowLogMsg(LogType.MainConsole, $"等待日志更新", Brushes.Green);
+                    await Task.Delay(100);
+                    //ShowLogMsg($"等待日志更新", Brushes.Green);
                 }
             }
 
-            // 移动到文件末尾，只读取新内容
-            fs.Seek(0, SeekOrigin.End);
-            long initialPosition = fs.Position;
-
-            // 初始化玩家更新定时器
-            InitializePlayerDataManager(server);
-            InitializePlayerUpdateTimer();
-            InitializeServerStateListener();
-            await MonitorPlayerActivity(server, sr, fs, initialPosition);
-
-            // 发送服务器就绪通知（如果配置）
-            if (!serverAsynchronousShuttingDown && VsmSettings.WebhookSettings.Enabled && server.WebhookMessages.Enabled)
+            if (foundVariables == 3)
             {
-                List<string> toSend = new()
+                ShowLogMsg($"· {server.vsmServerName} Public IP：{ipAddress}", Brushes.Orange);
+                ShowLogMsg($"· {server.vsmServerName} Game Server SteamID: {steamID}", Brushes.Orange);
+                // 发送服务器就绪通知（如果配置）
+                if (VsmSettings.WebhookSettings.Enabled && server.WebhookMessages.Enabled)
+                {
+                    List<string> toSend = new()
                 {
                     !string.IsNullOrEmpty(server.WebhookMessages.ServerReady) ? server.WebhookMessages.ServerReady : "",
                     server.WebhookMessages.BroadcastIP ? $"Public IP: {ipAddress}" : "",
                     server.WebhookMessages.BroadcastSteamID ? $"SteamID: {steamID}" : ""
                 };
 
-                if (toSend.Any(x => !string.IsNullOrEmpty(x)))
-                {
-                    SendDiscordMessage(string.Join("\n", toSend));
+                    if (toSend.Any(x => !string.IsNullOrEmpty(x)))
+                    {
+                        SendDiscordMessage(string.Join("\n", toSend));
+                    }
                 }
             }
+            
+
+            // 移动到文件末尾，只读取新内容
+            fs.Seek(0, SeekOrigin.End);
+            long initialPosition = fs.Position;
+
+            // 初始化玩家更新定时器
+            //InitializePlayerDataManager(server);
+            //InitializePlayerUpdateTimer();
+            //InitializeServerStateListener();
+            await MonitorPlayerActivity(server, sr, fs, initialPosition);
         }
         catch (FileNotFoundException ex)
         {
             server.LogFileExists = false;
-            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 日志文件已被删除，请重启服务器: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"[{server.vsmServerName}] 日志文件已被删除，请重启服务器: {ex.Message}", Brushes.Red);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 日志处理错误：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"[{server.vsmServerName}] 日志处理错误：{ex.Message}", Brushes.Red);
         }
 
     }
@@ -1862,7 +1875,7 @@ public partial class MainWindow : Window
                 // 检查文件是否被截断(例如日志滚动)
                 if (fs.Length < lastPosition)
                 {
-                    //ShowLogMsg(LogType.MainConsole, "日志文件被重置，重新开始监控", Brushes.Yellow);
+                    //ShowLogMsg("日志文件被重置，重新开始监控", Brushes.Yellow);
                     fs.Seek(0, SeekOrigin.Begin);
                     lastPosition = 0;
                 }
@@ -1876,7 +1889,7 @@ public partial class MainWindow : Window
                     {
                         if (!string.IsNullOrWhiteSpace(line))
                         {
-                            //ShowLogMsg(LogType.MainConsole, $"处理玩家事件: {line}", Brushes.Orange);
+                            //ShowLogMsg($"处理玩家事件: {line}", Brushes.Orange);
                             ProcessPlayerEvent(line);
                             lastPosition = fs.Position;
                         }
@@ -1890,7 +1903,7 @@ public partial class MainWindow : Window
             }
             catch (Exception ex)
             {
-                ShowLogMsg(LogType.MainConsole, $"监控玩家活动时出错: {ex.Message}", Brushes.Red);
+                ShowLogMsg($"监控玩家活动时出错: {ex.Message}", Brushes.Red);
                 await Task.Delay(2000);
 
                 // 重置流位置，避免卡死
@@ -1901,22 +1914,22 @@ public partial class MainWindow : Window
 
     private void ProcessPlayerEvent(string logLine)
     {
-        if (logLine.Contains("User") && logLine.Contains("begun its spawn fadeout"))
-        {
-            HandlePlayerCreate(logLine);
-        }
-        else if (logLine.Contains("User") && logLine.Contains("connected as ID"))
-        {
-            HandlePlayerConnect(logLine);
-        }
-        else if (logLine.Contains("User") && logLine.Contains("disconnected"))
-        {
-            HandlePlayerDisconnect(logLine);
-        }
-        else if (logLine.Contains("NetEndPoint") && logLine.Contains("IsAdmin"))
-        {
-            HandleAdminGrant(logLine);
-        }
+        //if (logLine.Contains("User") && logLine.Contains("begun its spawn fadeout"))
+        //{
+        //    HandlePlayerCreate(logLine);
+        //}
+        //else if (logLine.Contains("User") && logLine.Contains("connected as ID"))
+        //{
+        //    HandlePlayerConnect(logLine);
+        //}
+        //else if (logLine.Contains("User") && logLine.Contains("disconnected"))
+        //{
+        //    HandlePlayerDisconnect(logLine);
+        //}
+        //else if (logLine.Contains("NetEndPoint") && logLine.Contains("IsAdmin"))
+        //{
+        //    HandleAdminGrant(logLine);
+        //}
     }
 
     private void HandlePlayerCreate(string logLine)
@@ -1928,13 +1941,13 @@ public partial class MainWindow : Window
 
             if (string.IsNullOrEmpty(characterName) || string.IsNullOrEmpty(steamIdStr))
             {
-                ShowLogMsg(LogType.MainConsole, $"连接日志缺少关键信息: {logLine}", Brushes.Orange);
+                ShowLogMsg($"连接日志缺少关键信息: {logLine}", Brushes.Orange);
                 return;
             }
 
             if (!ulong.TryParse(steamIdStr, out ulong steamId))
             {
-                ShowLogMsg(LogType.MainConsole, $"无效SteamID格式: {steamIdStr}", Brushes.Red);
+                ShowLogMsg($"无效SteamID格式: {steamIdStr}", Brushes.Red);
                 return;
             }
 
@@ -1952,7 +1965,7 @@ public partial class MainWindow : Window
                     _playerDataManager?.LoadOrCreateDataFile();
                     PlayerDataGrid.ItemsSource = _playerDataManager?.Players.Values;
                 }
-                ShowLogMsg(LogType.MainConsole, $"玩家创建角色: {characterName} (SteamID: {steamId})", Brushes.Green);
+                ShowLogMsg($"玩家创建角色: {characterName} (SteamID: {steamId})", Brushes.Green);
             }
 
 
@@ -1963,7 +1976,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"连接处理失败: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"连接处理失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -1977,19 +1990,19 @@ public partial class MainWindow : Window
 
             if (string.IsNullOrEmpty(characterName))
             {
-                ShowLogMsg(LogType.MainConsole, $"玩家未创建角色，等待创建角色中", Brushes.Orange);
+                ShowLogMsg($"玩家未创建角色，等待创建角色中", Brushes.Orange);
                 characterName = "";
             }
 
             if (string.IsNullOrEmpty(steamIdStr))
             {
-                ShowLogMsg(LogType.MainConsole, $"连接日志缺少关键信息: {logLine}", Brushes.Orange);
+                ShowLogMsg($"连接日志缺少关键信息: {logLine}", Brushes.Orange);
                 return;
             }
 
             if (!ulong.TryParse(steamIdStr, out ulong steamId))
             {
-                ShowLogMsg(LogType.MainConsole, $"无效SteamID格式: {steamIdStr}", Brushes.Red);
+                ShowLogMsg($"无效SteamID格式: {steamIdStr}", Brushes.Red);
                 return;
             }
 
@@ -2013,7 +2026,7 @@ public partial class MainWindow : Window
             //    {
             //        var lastSession = now - existingPlayer.LoginTime.Value;
             //        existingPlayer.TotalPlayTime += lastSession;
-            //        ShowLogMsg(LogType.MainConsole, $"玩家重连: {characterName} (SteamID: {steamId})，上次时长: {FormatTimeSpan(lastSession)}", Brushes.Cyan);
+            //        ShowLogMsg($"玩家重连: {characterName} (SteamID: {steamId})，上次时长: {FormatTimeSpan(lastSession)}", Brushes.Cyan);
             //    }
             //    player.TotalPlayTime = existingPlayer.TotalPlayTime;
             //    player.IsAdmin = existingPlayer.IsAdmin;
@@ -2023,7 +2036,7 @@ public partial class MainWindow : Window
             _netEndpointToPlayer[netEndpoint] = player;
             _playerDataManager?.AddOrUpdatePlayer(steamId, player);
             _playerDataManager?.SaveAsync();
-            ShowLogMsg(LogType.MainConsole, $"玩家连接: {characterName} (SteamID: {steamId})", Brushes.Green);
+            ShowLogMsg($"玩家连接: {characterName} (SteamID: {steamId})", Brushes.Green);
 
             if (VsmSettings.WebhookSettings.Enabled)
             {
@@ -2032,7 +2045,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"连接处理失败: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"连接处理失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -2045,7 +2058,7 @@ public partial class MainWindow : Window
             VRisingPlayerInfo player = new VRisingPlayerInfo();
             if (string.IsNullOrEmpty(netEndpoint))
             {
-                ShowLogMsg(LogType.MainConsole, $"断开日志缺少NetEndpoint: {logLine}", Brushes.Orange);
+                ShowLogMsg($"断开日志缺少NetEndpoint: {logLine}", Brushes.Orange);
                 return;
             }
             foreach (var playerdata in _playerDataManager.Players.Values)
@@ -2059,17 +2072,17 @@ public partial class MainWindow : Window
                     player = _playerDataManager.Players.Values.FirstOrDefault(p => p.NetEndPoint.Contains(netEndpoint));
                     if (player == null)
                     {
-                        ShowLogMsg(LogType.MainConsole, $"未找到匹配玩家 (NetEndpoint: {netEndpoint})", Brushes.Orange);
+                        ShowLogMsg($"未找到匹配玩家 (NetEndpoint: {netEndpoint})", Brushes.Orange);
                         return;
                     }
-                        //ShowLogMsg(LogType.MainConsole, $"玩家连接状态：{player.IsOnline.ToString()}", Brushes.Orange);
+                        //ShowLogMsg($"玩家连接状态：{player.IsOnline.ToString()}", Brushes.Orange);
                     break;
                 }
             }
 
             if (!player.IsOnline)
             {
-                //ShowLogMsg(LogType.MainConsole, $"重复断开事件: {player.CharacterName} (SteamID: {player.SteamId})", Brushes.Gray);
+                //ShowLogMsg($"重复断开事件: {player.CharacterName} (SteamID: {player.SteamId})", Brushes.Gray);
                 return;
             }
 
@@ -2087,10 +2100,9 @@ public partial class MainWindow : Window
             _playerDataManager?.SaveAsync();
             _netEndpointToPlayer.Remove(netEndpoint);
 
-            ShowLogMsg(LogType.MainConsole,
-                $"玩家断开: {player.CharacterName} (SteamID: {player.SteamId})\n" +
-                $"本次时长: {FormatTimeSpan(player.SessionDuration.Value)} | 总时长: {FormatTimeSpan(player.TotalPlayTime)}",
-                Brushes.Gray);
+            ShowLogMsg($"玩家断开: {player.CharacterName} (SteamID: {player.SteamId})\n" +
+                        $"本次时长: {FormatTimeSpan(player.SessionDuration.Value)} | 总时长: {FormatTimeSpan(player.TotalPlayTime)}",
+                            Brushes.Gray);
 
             if (VsmSettings.WebhookSettings.Enabled)
             {
@@ -2099,7 +2111,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"断开处理失败: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"断开处理失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -2110,7 +2122,7 @@ public partial class MainWindow : Window
             string steamIdStr = ExtractValue(logLine, "PlatformId: ", " UserIndex:");
             if (string.IsNullOrEmpty(steamIdStr) || !ulong.TryParse(steamIdStr, out ulong steamId))
             {
-                ShowLogMsg(LogType.MainConsole, $"无效管理员SteamID: {steamIdStr}", Brushes.Red);
+                ShowLogMsg($"无效管理员SteamID: {steamIdStr}", Brushes.Red);
                 return;
             }
 
@@ -2125,12 +2137,12 @@ public partial class MainWindow : Window
                 _playerDataManager?.SaveAsync();
 
                 string status = isAdmin ? "已确认管理员权限" : "非管理员";
-                ShowLogMsg(LogType.MainConsole, $"{player.CharacterName} (SteamID: {steamId}): {status}", Brushes.Purple);
+                ShowLogMsg($"{player.CharacterName} (SteamID: {steamId}): {status}", Brushes.Purple);
             }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"管理员授权处理失败: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"管理员授权处理失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -2198,7 +2210,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"更新玩家状态时出错: {ex.Message}", Brushes.Orange);
+            ShowLogMsg($"更新玩家状态时出错: {ex.Message}", Brushes.Orange);
         }
     }
 
@@ -2207,13 +2219,13 @@ public partial class MainWindow : Window
     {
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, "错误：服务器实例为空，无法处理进程退出事件", Brushes.Red);
+            ShowLogMsg("错误：服务器实例为空，无法处理进程退出事件", Brushes.Red);
             return;
         }
 
         if (server.Runtime == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"错误：[{server.vsmServerName}] 运行时对象未初始化", Brushes.Red);
+            ShowLogMsg($"错误：[{server.vsmServerName}] 运行时对象未初始化", Brushes.Red);
             return;
         }
 
@@ -2240,19 +2252,19 @@ public partial class MainWindow : Window
             switch (exitCode)
             {
                 case 1:
-                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 崩溃了。", Brushes.Red);
+                    ShowLogMsg($"{server.vsmServerName} 崩溃了。", Brushes.Red);
                     break;
                 case -2147483645:
-                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 已中断（代码：-2147483645），可能是端口被占用。", Brushes.Red);
+                    ShowLogMsg($"{server.vsmServerName} 已中断（代码：-2147483645），可能是端口被占用。", Brushes.Red);
                     break;
                 default:
-                    //ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 已停止（退出码：{exitCode}）", Brushes.Yellow);
+                    //ShowLogMsg($"{server.vsmServerName} 已停止（退出码：{exitCode}）", Brushes.Yellow);
                     break;
             }
 
             if (server.Runtime.RestartAttempts >= 3)
             {
-                ShowLogMsg(LogType.MainConsole, $"服务器 '{server.vsmServerName}' 已尝试重启3次失败，禁用自动重启。", Brushes.Red);
+                ShowLogMsg($"服务器 '{server.vsmServerName}' 已尝试重启3次失败，禁用自动重启。", Brushes.Red);
 
                 if (VsmSettings.WebhookSettings.Enabled &&
                     !string.IsNullOrEmpty(server.WebhookMessages.AttemptStart3) &&
@@ -2265,23 +2277,23 @@ public partial class MainWindow : Window
                 {
                     if (LogManager.WriteServerCrashLog(server))
                     {
-                        ShowLogMsg(LogType.MainConsole, $"已创建崩溃日志：{Path.Combine(server.Path, "CrashLog")}", Brushes.Yellow);
+                        ShowLogMsg($"已创建崩溃日志：{Path.Combine(server.Path, "CrashLog")}", Brushes.Yellow);
                     }
                 }
 
-                ShowLogMsg(LogType.MainConsole, "尝试最后一次重启服务器...", Brushes.Lime);
+                ShowLogMsg("尝试最后一次重启服务器...", Brushes.Lime);
                 await Task.Delay(5000); // 延长延迟，避免频繁重启
 
                 bool restartSuccess = await StartServer(server);
                 if (restartSuccess)
                 {
-                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 重启成功，重新启用自动重启。", Brushes.Green);
+                    ShowLogMsg($"{server.vsmServerName} 重启成功，重新启用自动重启。", Brushes.Green);
                     server.AutoRestart = true;
                     server.Runtime.RestartAttempts = 0;
                 }
                 else
                 {
-                    ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 最后一次重启失败，请手动检查。", Brushes.Red);
+                    ShowLogMsg($"{server.vsmServerName} 最后一次重启失败，请手动检查。", Brushes.Red);
                 }
                 return;
             }
@@ -2289,7 +2301,7 @@ public partial class MainWindow : Window
             if (server.AutoRestart && !server.Runtime.UserStopped)
             {
                 server.Runtime.RestartAttempts++;
-                ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 将自动重启（尝试 {server.Runtime.RestartAttempts}/3）", Brushes.Lime);
+                ShowLogMsg($"{server.vsmServerName} 将自动重启（尝试 {server.Runtime.RestartAttempts}/3）", Brushes.Lime);
 
                 if (VsmSettings.WebhookSettings.Enabled &&
                     !string.IsNullOrEmpty(server.WebhookMessages.ServerCrash) &&
@@ -2302,7 +2314,7 @@ public partial class MainWindow : Window
                 {
                     if (LogManager.WriteServerCrashLog(server))
                     {
-                        ShowLogMsg(LogType.MainConsole, $"已创建崩溃日志：{Path.Combine(server.Path, "CrashLog")}", Brushes.Yellow);
+                        ShowLogMsg($"已创建崩溃日志：{Path.Combine(server.Path, "CrashLog")}", Brushes.Yellow);
                     }
                 }
 
@@ -2312,7 +2324,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"[{server.vsmServerName}] 处理进程退出时出错：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"[{server.vsmServerName}] 处理进程退出时出错：{ex.Message}", Brushes.Red);
         }
     }
 
@@ -2404,7 +2416,7 @@ public partial class MainWindow : Window
     {
         if (sender is not Button button || button.DataContext is not Server server)
         {
-            ShowLogMsg(LogType.MainConsole, "启动服务器失败：无效的按钮或服务器实例", Brushes.Red);
+            ShowLogMsg("启动服务器失败：无效的按钮或服务器实例", Brushes.Red);
             return;
         }
 
@@ -2416,14 +2428,20 @@ public partial class MainWindow : Window
             string batPath = Path.Combine(server.Path, "start_server_example.bat");
             if (!File.Exists(batPath))
             {
-                ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 启动失败：未找到启动文件（{batPath}）", Brushes.Red);
+                ShowLogMsg($"{server.vsmServerName} 启动失败：未找到启动文件（{batPath}）", Brushes.Red);
                 return;
             }
-            await StartServer(server);
+            bool started = await StartServer(server);
+            await Task.Delay(3000);
+
+            if (started == true)
+            {
+                ReadLog(server);
+            }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"{server.vsmServerName} 启动异常：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"{server.vsmServerName} 启动异常：{ex.Message}", Brushes.Red);
         }
         finally
         {
@@ -2439,14 +2457,14 @@ public partial class MainWindow : Window
 
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"错误：未找到服务器信息", Brushes.Red);
+            ShowLogMsg($"错误：未找到服务器信息", Brushes.Red);
             return;
         }
 
         TextBlock buttonText = FindVisualChild<TextBlock>(button, "ButtonText");
         if (buttonText == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"警告：未找到按钮文本元素", Brushes.Yellow);
+            ShowLogMsg($"警告：未找到按钮文本元素", Brushes.Yellow);
             return;
         }
 
@@ -2463,16 +2481,16 @@ public partial class MainWindow : Window
 
             if (success)
             {
-                ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 更新成功！", Brushes.Lime);
+                ShowLogMsg($"服务器 {server.vsmServerName} 更新成功！", Brushes.Lime);
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, $"服务器 {server.vsmServerName} 更新失败！", Brushes.Red);
+                ShowLogMsg($"服务器 {server.vsmServerName} 更新失败！", Brushes.Red);
             }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"更新过程中发生错误：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"更新过程中发生错误：{ex.Message}", Brushes.Red);
         }
         finally
         {
@@ -2508,17 +2526,17 @@ public partial class MainWindow : Window
 
             if (server == null)
             {
-                ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+                ShowLogMsg($"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
                 return;
             }
 
-            ShowLogMsg(LogType.MainConsole, $"正在停止服务器：{server.vsmServerName}", Brushes.Yellow);
+            ShowLogMsg($"正在停止服务器：{server.vsmServerName}", Brushes.Yellow);
             bool wasRunning = server.Runtime?.State == ServerRuntime.ServerState.运行中;
             bool success = await StopServer(server);
 
             if (success)
             {
-                ShowLogMsg(LogType.MainConsole, $"已成功停止服务器：{server.vsmServerName}", Brushes.Lime);
+                ShowLogMsg($"已成功停止服务器：{server.vsmServerName}", Brushes.Lime);
             }
             else
             {
@@ -2526,12 +2544,12 @@ public partial class MainWindow : Window
                 {
                     LogManager.WriteServerCrashLog(server);
                 }
-                ShowLogMsg(LogType.MainConsole, $"无法停止服务器：{server.vsmServerName}", Brushes.Red);
+                ShowLogMsg($"无法停止服务器：{server.vsmServerName}", Brushes.Red);
             }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"停止服务器时出错：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"停止服务器时出错：{ex.Message}", Brushes.Red);
             if (sender is Button button && button.DataContext is Server server)
             {
                 if (server.Runtime?.State == ServerRuntime.ServerState.运行中)
@@ -2549,47 +2567,48 @@ public partial class MainWindow : Window
 
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+            ShowLogMsg($"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
             return;
         }
-
-        await RestartServer(server);
+        bool restartSuccess = await RestartServer(server);
+        if (restartSuccess == true)
+        {
+            ReadLog(server);
+        }
     }
 
     private async Task<bool> RestartServer(Server server)
     {
         LogManager = new(this);
-        ShowLogMsg(LogType.MainConsole, $"正在重启服务器：" + server.vsmServerName, Brushes.Yellow);
+        ShowLogMsg($"正在重启服务器：" + server.vsmServerName, Brushes.Yellow);
         try
         {
             bool success = await StopServer(server);
             if (success)
             {
                 if (!LogManager.WriteServerCrashLog(server))
-                    ShowLogMsg(LogType.MainConsole, $"备份 {server.vsmServerName} 服务器日志失败", Brushes.Red);
+                    ShowLogMsg($"备份 {server.vsmServerName} 服务器日志失败", Brushes.Red);
                 else
-                    ShowLogMsg(LogType.MainConsole, $"已备份 {server.vsmServerName} 服务器日志", Brushes.Lime);
+                    ShowLogMsg($"已备份 {server.vsmServerName} 服务器日志", Brushes.Lime);
 
-                ShowLogMsg(LogType.MainConsole, $"正在启动服务器：{server.vsmServerName}", Brushes.Yellow);
-
-                success = false;
+                ShowLogMsg($"正在启动服务器：{server.vsmServerName}", Brushes.Yellow);
 
                 MainSettings.Save(VsmSettings);
                 if (File.Exists(server.Path + @"\start_server_example.bat"))
+                {
                     success = await StartServer(server);
+                }
                 else
                 {
-                    ShowLogMsg(LogType.MainConsole, $"未找到服务器启动脚本，请检查服务器安装是否有误", Brushes.Red);
-                    return false;
+                    success = false;
+                    ShowLogMsg($"未找到服务器启动脚本，请检查服务器安装是否有误", Brushes.Red);
+                    return success;
                 }
-
-                //if (success == true && VsmSettings.WebhookSettings.Enabled)
-                //    ReadLog(server);
                 return true;
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, $"无法停止服务器：" + server.vsmServerName, Brushes.Red);
+                ShowLogMsg($"无法停止服务器：{server.vsmServerName}", Brushes.Red);
                 LogManager.WriteServerCrashLog(server);
                 return false;
             }
@@ -2597,7 +2616,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"重启服务器发生错误：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"重启服务器发生错误：{ex.Message}", Brushes.Red);
             return false;
         }
     }
@@ -2616,7 +2635,7 @@ public partial class MainWindow : Window
 
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+            ShowLogMsg($"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
             return;
         }
 
@@ -2635,7 +2654,7 @@ public partial class MainWindow : Window
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, "用户取消本次配置语音服务", Brushes.Yellow);
+                ShowLogMsg("用户取消本次配置语音服务", Brushes.Yellow);
                 return;
             }
         }
@@ -2661,17 +2680,17 @@ public partial class MainWindow : Window
 
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"错误：找不到要删除的选定服务器", Brushes.Red);
+            ShowLogMsg($"错误：找不到要删除的选定服务器", Brushes.Red);
             return;
         }
         if (server.Runtime.State == ServerRuntime.ServerState.运行中 || server.Runtime.State == ServerRuntime.ServerState.更新中)
         {
-            ShowLogMsg(LogType.MainConsole, $"错误：服务器正在运行或者更新中，请先停止服务器！", Brushes.Red);
+            ShowLogMsg($"错误：服务器正在运行或者更新中，请先停止服务器！", Brushes.Red);
             return;
         }
         bool success = await RemoveServer(server);
         if (!success)
-            ShowLogMsg(LogType.MainConsole, $"删除服务器时出错，或操作已中止。", Brushes.Red);
+            ShowLogMsg($"删除服务器时出错，或操作已中止。", Brushes.Red);
         else
             MainSettings.Save(VsmSettings);
     }
@@ -2730,7 +2749,7 @@ public partial class MainWindow : Window
 
         if (server == null)
         {
-            ShowLogMsg(LogType.MainConsole, $"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
+            ShowLogMsg($"未找到服务器信息，请确认服务器有正常运行过至少一次", Brushes.Red);
             return;
         }
 
@@ -2740,7 +2759,7 @@ public partial class MainWindow : Window
             aManager.Activate();
             aManager.Topmost = true;
             aManager.Topmost = false;
-            aManager.AdminListUpdated += OnAdminListUpdated;
+            //aManager.AdminListUpdated += OnAdminListUpdated;
         }
         else
         {
@@ -2758,7 +2777,7 @@ public partial class MainWindow : Window
             {
                 aManager = new AdminManager(server);
                 aManager.Show();
-                aManager.AdminListUpdated += OnAdminListUpdated;
+                //aManager.AdminListUpdated += OnAdminListUpdated;
             }
         }
     }
@@ -2778,7 +2797,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, ex.Message.ToString(), Brushes.Red);
+            ShowLogMsg(ex.Message.ToString(), Brushes.Red);
         }
 
         if (Directory.Exists(path))
@@ -2885,22 +2904,22 @@ public partial class MainWindow : Window
                     Application.Current.MainWindow.Close();
                 }
                 else
-                    ShowLogMsg(LogType.MainConsole, $"用户取消了本次软件更新。", Brushes.Yellow);
+                    ShowLogMsg($"用户取消了本次软件更新。", Brushes.Yellow);
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, $"正在运行最新的版本：{latestVersion}", Brushes.Lime);
+                ShowLogMsg($"正在运行最新的版本：{latestVersion}", Brushes.Lime);
             }
         }
         catch (Exception ex)
         {
             if (ex.ToString().Contains("不知道这样的主机"))
             {
-                ShowLogMsg(LogType.MainConsole, $"搜索软件更新错误：未能到达彼岸，请检查你的网络！", Brushes.Red);
+                ShowLogMsg($"搜索软件更新错误：未能到达彼岸，请检查你的网络！", Brushes.Red);
                 return;
             }
             else
-                ShowLogMsg(LogType.MainConsole, $"搜索软件更新错误：{ex.ToString()}", Brushes.Red);
+                ShowLogMsg($"搜索软件更新错误：{ex.ToString()}", Brushes.Red);
         }
     }
 
@@ -2930,36 +2949,32 @@ public partial class MainWindow : Window
             string workingDir = Directory.GetCurrentDirectory();
             string thumbprint = "8da7f965ec5efc37910f1c6e59fdc1cc6a6ede16"; // CA证书指纹
 
-            ShowLogMsg(LogType.MainConsole, "===== 开始证书检查 =====", Brushes.Cyan);
+            ShowLogMsg("===== 开始证书检查 =====", Brushes.Cyan);
             bool certificateInstalled = await CheckAndInstallCertificate(workingDir, thumbprint);
-            ShowLogMsg(LogType.MainConsole, certificateInstalled ? "证书检查完成：已安装或无需安装" : "证书检查完成：未安装（用户取消）", Brushes.Lime);
+            ShowLogMsg(certificateInstalled ? "证书检查完成：已安装或无需安装" : "证书检查完成：未安装（用户取消）", Brushes.Lime);
 
             if (!certificateInstalled)
             {
-                ShowLogMsg(LogType.MainConsole, "===== 修复工具已终止 =====", Brushes.Yellow);
+                ShowLogMsg("===== 修复工具已终止 =====", Brushes.Yellow);
                 return; 
             }
 
-            ShowLogMsg(LogType.MainConsole, "===== 开始VC++ Runtime处理 =====", Brushes.Cyan);
+            ShowLogMsg("===== 开始VC++ Runtime处理 =====", Brushes.Cyan);
             bool vcRuntimeInstalled = await CheckAndInstallVCRuntime(workingDir);
-            ShowLogMsg(LogType.MainConsole, vcRuntimeInstalled ?
+            ShowLogMsg(vcRuntimeInstalled ?
                 "VC++ Runtime处理完成：已安装或安装成功" :
                 "VC++ Runtime处理完成：安装失败", vcRuntimeInstalled ? Brushes.Lime : Brushes.Red);
 
-            ShowLogMsg(LogType.MainConsole, "===== 开始DirectX处理 =====", Brushes.Cyan);
+            ShowLogMsg("===== 开始DirectX处理 =====", Brushes.Cyan);
             bool directxInstalled = await CheckAndInstallDirectX(workingDir);
-            ShowLogMsg(LogType.MainConsole, directxInstalled ? "DirectX处理完成：已安装或安装成功" : "DirectX处理完成：安装失败", directxInstalled ? Brushes.Lime : Brushes.Red);
+            ShowLogMsg(directxInstalled ? "DirectX处理完成：已安装或安装成功" : "DirectX处理完成：安装失败", directxInstalled ? Brushes.Lime : Brushes.Red);
             
-            ShowLogMsg(LogType.MainConsole, "===== 修复工具执行完成 =====", Brushes.Cyan);
-            ShowLogMsg(LogType.MainConsole,
-                $"证书状态：{(certificateInstalled ? "正常" : "缺失")} | " +
-                    $"VC++状态：{(vcRuntimeInstalled ? "正常" : "异常")} | " +
-                        $"DirectX状态：{(directxInstalled ? "正常" : "异常")}",
-                Brushes.White);
+            ShowLogMsg("===== 修复工具执行完成 =====", Brushes.Cyan);
+            ShowLogMsg( $"证书状态：{(certificateInstalled ? "正常" : "缺失")} | VC++状态：{(vcRuntimeInstalled ? "正常" : "异常")} | DirectX状态：{(directxInstalled ? "正常" : "异常")}", Brushes.White);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"修复过程出错：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"修复过程出错：{ex.Message}", Brushes.Red);
         }
         finally
         {
@@ -2988,7 +3003,7 @@ public partial class MainWindow : Window
 
         // 刷新列表显示
         PlayerDataGrid.Items.Refresh();
-        ShowLogMsg(LogType.MainConsole, $"已添加 {selectedPlayer.CharacterName} 为管理员", Brushes.Purple);
+        ShowLogMsg($"已添加 {selectedPlayer.CharacterName} 为管理员", Brushes.Purple);
     }
 
 
@@ -3005,7 +3020,7 @@ public partial class MainWindow : Window
 
         // 刷新列表显示
         PlayerDataGrid.Items.Refresh();
-        ShowLogMsg(LogType.MainConsole, $"已移除 {selectedPlayer.CharacterName} 的管理员权限", Brushes.Purple);
+        ShowLogMsg($"已移除 {selectedPlayer.CharacterName} 的管理员权限", Brushes.Purple);
     }
 
     // 右键菜单：刷新玩家列表
@@ -3052,35 +3067,35 @@ public partial class MainWindow : Window
 
                 if (await dialog.ShowAsync() != ContentDialogResult.Primary)
                 {
-                    ShowLogMsg(LogType.MainConsole, "用户取消证书安装", Brushes.Yellow);
+                    ShowLogMsg("用户取消证书安装", Brushes.Yellow);
                     return false;
                 }
 
                 string caCertPath = Path.Combine(workingDir, "AmazonRootCA1.cer");
                 if (!File.Exists(caCertPath))
                 {
-                    ShowLogMsg(LogType.MainConsole, $"证书文件不存在：{caCertPath}", Brushes.Red);
+                    ShowLogMsg($"证书文件不存在：{caCertPath}", Brushes.Red);
                     return false;
                 }
 
                 try
                 {
-                    ShowLogMsg(LogType.MainConsole, "开始安装证书...", Brushes.Lime);
+                    ShowLogMsg("开始安装证书...", Brushes.Lime);
                     var caCert = new X509Certificate2(caCertPath);
                     store.Open(OpenFlags.ReadWrite);
                     store.Add(caCert);
-                    ShowLogMsg(LogType.MainConsole, "证书安装成功", Brushes.Lime);
+                    ShowLogMsg("证书安装成功", Brushes.Lime);
                     return true;
                 }
                 catch (Exception ex)
                 {
-                    ShowLogMsg(LogType.MainConsole, $"证书安装失败：{ex.Message}", Brushes.Red);
+                    ShowLogMsg($"证书安装失败：{ex.Message}", Brushes.Red);
                     return false;
                 }
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, "AmazonRootCA1证书已存在，无需安装", Brushes.Lime);
+                ShowLogMsg("AmazonRootCA1证书已存在，无需安装", Brushes.Lime);
                 return true;
             }
         }
@@ -3091,28 +3106,28 @@ public partial class MainWindow : Window
     {
         if (CheckVCRuntimeInstalled())
         {
-            ShowLogMsg(LogType.MainConsole, "VC++ Runtime已安装，跳过操作", Brushes.Lime);
+            ShowLogMsg("VC++ Runtime已安装，跳过操作", Brushes.Lime);
             return true;
         }
         // 下载安装包
         string installerPath = Path.Combine(workingDir, "vc_redist.x64.exe");
         try
         {
-            ShowLogMsg(LogType.MainConsole, "VC++ Runtime未安装，开始下载安装包...", Brushes.Lime);
+            ShowLogMsg("VC++ Runtime未安装，开始下载安装包...", Brushes.Lime);
             using var client = new HttpClient();
             byte[] fileBytes = await client.GetByteArrayAsync(@"https://aka.ms/vs/17/release/vc_redist.x64.exe");
             await File.WriteAllBytesAsync(installerPath, fileBytes);
-            ShowLogMsg(LogType.MainConsole, "VC++ Runtime安装包下载完成", Brushes.Lime);
+            ShowLogMsg("VC++ Runtime安装包下载完成", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"VC++ Runtime下载失败：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"VC++ Runtime下载失败：{ex.Message}", Brushes.Red);
             return false;
         }
 
         try
         {
-            ShowLogMsg(LogType.MainConsole, "开始安装VC++ Runtime...", Brushes.Lime);
+            ShowLogMsg("开始安装VC++ Runtime...", Brushes.Lime);
             var process = new Process
             {
                 StartInfo = new ProcessStartInfo
@@ -3128,18 +3143,18 @@ public partial class MainWindow : Window
 
             if (process.ExitCode == 0)
             {
-                ShowLogMsg(LogType.MainConsole, "VC++ Runtime安装成功", Brushes.Lime);
+                ShowLogMsg("VC++ Runtime安装成功", Brushes.Lime);
                 return true;
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, $"VC++ Runtime安装失败，退出代码：{process.ExitCode}", Brushes.Red);
+                ShowLogMsg($"VC++ Runtime安装失败，退出代码：{process.ExitCode}", Brushes.Red);
                 return false;
             }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"VC++ Runtime安装出错：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"VC++ Runtime安装出错：{ex.Message}", Brushes.Red);
             return false;
         }
         finally
@@ -3155,28 +3170,28 @@ public partial class MainWindow : Window
         int directxVersion = GetDirectXVersion();
         if (directxVersion >= 9)
         {
-            ShowLogMsg(LogType.MainConsole, $"DirectX版本满足要求（v{directxVersion}），跳过操作", Brushes.Lime);
+            ShowLogMsg($"DirectX版本满足要求（v{directxVersion}），跳过操作", Brushes.Lime);
             return true;
         }
         string installerPath = Path.Combine(workingDir, "directx_Jun2010_redist.exe");
         string extractDir = Path.Combine(workingDir, "directx_Jun2010_redist");
         try
         {
-            ShowLogMsg(LogType.MainConsole, $"DirectX版本过低（v{directxVersion}），开始下载安装包...", Brushes.Lime);
+            ShowLogMsg($"DirectX版本过低（v{directxVersion}），开始下载安装包...", Brushes.Lime);
             using var client = new HttpClient();
             byte[] fileBytes = await client.GetByteArrayAsync(
                 @"https://download.microsoft.com/download/8/4/a/84a35bf1-dafe-4ae8-82af-ad2ae20b6b14/directx_Jun2010_redist.exe");
             await File.WriteAllBytesAsync(installerPath, fileBytes);
-            ShowLogMsg(LogType.MainConsole, "DirectX安装包下载完成", Brushes.Lime);
+            ShowLogMsg("DirectX安装包下载完成", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"DirectX下载失败：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"DirectX下载失败：{ex.Message}", Brushes.Red);
             return false;
         }
         try
         {
-            ShowLogMsg(LogType.MainConsole, "开始解压DirectX安装包...", Brushes.Lime);
+            ShowLogMsg("开始解压DirectX安装包...", Brushes.Lime);
             Directory.CreateDirectory(extractDir);
             var process = new Process
             {
@@ -3192,14 +3207,14 @@ public partial class MainWindow : Window
             await process.WaitForExitAsync();
             if (process.ExitCode != 0)
             {
-                ShowLogMsg(LogType.MainConsole, $"DirectX解压失败，退出代码：{process.ExitCode}", Brushes.Red);
+                ShowLogMsg($"DirectX解压失败，退出代码：{process.ExitCode}", Brushes.Red);
                 return false;
             }
-            ShowLogMsg(LogType.MainConsole, "DirectX安装包解压完成", Brushes.Lime);
+            ShowLogMsg("DirectX安装包解压完成", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"DirectX解压出错：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"DirectX解压出错：{ex.Message}", Brushes.Red);
             return false;
         }
         finally
@@ -3209,7 +3224,7 @@ public partial class MainWindow : Window
         }
         try
         {
-            ShowLogMsg(LogType.MainConsole, "开始安装DirectX...", Brushes.Lime);
+            ShowLogMsg("开始安装DirectX...", Brushes.Lime);
             string dxSetupPath = Path.Combine(extractDir, "DXSETUP.exe");
             var process = new Process
             {
@@ -3227,18 +3242,18 @@ public partial class MainWindow : Window
 
             if (process.ExitCode == 0)
             {
-                ShowLogMsg(LogType.MainConsole, "DirectX安装成功", Brushes.Lime);
+                ShowLogMsg("DirectX安装成功", Brushes.Lime);
                 return true;
             }
             else
             {
-                ShowLogMsg(LogType.MainConsole, $"DirectX安装失败，退出代码：{process.ExitCode}", Brushes.Red);
+                ShowLogMsg($"DirectX安装失败，退出代码：{process.ExitCode}", Brushes.Red);
                 return false;
             }
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"DirectX安装出错：{ex.Message}", Brushes.Red);
+            ShowLogMsg($"DirectX安装出错：{ex.Message}", Brushes.Red);
             return false;
         }
         finally
@@ -3507,14 +3522,14 @@ public partial class MainWindow : Window
     {
         //if (_currentServer == null)
         //{
-        //    ShowLogMsg(LogType.MainConsole, "请先选择服务器", Brushes.Yellow);
+        //    ShowLogMsg("请先选择服务器", Brushes.Yellow);
         //    return;
         //}
 
         //string logPath = Path.Combine(_currentServer.Path, _logTypeToTag[LogType.VRising]);
         //if (!File.Exists(logPath))
         //{
-        //    ShowLogMsg(LogType.MainConsole, "未找到日志文件，无法刷新状态", Brushes.Red);
+        //    ShowLogMsg("未找到日志文件，无法刷新状态", Brushes.Red);
         //    return;
         //}
 
@@ -3541,6 +3556,10 @@ public partial class MainWindow : Window
         }
     }
 
+    private void Demo_Click(object sender, RoutedEventArgs e)
+    {
+
+    }
 
     /// <summary>
     /// 生成时间戳字符串
@@ -3583,11 +3602,11 @@ public partial class MainWindow : Window
                 });
             };
 
-            //ShowLogMsg(LogType.MainConsole, "玩家数据管理器初始化成功", Brushes.Lime);
+            //ShowLogMsg("玩家数据管理器初始化成功", Brushes.Lime);
         }
         catch (Exception ex)
         {
-            ShowLogMsg(LogType.MainConsole, $"玩家数据管理器初始化失败: {ex.Message}", Brushes.Red);
+            ShowLogMsg($"玩家数据管理器初始化失败: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -3632,7 +3651,6 @@ public partial class MainWindow : Window
             RefreshAdminStatus();
         });
     }
-
 }
 
 

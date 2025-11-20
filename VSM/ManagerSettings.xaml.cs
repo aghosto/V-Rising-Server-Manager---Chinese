@@ -72,7 +72,7 @@ namespace VRisingServerManager
                 }
             }
 
-            _mainWindow.ShowLogMsg(LogType.MainConsole, logMessage, color);
+            _mainWindow.ShowLogMsg(logMessage, color);
         }
 
         /// <summary>

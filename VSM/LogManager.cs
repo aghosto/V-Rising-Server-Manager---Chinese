@@ -94,17 +94,17 @@ public class LogManager : Window
 
     private void ShowLogError(string message)
     {
-        _mainWindow?.ShowLogMsg(LogType.MainConsole, $"{message}", Brushes.Red);
+        _mainWindow?.ShowLogMsg($"{message}", Brushes.Red);
     }
 
     private void ShowLogWarning(string message)
     {
-        _mainWindow?.ShowLogMsg(LogType.MainConsole, $"{message}", Brushes.Yellow);
+        _mainWindow?.ShowLogMsg($"{message}", Brushes.Yellow);
     }
 
     private void ShowLogSuccess(string message)
     {
-        _mainWindow?.ShowLogMsg(LogType.MainConsole, $"{message}", Brushes.Green);
+        _mainWindow?.ShowLogMsg($"{message}", Brushes.Green);
     }
 }
 

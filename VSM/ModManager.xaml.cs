@@ -153,21 +153,21 @@ public partial class ModManager : Window
         }
         catch (HttpRequestException ex)
         {
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"获取Mod列表失败: {ex.Message}", Brushes.Red);
+            mainWindow.ShowLogMsg($"获取Mod列表失败: {ex.Message}", Brushes.Red);
 
             if (ex.InnerException != null)
             {
-                mainWindow.ShowLogMsg(LogType.MainConsole, $"内部异常: {ex.InnerException.Message}", Brushes.Red);
+                mainWindow.ShowLogMsg($"内部异常: {ex.InnerException.Message}", Brushes.Red);
 
                 if (ex.InnerException is System.Security.Authentication.AuthenticationException authEx)
                 {
-                    mainWindow.ShowLogMsg(LogType.MainConsole, $"SSL认证错误: {authEx.Message}，请检查你的网络连接", Brushes.Red);
+                    mainWindow.ShowLogMsg($"SSL认证错误: {authEx.Message}，请检查你的网络连接", Brushes.Red);
                 }
             }
         }
         catch (Exception ex)
         {
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"刷新Mod列表时发生未知错误: {ex.Message}", Brushes.Red);
+            mainWindow.ShowLogMsg($"刷新Mod列表时发生未知错误: {ex.Message}", Brushes.Red);
         }
     }
 
@@ -197,9 +197,7 @@ public partial class ModManager : Window
         }
         catch (Exception ex)
         {
-            mainWindow.ShowLogMsg(LogType.MainConsole,
-                $"版本比较失败: {installedVersion} vs {latestVersion}, 错误: {ex.Message}",
-                Brushes.Orange);
+            mainWindow.ShowLogMsg( $"版本比较失败: {installedVersion} vs {latestVersion}, 错误: {ex.Message}", Brushes.Orange);
             return true;
         }
     }
@@ -447,7 +445,7 @@ public partial class ModManager : Window
         DownloadInProgress = true;
         DownloadProgressBar.Visibility = Visibility.Visible;
         DownloadProgressText.Text = $"正在下载：{mod.Full_Name}";
-        mainWindow.ShowLogMsg(LogType.MainConsole, $"正在下载Mod：{mod.Name}", Brushes.Yellow);
+        mainWindow.ShowLogMsg($"正在下载Mod：{mod.Name}", Brushes.Yellow);
 
         int modIndex = Mods.ModList.IndexOf(mod);
         string workingDir = Directory.GetCurrentDirectory();
@@ -568,7 +566,7 @@ public partial class ModManager : Window
             return true;
         }
 
-        //mainWindow.ShowLogMsg(LogType.MainConsole, $"正在安装 {mod.Name} 到 {server.vsmServerName}", Brushes.Yellow);
+        //mainWindow.ShowLogMsg($"正在安装 {mod.Name} 到 {server.vsmServerName}", Brushes.Yellow);
 
         string workingDir = Directory.GetCurrentDirectory();
         int downloadedModIndex = -1;
@@ -665,7 +663,7 @@ public partial class ModManager : Window
                 CloseButtonText = "好的",
                 DefaultButton = ContentDialogButton.Close
             }.ShowAsync();
-            mainWindow.ShowLogMsg(LogType.MainConsole, "Mod更新错误，服务器正在运行", Brushes.Red);
+            mainWindow.ShowLogMsg("Mod更新错误，服务器正在运行", Brushes.Red);
             return false;
         }
 
@@ -690,19 +688,16 @@ public partial class ModManager : Window
                 if (server.InstalledModVersions.TryGetValue(mod.Uuid4, out var installedVersion) &&
                     IsVersionOlder(installedVersion, latestVersion))
                 {
-                    mainWindow.ShowLogMsg(LogType.MainConsole,
-                        $"服务器 '{server.vsmServerName}' 的Mod '{mod.Name}' 有可用更新 " +
-                        $"(当前: {installedVersion}, 最新: {latestVersion})",
-                        Brushes.Orange);
+                    mainWindow.ShowLogMsg( $"服务器 '{server.vsmServerName}' 的Mod '{mod.Name}' 有可用更新 (当前: {installedVersion}, 最新: {latestVersion})", Brushes.Orange);
                 }
             }
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"Mod更新成功：{mod.Name}", Brushes.Lime);
+            mainWindow.ShowLogMsg($"Mod更新成功：{mod.Name}", Brushes.Lime);
             await RefreshModList();
             return true;
         }
         catch (Exception ex)
         {
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"更新Mod时发生错误：{ex.Message}", Brushes.Red);
+            mainWindow.ShowLogMsg($"更新Mod时发生错误：{ex.Message}", Brushes.Red);
             success = false;
         }
         return success;
@@ -728,7 +723,7 @@ public partial class ModManager : Window
             return await UninstallBepInEx(server);
         }
 
-        mainWindow.ShowLogMsg(LogType.MainConsole, $"正在从 {server.vsmServerName} 卸载Mod：{mod.Name}", Brushes.Yellow);
+        mainWindow.ShowLogMsg($"正在从 {server.vsmServerName} 卸载Mod：{mod.Name}", Brushes.Yellow);
 
         int downloadedModIndex = -1;
 
@@ -763,7 +758,6 @@ public partial class ModManager : Window
                     File.Delete(workingDir + @"\Mods\" + downloadedMod.ArchiveName);
 
                 mod.Downloaded = false;
-                //downloadedMod.ArchiveName = "";
                 downloadedMod.LocalVersion = "";
                 downloadedMod.Downloaded = false;
 
@@ -771,7 +765,7 @@ public partial class ModManager : Window
                 break;
             }
         }
-        mainWindow.ShowLogMsg(LogType.MainConsole, $"Mod {mod.Name} 已从Mods文件夹中移除", Brushes.Yellow);
+        mainWindow.ShowLogMsg($"Mod {mod.Name} 已从Mods文件夹中移除", Brushes.Yellow);
     }
 
     private void ModsDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -848,7 +842,7 @@ public partial class ModManager : Window
 
         if (success)
         {
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"{mod.Name} 已成功下载。", Brushes.Lime);
+            mainWindow.ShowLogMsg($"{mod.Name} 已成功下载。", Brushes.Lime);
         }
     }
 
@@ -860,7 +854,7 @@ public partial class ModManager : Window
         bool success = await InstallMod(mod, server);
         if (success)
         {
-            mainWindow.ShowLogMsg(LogType.MainConsole, $"{mod.Name} 已成功安装至服务器 {server.vsmServerName}。", Brushes.Lime);
+            mainWindow.ShowLogMsg($"{mod.Name} 已成功安装至服务器 {server.vsmServerName}。", Brushes.Lime);
         }
     }
 
@@ -869,7 +863,7 @@ public partial class ModManager : Window
         ModInfo mod = (ModInfo)ModsDataGrid.SelectedItem;
         Server server = (Server)ServerComboBox.SelectedItem;
 
-        mainWindow.ShowLogMsg(LogType.MainConsole, $"正在更新Mod：{mod.Name}", Brushes.Yellow);
+        mainWindow.ShowLogMsg($"正在更新Mod：{mod.Name}", Brushes.Yellow);
         await UpdateMod(mod, server);
     }
 
@@ -877,7 +871,7 @@ public partial class ModManager : Window
     {
         await RefreshModList();
 
-        mainWindow.ShowLogMsg(LogType.MainConsole, $"Mod列表刷新成功！共加载 {Mods.ModList.Count} 个Mod", Brushes.LimeGreen);
+        mainWindow.ShowLogMsg($"Mod列表刷新成功！共加载 {Mods.ModList.Count} 个Mod", Brushes.LimeGreen);
     }
 
     private async void UninstallButton_click(object sender, RoutedEventArgs e)
@@ -939,7 +933,6 @@ public partial class ModManager : Window
         }
     }
 
-    // 搜索框文本变化时触发
     private void ModSearchBox_TextChanged(object sender, TextChangedEventArgs e)
     {
         var searchText = (sender as TextBox)?.Text?.Trim().ToLower() ?? "";
@@ -963,61 +956,119 @@ public partial class ModManager : Window
         ModsDataGrid.SelectedIndex = -1;
     }
 
-    private void ModDirectory_Click(object sender, RoutedEventArgs e)
+    private async void ModDirectory_Click(object sender, RoutedEventArgs e)
     {
         Server currentServer = (Server)ServerComboBox.SelectedItem;
-        //string modFilePath = Path.Combine(currentServer.Path, "BepInEx", "plugin", configFileName);
+        string path = Path.Combine(currentServer.Path, "BepInEx", "plugins");
 
+        try
+        {
+            if (string.IsNullOrEmpty(path))
+            {
+                await mainWindow.ShowErrorDialog("路径为空");
+                return;
+            }
+        }
+        catch (Exception ex)
+        {
+            mainWindow.ShowLogMsg(ex.Message.ToString(), Brushes.Red);
+        }
 
+        if (Directory.Exists(path))
+        {
+            try
+            {
+                // 优化 Process.Start 参数，减少开销
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = path,
+                    UseShellExecute = true,
+                    Verb = "open"
+                });
+            }
+            catch (Exception ex)
+            {
+                await mainWindow.ShowErrorDialog($"打开失败：{ex.Message}");
+            }
+        }
+        else
+        {
+            await mainWindow.ShowErrorDialog("找不到服务器文件夹。");
+        }
     }
 
-    // 右键点击"mod配置文件修改器"时触发
-    private void ModConfigEditor_Click(object sender, RoutedEventArgs e)
+    private async void ModConfigEditor_Click(object sender, RoutedEventArgs e)
     {
-        // 获取当前选中的Mod和服务器
         ModInfo selectedMod = ModsDataGrid.SelectedItem as ModInfo;
         Server currentServer = ServerComboBox.SelectedItem as Server;
 
         if (selectedMod == null || currentServer == null)
             return;
 
-        // 构建配置文件路径（BepInEx/config/Mod名称.cfg）
-        string configFileName = $"{selectedMod.Name}.cfg";
-        string configFilePath = Path.Combine(currentServer.Path, "BepInEx", "config", configFileName);
+        string configDir = Path.Combine(currentServer.Path, "BepInEx", "config");
+        string targetConfigPath = null;
+
+        // 特殊mod文件名称映射
+        var specialModConfigMap = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+        {
+            { "BepInExPack_V_Rising", "BepInEx.cfg" }
+        };
 
         try
         {
-            // 检查配置文件是否存在
-            if (!File.Exists(configFilePath))
+            if (!Directory.Exists(configDir))
             {
-                // 询问是否创建新文件
-                var result = MessageBox.Show(
-                    $"未找到配置文件：{configFileName}\n是否在BepInEx/config目录下创建新文件？",
-                    "文件不存在",
-                    MessageBoxButton.YesNo,
-                    MessageBoxImage.Question
-                );
-
-                if (result != MessageBoxResult.Yes)
-                    return;
-
-                // 确保BepInEx/config目录存在
-                Directory.CreateDirectory(Path.GetDirectoryName(configFilePath));
-                File.Create(configFilePath).Dispose(); // 创建空文件
+                Directory.CreateDirectory(configDir);
+            }
+            else
+            {
+                if (specialModConfigMap.TryGetValue(selectedMod.Name, out string specialConfigFileName))
+                {
+                    targetConfigPath = Path.Combine(configDir, specialConfigFileName);
+                    if (!File.Exists(targetConfigPath))
+                    {
+                        targetConfigPath = null;
+                    }
+                }
+                else
+                {
+                    targetConfigPath = Directory.GetFiles(configDir, "*.cfg")
+                        .FirstOrDefault(file => Path.GetFileName(file)
+                            .IndexOf(selectedMod.Name, StringComparison.OrdinalIgnoreCase) >= 0);
+                }
             }
 
-            // 读取配置文件内容
-            string configContent = File.ReadAllText(configFilePath);
+            if (string.IsNullOrEmpty(targetConfigPath))
+            {
+                string newFileName = specialModConfigMap.TryGetValue(selectedMod.Name, out string specialName) ? specialName : $"{selectedMod.Name}.cfg";
 
-            // 打开配置文件编辑器窗口
-            var editorWindow = new ModConfigEditor(configFilePath, configContent);
+                var result = new ContentDialog()
+                {
+                    Title = "文件错误",
+                    Content = $"未找到包含 {selectedMod.Name} 的配置文件\r请确定已经安装该Mod到对应服务器并正常运行一次",
+                    DefaultButton = ContentDialogButton.Primary,
+                    PrimaryButtonText = "确定"
+                }.ShowAsync();
+                return;
+            }
+
+            string configContent = File.ReadAllText(targetConfigPath);
+            var editorWindow = new ModConfigEditor(targetConfigPath, configContent);
             editorWindow.Owner = this;
             editorWindow.ShowDialog();
         }
         catch (Exception ex)
         {
-            MessageBox.Show($"打开配置文件失败：{ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            var result = new ContentDialog()
+            {
+                Title = "文件错误",
+                Content = $"打开配置文件失败：{ex.Message}",
+                DefaultButton = ContentDialogButton.Close,
+                PrimaryButtonText = "确定",
+                CloseButtonText = "取消"
+            }.ShowAsync();
         }
     }
+
 }
 

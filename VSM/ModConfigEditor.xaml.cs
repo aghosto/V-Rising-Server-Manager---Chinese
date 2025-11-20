@@ -1,5 +1,4 @@
-﻿using LiveCharts.Wpf;
-using ModernWpf.Controls;
+﻿using ModernWpf.Controls;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -19,7 +18,7 @@ namespace VRisingServerManager;
 public partial class ModConfigEditor : Window
 {
     private readonly string _configFilePath;
-    private string _originalContent; // 保存原始文件内容，用于检测是否修改
+    private string _originalContent;
     private bool _isModified => !string.Equals(GetCurrentContent(), _originalContent, StringComparison.Ordinal); // 判断内容是否被修改
 
     private string _currentWord = string.Empty;
@@ -39,6 +38,14 @@ public partial class ModConfigEditor : Window
         "Permissions", "Features", "UI", "Network", "Debug"
     };
 
+    // 搜索字段
+    private string _searchText = string.Empty;
+    private TextRange _currentMatchRange;
+    private List<TextRange> _allMatches = new List<TextRange>();
+    private int _currentMatchIndex = -1;
+    private readonly Brush _highlightBrush = new SolidColorBrush(Color.FromRgb(255, 255, 0)); // 黄色高亮
+    private readonly Brush _originalBackgroundBrush = Brushes.Transparent;
+
     private readonly Regex _groupRegex = new Regex(@"^\[(?<GroupName>.+)\]$");
     private readonly Regex _commentRegex = new Regex(@"^#(?<Comment>.+)$");
     private readonly Regex _configRegex = new Regex(@"^(?<Key>\w+)\s*=\s*(?<Value>.+)$");
@@ -49,9 +56,15 @@ public partial class ModConfigEditor : Window
     {
         InitializeComponent();
         _configFilePath = configFilePath;
-        _originalContent = initialContent; // 初始化原始内容
         LoadConfigContent(initialContent);
+        _originalContent = GetCurrentContent(); // 初始化原始内容
         Title = $"配置文件编辑器 - {Path.GetFileName(configFilePath)}";
+
+        // 注册快捷键Ctrl+F
+        var keyGesture = new KeyGesture(Key.F, ModifierKeys.Control);
+        var command = new RoutedCommand();
+        command.InputGestures.Add(keyGesture);
+        CommandBindings.Add(new CommandBinding(command, (s, e) => ShowSearchPanel()));
 
         // 监听文本变化，标记修改状态
         ConfigRichTextBox.TextChanged += (s, e) =>
@@ -182,16 +195,14 @@ public partial class ModConfigEditor : Window
         }
     }
 
-    // 处理按键事件，实现Tab补全
+    // Tab补全
     private void ConfigRichTextBox_PreviewKeyDown(object sender, KeyEventArgs e)
     {
-        // Tab键补全
         if (e.Key == Key.Tab && AutoCompletePopup.IsOpen)
         {
             CompleteWord();
             e.Handled = true;
         }
-        // 上下箭头选择建议
         else if (AutoCompletePopup.IsOpen)
         {
             if (e.Key == Key.Down)
@@ -235,7 +246,7 @@ public partial class ModConfigEditor : Window
                 var range = new TextRange(start, caret);
                 range.Text = "";
             }
-
+             
             ConfigRichTextBox.CaretPosition.InsertTextInRun(selectedWord);
             ConfigRichTextBox.CaretPosition = caret.GetPositionAtOffset(+selectedWord.Length);
 
@@ -243,7 +254,6 @@ public partial class ModConfigEditor : Window
         }
     }
 
-    // 获取从光标位置到行首的文本
     private string GetTextFromPositionToStartOfLine(TextPointer position)
     {
         TextPointer startOfLine = position;
@@ -260,7 +270,6 @@ public partial class ModConfigEditor : Window
         return range.Text;
     }
 
-    // 获取当前编辑的内容
     private string GetCurrentContent()
     {
         var range = new TextRange(
@@ -268,6 +277,13 @@ public partial class ModConfigEditor : Window
             ConfigRichTextBox.Document.ContentEnd
         );
         return range.Text;
+    }
+
+    private void ShowSearchPanel()
+    {
+        //SearchPanel.Visibility = Visibility.Visible;
+        //SearchTextBox.Focus();
+        //SearchTextBox.SelectAll();
     }
 
     // 保存改变
@@ -297,7 +313,7 @@ public partial class ModConfigEditor : Window
             {
                 Owner = this,
                 Title = "保存配置文件",
-                Content = $"保存失败！\r错误{ex.Message}",
+                Content = $"保存失败！\r错误 {ex.Message}",
                 PrimaryButtonText = "好的",
                 DefaultButton = ContentDialogButton.Primary
             };
@@ -321,7 +337,7 @@ public partial class ModConfigEditor : Window
             // 创建确认对话框
             var yesNoDialog = new ContentDialog
             {
-                Owner = this, // 确保设置所有者窗口
+                Owner = this,
                 Title = "确认关闭",
                 Content = "配置文件已修改，是否保存更改？\n选择“否”将丢弃所有修改。",
                 PrimaryButtonText = "是",  
@@ -347,5 +363,11 @@ public partial class ModConfigEditor : Window
                     break;
             }
         }
+        Close();
+    }
+
+    protected override void OnClosed(EventArgs e)
+    {
+        base.OnClosed(e);
     }
 }
